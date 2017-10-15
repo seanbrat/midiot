@@ -121,23 +121,22 @@ public:
         int grid_height = getHeight();
         
         int grid_border_x = 96;
-        int grid_border_y = 140;
+        int grid_border_y = 20;
         
         step_width = division_ppq * 2;
         step_height = step_width;
         
         int grid_step_x = -(getWidth() / 2) + grid_border_x;
-        int grid_step_y = (getHeight() / 2) - grid_border_y;
+        int grid_step_y = -(getHeight() / 2) + grid_border_y;
         
         int num_grid_steps = 16;
         int num_notes = 6;
         
         int border_x = -(getWidth() / 2) + grid_border_x;
-        int border_y = -(getHeight() / 2) + 20;
+        int border_y = -(getHeight() / 2) + grid_border_y;
         int border_width = 384 * 2;
         int border_height = step_height * num_notes;
         
-        g.setColour (Colours::green);
         g.setColour (Colours::darkgrey);
 
         g.drawRect((float)border_x,
@@ -163,7 +162,7 @@ public:
                 grid_step_x += step_width;
             }
             
-            grid_step_y -= step_height;
+            grid_step_y += step_height;
         }
         
         int grid_button_index = 0;
@@ -197,7 +196,7 @@ public:
 
                 int note_num = midi_msg.getNoteNumber() - 60;
                 
-                int note_y = (getHeight() / 2) - grid_border_y - (step_height)*note_num;
+                int note_y = -(getHeight() / 2) + grid_border_y + (step_height)*abs(num_notes-note_num-1);
                 int note_height = step_height;
                 int note_x = -(getWidth() / 2) + grid_border_x + note_on_time * tick_pos_multiplier;
                 int note_width = (note_off_time - note_on_time) * tick_pos_multiplier;
@@ -214,8 +213,6 @@ public:
             }
             
         }
-        
-        
         
         int mouse_grid_x = -1;
         int mouse_grid_y = -1;
