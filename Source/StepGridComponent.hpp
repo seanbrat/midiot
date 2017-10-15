@@ -22,7 +22,6 @@ class StepGridComponent  : public GraphicsDemoBase
 {
 public:
     
-    
     StepGridComponent ()
     : GraphicsDemoBase ("Fill Types: Rectangles"),
     colour1 (Colours::red),

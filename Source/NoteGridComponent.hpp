@@ -53,6 +53,33 @@ public:
     tick_pos_multiplier(2)
     {
         
+        MidiFile inputMidiFile;
+        
+        File midiFile = File::createFileWithoutCheckingPath (String("/Users/seanb/Development/JUCE/Midiot/Resources/basic808.mid"));
+        FileInputStream midiStream (midiFile);
+        inputMidiFile.readFrom (midiStream);
+        
+        String log_message_string;
+        
+        int num_tracks = inputMidiFile.getNumTracks();
+        
+        const MidiMessageSequence* midi_msg_seq(inputMidiFile.getTrack(0));
+        int num_events = midi_msg_seq->getNumEvents();
+        
+        for (int i=0; i<num_events; i++)
+        {
+            MidiMessageSequence::MidiEventHolder* midi_event_ptr(midi_msg_seq->getEventPointer(i));
+            MidiMessage midi_msg(midi_event_ptr->message);
+            
+            if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
+            {
+                TextButton *note_button = new TextButton();
+                note_buttons.add(note_button);
+                note_button->setColour(TextButton::ColourIds::buttonOnColourId, Colours::firebrick);
+                
+                addAndMakeVisible(*note_button);
+            }
+        }
     }
     
     
@@ -139,9 +166,6 @@ public:
             grid_step_y -= step_height;
         }
         
-        int grid_pos_x;
-        int grid_pos_y = grid_thickness;
-        
         int grid_button_index = 0;
         
         MidiFile inputMidiFile;
@@ -158,6 +182,8 @@ public:
         int num_events = midi_msg_seq->getNumEvents();
         
         g.setColour (Colours::firebrick);
+        
+        int note_button_index = 0;
         
         for (int i=0; i<num_events; i++)
         {
@@ -180,6 +206,11 @@ public:
                 g.fillRect(note_x, note_y, note_width, note_height);
                 g.setColour (Colours::yellow);
                 g.drawRect(note_x, note_y, note_width, note_height, 2.0);
+                
+                int note_pos_x = grid_border_x + note_on_time * tick_pos_multiplier;
+                int note_pos_y = 20 + (step_height)*abs(num_notes-note_num-1);
+                
+                note_buttons[note_button_index++]->setBounds(note_pos_x, note_pos_y, note_width, note_height);
             }
             
         }
@@ -231,7 +262,7 @@ public:
     // row major format
     vector<vector<int>> grid_values;
     
-    OwnedArray<TextButton> grid_buttons;
+    OwnedArray<TextButton> note_buttons;
   
     
     // Editor properties
