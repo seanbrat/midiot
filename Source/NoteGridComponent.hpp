@@ -15,13 +15,28 @@
 #include "GraphicsDemoBase.hpp"
 #include "../JuceLibraryCode/JuceHeader.h"
 
-using std::vector;
+#include "MidiClockUtilities.hpp"
 
+using std::vector;
 
 //==============================================================================
 class NoteGridComponent  : public GraphicsDemoBase
 {
 public:
+    enum GridResolution {
+        Off = 0,
+        ThirtySecondNote,
+        SixteenthNote,
+        EighthNote,
+        QuarterNote,
+        HalfNote,
+        OneBar,
+        TwoBar,
+        FourBar,
+        EightBar
+    };
+    
+    
     NoteGridComponent ()
     : GraphicsDemoBase ("Fill Types: Rectangles"),
     colour1 (Colours::red),
@@ -32,7 +47,10 @@ public:
     mouse_xpos(0),
     mouse_ypos(0),
     mouse_click_xpos(0),
-    mouse_click_ypos(0)
+    mouse_click_ypos(0),
+    grid_resolution(SixteenthNote),
+    division_ppq(24),
+    tick_pos_multiplier(2)
     {
         
     }
@@ -68,26 +86,103 @@ public:
         
         g.addTransform (getTransform());
         
-        g.setColour (Colours::darkgrey);
+        g.setColour (Colours::grey);
         g.fillRect (-fill_x, -fill_y, getWidth(), getHeight());
-        
-        g.setColour (Colours::black);
-        
         
         
         int grid_width = getWidth();
         int grid_height = getHeight();
         
-        step_width = 48;
-        step_height = 48;
+        int grid_border_x = 96;
+        int grid_border_y = 140;
         
-        int grid_step_x;
-        int grid_step_y = -(getHeight() / 2) + grid_thickness;
+        step_width = division_ppq * 2;
+        step_height = step_width;
+        
+        int grid_step_x = -(getWidth() / 2) + grid_border_x;
+        int grid_step_y = (getHeight() / 2) - grid_border_y;
+        
+        int num_grid_steps = 16;
+        int num_notes = 6;
+        
+        int border_x = -(getWidth() / 2) + grid_border_x;
+        int border_y = -(getHeight() / 2) + 20;
+        int border_width = 384 * 2;
+        int border_height = step_height * num_notes;
+        
+        g.setColour (Colours::green);
+        g.setColour (Colours::darkgrey);
+
+        g.drawRect((float)border_x,
+                   (float)border_y,
+                   (float)border_width,
+                   (float)border_height,
+                   2.0);
+
+        g.setColour (Colours::darkgrey);
+
+        for (int note_row = 0; note_row < num_notes; note_row++)
+        {
+            grid_step_x = -(getWidth() / 2) + grid_border_x;
+
+            for (int step = 0; step < num_grid_steps; step++)
+            {
+                g.drawRect((float)grid_step_x,
+                           (float)grid_step_y,
+                           step_width,
+                           step_height,
+                           0.5);
+                
+                grid_step_x += step_width;
+            }
+            
+            grid_step_y -= step_height;
+        }
+        
         int grid_pos_x;
         int grid_pos_y = grid_thickness;
         
         int grid_button_index = 0;
         
+        MidiFile inputMidiFile;
+        
+        File midiFile = File::createFileWithoutCheckingPath (String("/Users/seanb/Development/JUCE/Midiot/Resources/basic808.mid"));
+        FileInputStream midiStream (midiFile);
+        inputMidiFile.readFrom (midiStream);
+        
+        String log_message_string;
+        
+        int num_tracks = inputMidiFile.getNumTracks();
+        
+        const MidiMessageSequence* midi_msg_seq(inputMidiFile.getTrack(0));
+        int num_events = midi_msg_seq->getNumEvents();
+        
+        g.setColour (Colours::firebrick);
+        
+        for (int i=0; i<num_events; i++)
+        {
+            MidiMessageSequence::MidiEventHolder* midi_event_ptr(midi_msg_seq->getEventPointer(i));
+            MidiMessage midi_msg(midi_event_ptr->message);
+            
+            if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
+            {
+                int note_on_time(midi_msg_seq->getEventTime(i));
+                int note_off_time = midi_msg_seq->getTimeOfMatchingKeyUp(i);
+
+                int note_num = midi_msg.getNoteNumber() - 60;
+                
+                int note_y = (getHeight() / 2) - grid_border_y - (step_height)*note_num;
+                int note_height = step_height;
+                int note_x = -(getWidth() / 2) + grid_border_x + note_on_time * tick_pos_multiplier;
+                int note_width = (note_off_time - note_on_time) * tick_pos_multiplier;
+                
+                g.setColour (Colours::firebrick);
+                g.fillRect(note_x, note_y, note_width, note_height);
+                g.setColour (Colours::yellow);
+                g.drawRect(note_x, note_y, note_width, note_height, 2.0);
+            }
+            
+        }
         
         
         
@@ -137,7 +232,20 @@ public:
     vector<vector<int>> grid_values;
     
     OwnedArray<TextButton> grid_buttons;
+  
     
+    // Editor properties
+    short grid_resolution;
+    int tick_pos_multiplier;
+    
+    // MIDI File properties
+    BarBeatTime clip_length;
+    int clip_length_ticks;
+    int division_ppq;
+    int time_sig_numerator;
+    int time_sig_denominator;
+
+
 };
 
 

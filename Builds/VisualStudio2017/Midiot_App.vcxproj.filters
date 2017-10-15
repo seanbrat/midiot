@@ -373,6 +373,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\GraphicsDemoBase.cpp">
+      <Filter>Midiot\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\NoteGridComponent.cpp">
+      <Filter>Midiot\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\StepGridComponent.cpp">
+      <Filter>Midiot\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>Midiot\Source</Filter>
     </ClCompile>
@@ -2136,6 +2145,18 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\DemoUtilities.h">
+      <Filter>Midiot\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\GraphicsDemoBase.hpp">
+      <Filter>Midiot\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\NoteGridComponent.hpp">
+      <Filter>Midiot\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StepGridComponent.hpp">
+      <Filter>Midiot\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h">
       <Filter>Juce Modules\juce_audio_basics\audio_play_head</Filter>
     </ClInclude>

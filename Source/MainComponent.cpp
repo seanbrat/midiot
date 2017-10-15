@@ -235,7 +235,7 @@ private:
             logMessage(log_message_string);
             logMessage(String(""));
             
-            ScopedPointer<const MidiMessageSequence> trackMidiMessageSeq(inputMidiFile.getTrack(0));
+            const MidiMessageSequence* trackMidiMessageSeq(inputMidiFile.getTrack(0));
             int num_events = trackMidiMessageSeq->getNumEvents();
             log_message_string = String::formatted ("num_events: %d", num_events);
             logMessage(log_message_string);

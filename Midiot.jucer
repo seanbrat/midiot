@@ -6,6 +6,19 @@
               splashScreenColour="Dark" cppLanguageStandard="11">
   <MAINGROUP id="V4geI9" name="Midiot">
     <GROUP id="{68ED7D6D-76A9-7F2D-587A-461E9F5FA898}" name="Source">
+      <FILE id="B0VVmm" name="DemoUtilities.h" compile="0" resource="0" file="Source/DemoUtilities.h"/>
+      <FILE id="VTkKCq" name="GraphicsDemoBase.cpp" compile="1" resource="0"
+            file="Source/GraphicsDemoBase.cpp"/>
+      <FILE id="wWIxiz" name="GraphicsDemoBase.hpp" compile="0" resource="0"
+            file="Source/GraphicsDemoBase.hpp"/>
+      <FILE id="GSZfnv" name="NoteGridComponent.cpp" compile="1" resource="0"
+            file="Source/NoteGridComponent.cpp"/>
+      <FILE id="Q0h4Pt" name="NoteGridComponent.hpp" compile="0" resource="0"
+            file="Source/NoteGridComponent.hpp"/>
+      <FILE id="abM5Q4" name="StepGridComponent.cpp" compile="1" resource="0"
+            file="Source/StepGridComponent.cpp"/>
+      <FILE id="P4837C" name="StepGridComponent.hpp" compile="0" resource="0"
+            file="Source/StepGridComponent.hpp"/>
       <FILE id="X19jGv" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="CKcHKQ" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
