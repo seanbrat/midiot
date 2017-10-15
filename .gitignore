@@ -1,3 +1,6 @@
 Builds/iOS/build/*
 Builds/MacOSX/build/*
+Builds/MacOSX/Midiot.xcodeproj/xcuserdata/*
+Builds/MacOSX/Midiot.xcodeproj/project.xcworkspace/xcuserdata/*
+*.pbxproj -crlf -diff -merge
 
