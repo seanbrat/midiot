@@ -19,6 +19,12 @@
 
 using std::vector;
 
+enum MouseMode {
+    NormalMouseMode = 0,
+    LeftEdgeResizeMouseMode,
+    RightEdgeResizeMouseMode
+};
+
 //==============================================================================
 class NoteGridComponent  : public GraphicsDemoBase
 {
@@ -36,6 +42,212 @@ public:
         EightBar
     };
     
+    class NoteComponentBoundsConstrainer : public ComponentBoundsConstrainer
+    {
+    public:
+        NoteComponentBoundsConstrainer(int note_width) :
+            note_width_(note_width),
+            mouse_drag_x_(0),
+            mouse_drag_y_(0),
+            mouse_drag_mode_(NormalMouseMode),
+            resize_amount_(0)
+        {
+        }
+        
+        void checkBounds(Rectangle< int > & 	bounds,
+                         const Rectangle< int > & 	previousBounds,
+                         const Rectangle< int > & 	limits,
+                         bool 	isStretchingTop,
+                         bool 	isStretchingLeft,
+                         bool 	isStretchingBottom,
+                         bool 	isStretchingRight) override
+        {
+            printf("checkBounds\n");
+            int previous_x = previousBounds.getX();
+            int previous_y = previousBounds.getY();
+            int previous_width = previousBounds.getWidth();
+            int previous_height = previousBounds.getHeight();
+
+            int new_x;
+            int new_y;
+            int new_width;
+ 
+            if (mouse_drag_y_ < 0)
+            {
+                new_y = previous_y - previous_height;
+                bounds.setY(new_y);
+            }
+            else if (mouse_drag_y_ > previous_height)
+            {
+                new_y = previous_y + previous_height;
+                bounds.setY(new_y);
+            }
+            else
+            {
+                bounds.setY(previous_y);
+            }
+        }
+        
+        int get_mouse_drag_x() { return mouse_drag_x_; }
+        int get_mouse_drag_y() { return mouse_drag_y_; }
+        void set_mouse_drag_x(int mouse_drag_x) { mouse_drag_x_ = mouse_drag_x; }
+        void set_mouse_drag_y(int mouse_drag_y) { mouse_drag_y_ = mouse_drag_y; }
+        
+        int get_resize_amount() { return resize_amount_; }
+        
+        void set_mouse_drag_pos(int x, int y)
+        {
+            set_mouse_drag_x(x);
+            set_mouse_drag_y(y);
+        }
+        
+        void reset()
+        {
+            set_mouse_drag_pos(0, 0);
+        }
+        
+        void set_mouse_mode(int mouse_mode)
+        {
+            mouse_drag_mode_ = mouse_mode;
+        }
+        
+        void set_resize_amount(int resize_amount)
+        {
+            resize_amount_ = resize_amount;
+        }
+        
+        void set_note_width(int note_width)
+        {
+            note_width_ = note_width;
+        }
+        
+    private:
+        int mouse_drag_x_;
+        int mouse_drag_y_;
+        int mouse_drag_mode_;
+        int resize_amount_;
+        int note_width_;
+    };
+    
+
+    
+    class NoteComponent : public TextButton, ComponentDragger
+    {
+    public:
+        
+        NoteComponent() :
+        normal_mouse_cursor(MouseCursor::StandardCursorType::NormalCursor),
+        left_edge_mouse_cursor(MouseCursor::StandardCursorType::LeftEdgeResizeCursor),
+        right_edge_mouse_cursor(MouseCursor::StandardCursorType::RightEdgeResizeCursor),
+        mouse_cursor_mode(NormalMouseMode)
+        {
+            note_bounds = new NoteComponentBoundsConstrainer(getWidth());
+            
+            left_edge = new ResizableEdgeComponent(this, 0, ResizableEdgeComponent::Edge::leftEdge);
+            addAndMakeVisible(left_edge);
+            right_edge = new ResizableEdgeComponent(this, 0, ResizableEdgeComponent::Edge::rightEdge);
+            addAndMakeVisible(right_edge);
+            
+            start_drag_y = 0;
+        }
+        
+        ~NoteComponent()
+        {
+            delete left_edge;
+            delete right_edge;
+            delete note_bounds;
+        }
+        
+        void resized() override
+        {
+            left_edge->setBounds(0, 0, 2, getHeight());
+            right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
+        }
+        
+
+        MouseCursor getMouseCursor() override
+        {
+            switch (mouse_cursor_mode)
+            {
+                case LeftEdgeResizeMouseMode:
+                    return left_edge_mouse_cursor;
+                case RightEdgeResizeMouseMode:
+                    return right_edge_mouse_cursor;
+                case NormalMouseMode:
+                default:
+                    return normal_mouse_cursor;
+            };
+        }
+        
+        void mouseMove (const MouseEvent& e) override
+        {
+        }
+        
+        void mouseDown (const MouseEvent& e) override
+        {
+            note_bounds->set_mouse_drag_pos(e.x, e.y);
+            
+            start_drag_y = e.y;
+            
+            mouse_drag_x = e.x;
+            mouse_drag_y = e.y;
+            
+            int resize_amount;
+            
+            //startDraggingComponent(border, e);
+            startDraggingComponent(left_edge, e);
+            startDraggingComponent(right_edge, e);
+            startDraggingComponent(this, e);
+
+        }
+        
+        void mouseDrag (const MouseEvent& e) override
+        {
+            note_bounds->set_mouse_drag_pos(e.x, e.y);
+            
+            mouse_drag_x = e.x;
+            mouse_drag_y = e.y;
+
+            int resize_amount;
+            
+            dragComponent(left_edge, e, note_bounds);
+            dragComponent(right_edge, e, note_bounds);
+            dragComponent(this, e, note_bounds);
+            left_edge->setBounds(0, 0, 2, getHeight());
+            right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
+
+        }
+        
+        void mouseUp (const MouseEvent& e) override
+        {
+            note_bounds->reset();
+            
+            mouse_drag_x = -1;
+            mouse_drag_y = -1;
+            
+            int check_start_drag_y = start_drag_y;
+            check_start_drag_y = 0;
+            start_drag_y = 0;
+        }
+    
+    private:
+        ScopedPointer<NoteComponentBoundsConstrainer> note_bounds;
+        int start_drag_y;
+        int mouse_drag_x;
+        int mouse_drag_y;
+        
+        ResizableEdgeComponent *left_edge;
+        ResizableEdgeComponent *right_edge;
+        
+        ResizableBorderComponent *border;
+        
+        int mouse_cursor_mode;
+        
+        MouseCursor normal_mouse_cursor;
+        MouseCursor left_edge_mouse_cursor;
+        MouseCursor right_edge_mouse_cursor;
+        
+    };
     
     NoteGridComponent ()
     : GraphicsDemoBase ("Fill Types: Rectangles"),
@@ -50,7 +262,8 @@ public:
     mouse_click_ypos(0),
     grid_resolution(SixteenthNote),
     division_ppq(24),
-    tick_pos_multiplier(2)
+    tick_pos_multiplier(2),
+    init_grid(true)
     {
         
         MidiFile inputMidiFile;
@@ -73,13 +286,15 @@ public:
             
             if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
             {
-                TextButton *note_button = new TextButton();
-                note_buttons.add(note_button);
-                note_button->setColour(TextButton::ColourIds::buttonOnColourId, Colours::firebrick);
+                NoteComponent *note_component = new NoteComponent();
+                note_components.add(note_component);
+                note_component->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::firebrick);
                 
-                addAndMakeVisible(*note_button);
+                addAndMakeVisible(*note_component);
             }
         }
+        
+        component_bounds = new ComponentBoundsConstrainer();
     }
     
     
@@ -124,7 +339,7 @@ public:
         int grid_border_y = 20;
         
         step_width = division_ppq * 2;
-        step_height = step_width;
+        step_height = division_ppq * 2;
         
         int grid_step_x = -(getWidth() / 2) + grid_border_x;
         int grid_step_y = -(getHeight() / 2) + grid_border_y;
@@ -184,34 +399,40 @@ public:
         
         int note_button_index = 0;
         
-        for (int i=0; i<num_events; i++)
+        
+        if (init_grid)
         {
-            MidiMessageSequence::MidiEventHolder* midi_event_ptr(midi_msg_seq->getEventPointer(i));
-            MidiMessage midi_msg(midi_event_ptr->message);
-            
-            if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
+            for (int i=0; i<num_events; i++)
             {
-                int note_on_time(midi_msg_seq->getEventTime(i));
-                int note_off_time = midi_msg_seq->getTimeOfMatchingKeyUp(i);
+                MidiMessageSequence::MidiEventHolder* midi_event_ptr(midi_msg_seq->getEventPointer(i));
+                MidiMessage midi_msg(midi_event_ptr->message);
+                
+                if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
+                {
+                    int note_on_time(midi_msg_seq->getEventTime(i));
+                    int note_off_time = midi_msg_seq->getTimeOfMatchingKeyUp(i);
 
-                int note_num = midi_msg.getNoteNumber() - 60;
-                
-                int note_y = -(getHeight() / 2) + grid_border_y + (step_height)*abs(num_notes-note_num-1);
-                int note_height = step_height;
-                int note_x = -(getWidth() / 2) + grid_border_x + note_on_time * tick_pos_multiplier;
-                int note_width = (note_off_time - note_on_time) * tick_pos_multiplier;
-                
-                g.setColour (Colours::firebrick);
-                g.fillRect(note_x, note_y, note_width, note_height);
-                g.setColour (Colours::yellow);
-                g.drawRect(note_x, note_y, note_width, note_height, 2.0);
-                
-                int note_pos_x = grid_border_x + note_on_time * tick_pos_multiplier;
-                int note_pos_y = 20 + (step_height)*abs(num_notes-note_num-1);
-                
-                note_buttons[note_button_index++]->setBounds(note_pos_x, note_pos_y, note_width, note_height);
+                    int note_num = midi_msg.getNoteNumber() - 60;
+                    
+                    int note_y = -(getHeight() / 2) + grid_border_y + (step_height)*abs(num_notes-note_num-1);
+                    int note_height = step_height;
+                    int note_x = -(getWidth() / 2) + grid_border_x + note_on_time * tick_pos_multiplier;
+                    int note_width = (note_off_time - note_on_time) * tick_pos_multiplier;
+                    /*
+                    g.setColour (Colours::firebrick);
+                    g.fillRect(note_x, note_y, note_width, note_height);
+                    g.setColour (Colours::yellow);
+                    g.drawRect(note_x, note_y, note_width, note_height, 2.0);
+                    */
+                    
+                    int note_pos_x = grid_border_x + note_on_time * tick_pos_multiplier;
+                    int note_pos_y = 20 + (step_height)*abs(num_notes-note_num-1);
+                    
+                    note_components[note_button_index++]->setBounds(note_pos_x, note_pos_y, note_width, note_height);
+                }
             }
             
+            init_grid = false;
         }
         
         int mouse_grid_x = -1;
@@ -259,8 +480,7 @@ public:
     // row major format
     vector<vector<int>> grid_values;
     
-    OwnedArray<TextButton> note_buttons;
-  
+    OwnedArray<NoteComponent> note_components;
     
     // Editor properties
     short grid_resolution;
@@ -273,7 +493,9 @@ public:
     int time_sig_numerator;
     int time_sig_denominator;
 
-
+    bool init_grid;
+    
+    ComponentBoundsConstrainer* component_bounds;
 };
 
 
