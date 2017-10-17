@@ -5,7 +5,7 @@
 
 #include "DemoUtilities.h"
 
-#include "NoteGridComponent.hpp"
+#include "NoteGridEditorComponent.hpp"
 #include "StepGridComponent.hpp"
 #include "GraphicsDemoBase.hpp"
 
@@ -87,9 +87,9 @@ public:
         readMidiFileButton.addListener(this);
         
 #if USE_STEP_GRID
-        addAndMakeVisible(StepGridComponent);
+        addAndMakeVisible(step_grid_component);
 #else
-        addAndMakeVisible(NoteGridComponent);
+        addAndMakeVisible(note_grid_editor);
 #endif
         
         addAndMakeVisible (midiMessagesBox);
@@ -147,9 +147,9 @@ public:
         keyboardComponent.setBounds (20, 170, 1000, 120);
 
 #if USE_STEP_GRID
-        StepGridComponent.setBounds(20, 310, 1000, 400);
+        step_grid_component.setBounds(20, 310, 1000, 400);
 #else
-        NoteGridComponent.setBounds(20, 310, 1000, 400);
+        note_grid_editor.setBounds(20, 310, 1000, 400);
 #endif
         
         midiMessagesBox.setBounds(20, 730, 1000, 200);
@@ -395,8 +395,8 @@ private:
     TextButton readMidiFileButton;
     Label testLabel;
 
-    StepGridComponent StepGridComponent;
-    NoteGridComponent NoteGridComponent;
+    StepGridComponent step_grid_component;
+    NoteGridEditorComponent note_grid_editor;
     
     OwnedArray<TextButton> gridButtons;
     

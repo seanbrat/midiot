@@ -45,8 +45,7 @@ public:
     class NoteComponentBoundsConstrainer : public ComponentBoundsConstrainer
     {
     public:
-        NoteComponentBoundsConstrainer(int note_width) :
-            note_width_(note_width),
+        NoteComponentBoundsConstrainer() :
             mouse_drag_x_(0),
             mouse_drag_y_(0),
             mouse_drag_mode_(NormalMouseMode),
@@ -62,7 +61,6 @@ public:
                          bool 	isStretchingBottom,
                          bool 	isStretchingRight) override
         {
-            printf("checkBounds\n");
             int previous_x = previousBounds.getX();
             int previous_y = previousBounds.getY();
             int previous_width = previousBounds.getWidth();
@@ -111,22 +109,11 @@ public:
             mouse_drag_mode_ = mouse_mode;
         }
         
-        void set_resize_amount(int resize_amount)
-        {
-            resize_amount_ = resize_amount;
-        }
-        
-        void set_note_width(int note_width)
-        {
-            note_width_ = note_width;
-        }
-        
     private:
         int mouse_drag_x_;
         int mouse_drag_y_;
         int mouse_drag_mode_;
         int resize_amount_;
-        int note_width_;
     };
     
 
@@ -141,14 +128,12 @@ public:
         right_edge_mouse_cursor(MouseCursor::StandardCursorType::RightEdgeResizeCursor),
         mouse_cursor_mode(NormalMouseMode)
         {
-            note_bounds = new NoteComponentBoundsConstrainer(getWidth());
+            note_bounds = new NoteComponentBoundsConstrainer();
             
             left_edge = new ResizableEdgeComponent(this, 0, ResizableEdgeComponent::Edge::leftEdge);
             addAndMakeVisible(left_edge);
             right_edge = new ResizableEdgeComponent(this, 0, ResizableEdgeComponent::Edge::rightEdge);
             addAndMakeVisible(right_edge);
-            
-            start_drag_y = 0;
         }
         
         ~NoteComponent()
@@ -187,14 +172,9 @@ public:
         {
             note_bounds->set_mouse_drag_pos(e.x, e.y);
             
-            start_drag_y = e.y;
-            
             mouse_drag_x = e.x;
             mouse_drag_y = e.y;
             
-            int resize_amount;
-            
-            //startDraggingComponent(border, e);
             startDraggingComponent(left_edge, e);
             startDraggingComponent(right_edge, e);
             startDraggingComponent(this, e);
@@ -207,15 +187,13 @@ public:
             
             mouse_drag_x = e.x;
             mouse_drag_y = e.y;
-
-            int resize_amount;
             
             dragComponent(left_edge, e, note_bounds);
             dragComponent(right_edge, e, note_bounds);
             dragComponent(this, e, note_bounds);
+
             left_edge->setBounds(0, 0, 2, getHeight());
             right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
-
         }
         
         void mouseUp (const MouseEvent& e) override
@@ -224,22 +202,16 @@ public:
             
             mouse_drag_x = -1;
             mouse_drag_y = -1;
-            
-            int check_start_drag_y = start_drag_y;
-            check_start_drag_y = 0;
-            start_drag_y = 0;
         }
     
     private:
         ScopedPointer<NoteComponentBoundsConstrainer> note_bounds;
-        int start_drag_y;
+
         int mouse_drag_x;
         int mouse_drag_y;
         
         ResizableEdgeComponent *left_edge;
         ResizableEdgeComponent *right_edge;
-        
-        ResizableBorderComponent *border;
         
         int mouse_cursor_mode;
         
@@ -250,7 +222,7 @@ public:
     };
     
     NoteGridComponent ()
-    : GraphicsDemoBase ("Fill Types: Rectangles"),
+    : GraphicsDemoBase ("NoteGridComponent"),
     colour1 (Colours::red),
     colour2 (Colours::green),
     num_steps(16),
@@ -263,6 +235,8 @@ public:
     grid_resolution(SixteenthNote),
     division_ppq(24),
     tick_pos_multiplier(2),
+    tick_to_pixel_x_factor(2.0),
+    tick_to_pixel_y_factor(2.0),
     init_grid(true)
     {
         
@@ -295,6 +269,9 @@ public:
         }
         
         component_bounds = new ComponentBoundsConstrainer();
+        
+        addAndMakeVisible(grid_viewport);
+//        grid_viewport.setViewedComponent(<#juce::Component *newViewedComponent#>)
     }
     
     
@@ -331,15 +308,14 @@ public:
         g.setColour (Colours::grey);
         g.fillRect (-fill_x, -fill_y, getWidth(), getHeight());
         
-        
         int grid_width = getWidth();
         int grid_height = getHeight();
         
         int grid_border_x = 96;
         int grid_border_y = 20;
         
-        step_width = division_ppq * 2;
-        step_height = division_ppq * 2;
+        step_width = division_ppq * tick_to_pixel_x_factor;
+        step_height = division_ppq * tick_to_pixel_y_factor;
         
         int grid_step_x = -(getWidth() / 2) + grid_border_x;
         int grid_step_y = -(getHeight() / 2) + grid_border_y;
@@ -349,7 +325,7 @@ public:
         
         int border_x = -(getWidth() / 2) + grid_border_x;
         int border_y = -(getHeight() / 2) + grid_border_y;
-        int border_width = 384 * 2;
+        int border_width = 384 * tick_to_pixel_x_factor;
         int border_height = step_height * num_notes;
         
         g.setColour (Colours::darkgrey);
@@ -416,8 +392,8 @@ public:
                     
                     int note_y = -(getHeight() / 2) + grid_border_y + (step_height)*abs(num_notes-note_num-1);
                     int note_height = step_height;
-                    int note_x = -(getWidth() / 2) + grid_border_x + note_on_time * tick_pos_multiplier;
-                    int note_width = (note_off_time - note_on_time) * tick_pos_multiplier;
+                    int note_x = -(getWidth() / 2) + grid_border_x + note_on_time * tick_to_pixel_x_factor;
+                    int note_width = (note_off_time - note_on_time) * tick_to_pixel_x_factor;
                     /*
                     g.setColour (Colours::firebrick);
                     g.fillRect(note_x, note_y, note_width, note_height);
@@ -425,7 +401,7 @@ public:
                     g.drawRect(note_x, note_y, note_width, note_height, 2.0);
                     */
                     
-                    int note_pos_x = grid_border_x + note_on_time * tick_pos_multiplier;
+                    int note_pos_x = grid_border_x + note_on_time * tick_to_pixel_x_factor;
                     int note_pos_y = 20 + (step_height)*abs(num_notes-note_num-1);
                     
                     note_components[note_button_index++]->setBounds(note_pos_x, note_pos_y, note_width, note_height);
@@ -486,6 +462,9 @@ public:
     short grid_resolution;
     int tick_pos_multiplier;
     
+    float tick_to_pixel_x_factor;
+    float tick_to_pixel_y_factor;
+    
     // MIDI File properties
     BarBeatTime clip_length;
     int clip_length_ticks;
@@ -496,6 +475,9 @@ public:
     bool init_grid;
     
     ComponentBoundsConstrainer* component_bounds;
+    
+    Viewport grid_viewport;
+
 };
 
 

@@ -23,7 +23,7 @@ class StepGridComponent  : public GraphicsDemoBase
 public:
     
     StepGridComponent ()
-    : GraphicsDemoBase ("Fill Types: Rectangles"),
+    : GraphicsDemoBase ("Step Grid Component"),
     colour1 (Colours::red),
     colour2 (Colours::green),
     num_steps(16),
