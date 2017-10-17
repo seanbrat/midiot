@@ -54,11 +54,14 @@ public:
     tick_to_pixel_y_factor(2.0),
     init_grid(true)
     {
-        note_grid = new NoteGridComponent();
+        addAndMakeVisible(grid_viewport);
+        
+        note_grid = new NoteGridComponent(&grid_viewport);
         addAndMakeVisible(note_grid);
         
-        addAndMakeVisible(grid_viewport);
         grid_viewport.setViewedComponent(note_grid);
+        //grid_viewport.setScrollOnDragEnabled(true);
+        //grid_viewport.autoScroll(0, 0, 20, 2);
     }
     
     ~NoteGridEditorComponent()
@@ -68,20 +71,25 @@ public:
     
     void resized() override
     {
-        note_grid->setBounds(0, 0, 1000, 400);
+        note_grid->setBounds(0, 0, 10000, 6144);
         grid_viewport.setBounds(0, 0, 900, 380);
     }
     
     
+    void mouseDrag(const MouseEvent& e) override
+    {
+        //grid_viewport.autoScroll(e.x, e.y, 20, 1);
+        //printf("mouseDrag called with e.x: %d and e.y: %d\n", e.x, e.y);
+    }
+    
     void mouseMove(const MouseEvent& e) override
     {
-        
         repaint();
+        //printf("mouseMove called with e.x: %d and e.y: %d\n", e.x, e.y);
     }
     
     void mouseUp (const MouseEvent& e) override
     {
-        
         repaint();
     }
     
@@ -125,7 +133,6 @@ public:
     NoteGridComponent* note_grid;
     
     Viewport grid_viewport;
-    
 };
 
 

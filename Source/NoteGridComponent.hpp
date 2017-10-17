@@ -66,6 +66,8 @@ public:
             int previous_width = previousBounds.getWidth();
             int previous_height = previousBounds.getHeight();
 
+            printf("previous_x: %d\t\t\tprevious_y: %d\n", previous_x, previous_y);
+            
             int new_x;
             int new_y;
             int new_width;
@@ -117,12 +119,12 @@ public:
     };
     
 
-    
     class NoteComponent : public TextButton, ComponentDragger
     {
     public:
         
-        NoteComponent() :
+        NoteComponent(Viewport* viewport) :
+        grid_viewport(viewport),
         normal_mouse_cursor(MouseCursor::StandardCursorType::NormalCursor),
         left_edge_mouse_cursor(MouseCursor::StandardCursorType::LeftEdgeResizeCursor),
         right_edge_mouse_cursor(MouseCursor::StandardCursorType::RightEdgeResizeCursor),
@@ -194,6 +196,13 @@ public:
 
             left_edge->setBounds(0, 0, 2, getHeight());
             right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
+            
+            grid_viewport->autoScroll(e.x + this->getX() - grid_viewport->getViewPositionX(),
+                                      e.y + this->getY() - grid_viewport->getViewPositionY(),
+                                      20, 2);
+            
+            beginDragAutoRepeat(5);
+
         }
         
         void mouseUp (const MouseEvent& e) override
@@ -219,10 +228,12 @@ public:
         MouseCursor left_edge_mouse_cursor;
         MouseCursor right_edge_mouse_cursor;
         
+        Viewport* grid_viewport;
     };
     
-    NoteGridComponent ()
+    NoteGridComponent (Viewport* viewport)
     : GraphicsDemoBase ("NoteGridComponent"),
+    grid_viewport(viewport),
     colour1 (Colours::red),
     colour2 (Colours::green),
     num_steps(16),
@@ -260,7 +271,7 @@ public:
             
             if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
             {
-                NoteComponent *note_component = new NoteComponent();
+                NoteComponent *note_component = new NoteComponent(grid_viewport);
                 note_components.add(note_component);
                 note_component->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::firebrick);
                 
@@ -269,9 +280,6 @@ public:
         }
         
         component_bounds = new ComponentBoundsConstrainer();
-        
-        addAndMakeVisible(grid_viewport);
-//        grid_viewport.setViewedComponent(<#juce::Component *newViewedComponent#>)
     }
     
     
@@ -279,6 +287,8 @@ public:
     {
         mouse_xpos = e.x;
         mouse_ypos = e.y;
+        
+        //printf("mouse_xpos: %d\t\t\tmouse_ypos: %d\n", mouse_xpos, mouse_ypos);
         
         repaint();
     }
@@ -293,9 +303,19 @@ public:
         repaint();
     }
     
+    void mouseDrag (const MouseEvent& e) override
+    {
+        //grid_viewport->autoScroll(e.x - grid_viewport->getViewPositionX(), e.y - grid_viewport->getViewPositionY(), 20, 1);
+    }
+    
     bool mouseGridStepPosition(int &x, int &y)
     {
         return true;
+    }
+    
+    void setParentViewport(Viewport* viewport)
+    {
+        grid_viewport = viewport;
     }
     
     void drawDemo (Graphics& g) override
@@ -311,21 +331,18 @@ public:
         int grid_width = getWidth();
         int grid_height = getHeight();
         
-        int grid_border_x = 96;
-        int grid_border_y = 20;
-        
         step_width = division_ppq * tick_to_pixel_x_factor;
         step_height = division_ppq * tick_to_pixel_y_factor;
         
-        int grid_step_x = -(getWidth() / 2) + grid_border_x;
-        int grid_step_y = -(getHeight() / 2) + grid_border_y;
+        int grid_step_x = -(getWidth() / 2);
+        int grid_step_y = -(getHeight() / 2);
         
-        int num_grid_steps = 16;
-        int num_notes = 6;
+        int num_grid_steps = 16 * 8;
+        int num_notes = 128;
         
-        int border_x = -(getWidth() / 2) + grid_border_x;
-        int border_y = -(getHeight() / 2) + grid_border_y;
-        int border_width = 384 * tick_to_pixel_x_factor;
+        int border_x = -(getWidth() / 2);
+        int border_y = -(getHeight() / 2);
+        int border_width = 16 * 8 * 24 * tick_to_pixel_x_factor;
         int border_height = step_height * num_notes;
         
         g.setColour (Colours::darkgrey);
@@ -340,7 +357,7 @@ public:
 
         for (int note_row = 0; note_row < num_notes; note_row++)
         {
-            grid_step_x = -(getWidth() / 2) + grid_border_x;
+            grid_step_x = -(getWidth() / 2);
 
             for (int step = 0; step < num_grid_steps; step++)
             {
@@ -388,12 +405,13 @@ public:
                     int note_on_time(midi_msg_seq->getEventTime(i));
                     int note_off_time = midi_msg_seq->getTimeOfMatchingKeyUp(i);
 
-                    int note_num = midi_msg.getNoteNumber() - 60;
+                    int note_num = midi_msg.getNoteNumber();
                     
-                    int note_y = -(getHeight() / 2) + grid_border_y + (step_height)*abs(num_notes-note_num-1);
+                    int note_y = -(getHeight() / 2);
                     int note_height = step_height;
-                    int note_x = -(getWidth() / 2) + grid_border_x + note_on_time * tick_to_pixel_x_factor;
+                    int note_x = -(getWidth() / 2) + note_on_time * tick_to_pixel_x_factor;
                     int note_width = (note_off_time - note_on_time) * tick_to_pixel_x_factor;
+                    
                     /*
                     g.setColour (Colours::firebrick);
                     g.fillRect(note_x, note_y, note_width, note_height);
@@ -401,8 +419,8 @@ public:
                     g.drawRect(note_x, note_y, note_width, note_height, 2.0);
                     */
                     
-                    int note_pos_x = grid_border_x + note_on_time * tick_to_pixel_x_factor;
-                    int note_pos_y = 20 + (step_height)*abs(num_notes-note_num-1);
+                    int note_pos_x = note_on_time * tick_to_pixel_x_factor;
+                    int note_pos_y = (step_height)*abs(num_notes-note_num-1);
                     
                     note_components[note_button_index++]->setBounds(note_pos_x, note_pos_y, note_width, note_height);
                 }
@@ -411,16 +429,7 @@ public:
             init_grid = false;
         }
         
-        int mouse_grid_x = -1;
-        int mouse_grid_y = -1;
-        
-        String selected_grid_step = "none";
-        
-        if (mouse_grid_x != -1 && mouse_grid_y != -1)
-        {
-            selected_grid_step = String(mouse_grid_x) + ", " + String(mouse_grid_y);
-        }
-        
+        /*
         g.setColour (Colours::white);
         GlyphArrangement ga;
         //g.fillRect (ga.getBoundingBox (0, ga.getNumGlyphs(), true).getSmallestIntegerContainer().expanded (4));
@@ -432,10 +441,10 @@ public:
                           + "\nMouse Click Y:\t" + String (mouse_click_ypos)
                           + "\nStep Width: " + String(step_width)
                           + " Step Height: " + String(step_height)
-                          + "\nSelected Grid Step: " + selected_grid_step,
                           8-fill_x, fill_y-73, 400.0, 400.0, Justification::topLeft, 3);
         
         ga.draw (g);
+        */
         
     }
     
@@ -476,7 +485,7 @@ public:
     
     ComponentBoundsConstrainer* component_bounds;
     
-    Viewport grid_viewport;
+    Viewport* grid_viewport;
 
 };
 
