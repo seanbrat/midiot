@@ -66,7 +66,7 @@ public:
             int previous_width = previousBounds.getWidth();
             int previous_height = previousBounds.getHeight();
 
-            printf("previous_x: %d\t\t\tprevious_y: %d\n", previous_x, previous_y);
+            //printf("previous_x: %d\t\t\tprevious_y: %d\n", previous_x, previous_y);
             
             int new_x;
             int new_y;
@@ -118,6 +118,46 @@ public:
         int resize_amount_;
     };
     
+    class NoteEdgeComponent : public ResizableEdgeComponent
+    {
+    public:
+        NoteEdgeComponent(Component *componentToResize,
+                          ComponentBoundsConstrainer *constrainer,
+                          Edge edgeToResize,
+                          Viewport* viewport) :
+            ResizableEdgeComponent(componentToResize, constrainer, edgeToResize),
+            grid_viewport(viewport),
+            note_component(componentToResize)
+        {
+        }
+    
+        void mouseDrag(const MouseEvent& e) override
+        {
+            ResizableEdgeComponent::mouseDrag(e);
+
+            int edge_x = this->getX();
+            
+            if (note_component == nullptr)
+            {
+                jassertfalse; // You've deleted the component that this resizer was supposed to be using!
+                return;
+            }
+
+            int component_x = note_component->getX();
+            
+            printf("NoteEdgeComponent mouseDrag with e.x: %d\t\tedge_x: %d\t\tcomponent_x: %d\n", e.x, edge_x, component_x);
+            
+            
+            grid_viewport->autoScroll(this->getX() + note_component->getX() - grid_viewport->getViewPositionX(),
+                                      this->getY() + note_component->getY() - grid_viewport->getViewPositionY(),
+                                      1, 2);
+            
+        }
+        
+    private:
+        Viewport* grid_viewport;
+        Component* note_component;
+    };
 
     class NoteComponent : public TextButton, ComponentDragger
     {
@@ -132,9 +172,9 @@ public:
         {
             note_bounds = new NoteComponentBoundsConstrainer();
             
-            left_edge = new ResizableEdgeComponent(this, 0, ResizableEdgeComponent::Edge::leftEdge);
+            left_edge = new NoteEdgeComponent(this, 0, ResizableEdgeComponent::Edge::leftEdge, grid_viewport);
             addAndMakeVisible(left_edge);
-            right_edge = new ResizableEdgeComponent(this, 0, ResizableEdgeComponent::Edge::rightEdge);
+            right_edge = new NoteEdgeComponent(this, 0, ResizableEdgeComponent::Edge::rightEdge, grid_viewport);
             addAndMakeVisible(right_edge);
         }
         
@@ -199,9 +239,9 @@ public:
             
             grid_viewport->autoScroll(e.x + this->getX() - grid_viewport->getViewPositionX(),
                                       e.y + this->getY() - grid_viewport->getViewPositionY(),
-                                      20, 2);
+                                      1, 2);
             
-            beginDragAutoRepeat(5);
+            beginDragAutoRepeat(10);
 
         }
         
