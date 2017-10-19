@@ -12,18 +12,18 @@
 #include <stdio.h>
 #include <vector>
 
-#include "GraphicsDemoBase.hpp"
+#include "GraphicsComponentBase.hpp"
 #include "../JuceLibraryCode/JuceHeader.h"
 
 using std::vector;
 
 //==============================================================================
-class StepGridComponent  : public GraphicsDemoBase
+class StepGridComponent  : public GraphicsComponentBase
 {
 public:
     
     StepGridComponent ()
-    : GraphicsDemoBase ("Step Grid Component"),
+    : GraphicsComponentBase ("Step Grid Component"),
     colour1 (Colours::red),
     colour2 (Colours::green),
     num_steps(16),
@@ -77,7 +77,7 @@ public:
         return true;
     }
     
-    void drawDemo (Graphics& g) override
+    void drawComponent (Graphics& g) override
     {
         int fill_x = getWidth() / 2;
         int fill_y = getHeight() / 2;

@@ -12,8 +12,11 @@
 #include <stdio.h>
 #include <vector>
 
-#include "GraphicsDemoBase.hpp"
+#include "GraphicsComponentBase.hpp"
 #include "../JuceLibraryCode/JuceHeader.h"
+
+#include "NoteGridViewport.hpp"
+
 
 #include "MidiClockUtilities.hpp"
 
@@ -26,7 +29,7 @@ enum MouseMode {
 };
 
 //==============================================================================
-class NoteGridComponent  : public GraphicsDemoBase
+class NoteGridComponent  : public GraphicsComponentBase
 {
 public:
     enum GridResolution {
@@ -124,7 +127,7 @@ public:
         NoteEdgeComponent(Component *componentToResize,
                           ComponentBoundsConstrainer *constrainer,
                           Edge edgeToResize,
-                          Viewport* viewport) :
+                          NoteGridViewport* viewport) :
             ResizableEdgeComponent(componentToResize, constrainer, edgeToResize),
             grid_viewport(viewport),
             note_component(componentToResize)
@@ -155,15 +158,16 @@ public:
         }
         
     private:
-        Viewport* grid_viewport;
+        NoteGridViewport* grid_viewport;
         Component* note_component;
     };
 
+    
     class NoteComponent : public TextButton, ComponentDragger
     {
     public:
         
-        NoteComponent(Viewport* viewport) :
+        NoteComponent(NoteGridViewport* viewport) :
         grid_viewport(viewport),
         normal_mouse_cursor(MouseCursor::StandardCursorType::NormalCursor),
         left_edge_mouse_cursor(MouseCursor::StandardCursorType::LeftEdgeResizeCursor),
@@ -240,6 +244,7 @@ public:
             grid_viewport->autoScroll(e.x + this->getX() - grid_viewport->getViewPositionX(),
                                       e.y + this->getY() - grid_viewport->getViewPositionY(),
                                       1, 2);
+            //grid_viewport->updateLinkedNoteGridViewport();
             
             beginDragAutoRepeat(10);
 
@@ -268,11 +273,11 @@ public:
         MouseCursor left_edge_mouse_cursor;
         MouseCursor right_edge_mouse_cursor;
         
-        Viewport* grid_viewport;
+        NoteGridViewport* grid_viewport;
     };
     
-    NoteGridComponent (Viewport* viewport)
-    : GraphicsDemoBase ("NoteGridComponent"),
+    NoteGridComponent (NoteGridViewport* viewport)
+    : GraphicsComponentBase ("NoteGridComponent"),
     grid_viewport(viewport),
     colour1 (Colours::red),
     colour2 (Colours::green),
@@ -353,12 +358,12 @@ public:
         return true;
     }
     
-    void setParentViewport(Viewport* viewport)
+    void setParentNoteGridViewport(NoteGridViewport* viewport)
     {
         grid_viewport = viewport;
     }
     
-    void drawDemo (Graphics& g) override
+    void drawComponent (Graphics& g) override
     {
         int fill_x = getWidth() / 2;
         int fill_y = getHeight() / 2;
@@ -525,7 +530,7 @@ public:
     
     ComponentBoundsConstrainer* component_bounds;
     
-    Viewport* grid_viewport;
+    NoteGridViewport* grid_viewport;
 
 };
 

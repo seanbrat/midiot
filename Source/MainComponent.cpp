@@ -7,7 +7,7 @@
 
 #include "NoteGridEditorComponent.hpp"
 #include "StepGridComponent.hpp"
-#include "GraphicsDemoBase.hpp"
+#include "GraphicsComponentBase.hpp"
 
 #include <vector>
 
@@ -127,32 +127,18 @@ public:
         midiInputList.setBounds (100, 20, 400, 40);
         //midiOutputList.setBounds(area.removeFromTop(36).removeFromRight (getWidth() - 150).reduced (8));
         midiOutputList.setBounds (100, 70, 400, 40);
-
-/*
-        //sysexDataDumpButton.setBounds(area.removeFromTop(36).removeFromRight (getWidth() - 30));
-        sysexDataDumpButton.setBounds(100, 120, 400, 40);
-        //sysexDataIdButton.setBounds(area.removeFromTop(36).removeFromRight (getWidth() - 30));
-        sysexDataIdButton.setBounds(100, 170, 400, 40);
-        //sysexDataPatchDumpButton.setBounds(area.removeFromTop(36).removeFromRight (getWidth() - 30));
-        sysexDataPatchDumpButton.setBounds(100, 220, 400, 40);
-*/
-/*
-        keyboardComponent.setBounds (20, 320, 1000, 120);
-        StepGridComponent.setBounds(20, 460, 1000, 320);
-        midiMessagesBox.setBounds(20, 800, 1000, 200);
-*/
         
         readMidiFileButton.setBounds(100, 120, 400, 40);
         
         keyboardComponent.setBounds (20, 170, 1000, 120);
 
 #if USE_STEP_GRID
-        step_grid_component.setBounds(20, 310, 1000, 400);
+        step_grid_component.setBounds(20, 310, 1000, 440);
 #else
-        note_grid_editor.setBounds(20, 310, 1000, 400);
+        note_grid_editor.setBounds(20, 310, 1000, 440);
 #endif
         
-        midiMessagesBox.setBounds(20, 730, 1000, 200);
+        midiMessagesBox.setBounds(20, 770, 1000, 150);
         
     }
 

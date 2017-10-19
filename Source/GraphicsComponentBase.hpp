@@ -1,13 +1,13 @@
 //
-//  GraphicsDemoBase.hpp
+//  GraphicsComponentBase.hpp
 //  Midiot
 //
 //  Created by Sean Bratnober on 10/14/17.
 //
 //
 
-#ifndef GraphicsDemoBase_hpp
-#define GraphicsDemoBase_hpp
+#ifndef GraphicsComponentBase_hpp
+#define GraphicsComponentBase_hpp
 
 #include <stdio.h>
 #include "../JuceLibraryCode/JuceHeader.h"
@@ -15,11 +15,12 @@
 #include "DemoUtilities.h"
 
 
+
 //==============================================================================
-class GraphicsDemoBase  : public Component
+class GraphicsComponentBase  : public Component
 {
 public:
-    GraphicsDemoBase (const String& name)
+    GraphicsComponentBase (const String& name)
     : Component (name)
     {
         displayFont = Font (Font::getDefaultMonospacedFontName(), 12.0f, Font::bold);
@@ -84,11 +85,11 @@ public:
             //startTime = Time::getMillisecondCounterHiRes();
             
             // then let the demo draw itself..
-            drawDemo (g);
+            drawComponent (g);
         }
     }
     
-    virtual void drawDemo (Graphics&) = 0;
+    virtual void drawComponent (Graphics&) = 0;
     
     void clipToRectangle (Graphics& g)
     {
@@ -157,10 +158,10 @@ public:
     Image clipImage;
     Font displayFont;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphicsDemoBase)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphicsComponentBase)
 };
 
 
 
 
-#endif /* GraphicsDemoBase_hpp */
+#endif /* GraphicsComponentBase_hpp */
