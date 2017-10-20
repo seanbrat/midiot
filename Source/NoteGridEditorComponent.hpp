@@ -138,24 +138,40 @@ public:
                        2.0);
             
             g.setColour (Colours::darkgrey);
+
             
-            for (int note_row = 0; note_row < num_notes; note_row++)
+            BarBeatTime bar_beat_time;
+            
+            grid_step_x = -(getWidth() / 2);
+            
+            for (int step = 0; step < num_grid_steps; step++)
             {
-                grid_step_x = -(getWidth() / 2);
+                g.drawRect((float)grid_step_x,
+                           (float)grid_step_y,
+                           step_width,
+                           step_height,
+                           0.5);
                 
-                for (int step = 0; step < num_grid_steps; step++)
+                if (!(step % 4))
                 {
-                    g.drawRect((float)grid_step_x,
-                               (float)grid_step_y,
-                               step_width,
-                               step_height,
-                               0.5);
+                    GlyphArrangement ga;
+                    //g.fillRect (ga.getBoundingBox (0, ga.getNumGlyphs(), true).getSmallestIntegerContainer().expanded (4));
                     
-                    grid_step_x += step_width;
+                    ga.addFittedText (displayFont,
+                                      bar_beat_time.getDisplayString(BarBeatTime::TimeResolution::Beats),
+                                      (float)grid_step_x+2,
+                                      (float)grid_step_y+32,
+                                      48, 24, Justification::topLeft, 3);
+                    
+                    ga.draw (g);
                 }
                 
-                grid_step_y += step_height;
+                bar_beat_time.advanceTime(BarBeatTime::TimeResolution::Sixteenths);
+                grid_step_x += step_width;
+
             }
+            
+            grid_step_y += step_height;
             
         }
         

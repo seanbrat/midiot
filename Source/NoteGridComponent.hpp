@@ -474,7 +474,7 @@ public:
             init_grid = false;
         }
         
-        /*
+        
         g.setColour (Colours::white);
         GlyphArrangement ga;
         //g.fillRect (ga.getBoundingBox (0, ga.getNumGlyphs(), true).getSmallestIntegerContainer().expanded (4));
@@ -485,11 +485,11 @@ public:
                           + "\nMouse Click X:\t" + String (mouse_click_xpos)
                           + "\nMouse Click Y:\t" + String (mouse_click_ypos)
                           + "\nStep Width: " + String(step_width)
-                          + " Step Height: " + String(step_height)
+                          + " Step Height: " + String(step_height),
                           8-fill_x, fill_y-73, 400.0, 400.0, Justification::topLeft, 3);
         
         ga.draw (g);
-        */
+        
         
     }
     
