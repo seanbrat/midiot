@@ -24,15 +24,9 @@ public:
     
     StepGridComponent ()
     : GraphicsComponentBase ("Step Grid Component"),
-    colour1 (Colours::red),
-    colour2 (Colours::green),
     num_steps(16),
     num_rows(4),
-    grid_thickness(12.0),
-    mouse_xpos(0),
-    mouse_ypos(0),
-    mouse_click_xpos(0),
-    mouse_click_ypos(0)
+    grid_thickness(12.0)
     {
         for (int row = 0; row < num_rows; row++)
         {
@@ -56,19 +50,11 @@ public:
     
     void mouseMove(const MouseEvent& e) override
     {
-        mouse_xpos = e.x;
-        mouse_ypos = e.y;
-        
         repaint();
     }
     
     void mouseUp (const MouseEvent& e) override
     {
-        mouse_xpos = e.x;
-        mouse_ypos = e.y;
-        mouse_click_xpos = e.x;
-        mouse_click_ypos = e.y;
-        
         repaint();
     }
     
@@ -123,28 +109,7 @@ public:
             grid_step_y += grid_thickness + step_height;
             grid_pos_y += grid_thickness + step_height;
         }
-        
-        /*
-         
-         const int rectSize = 100;//jmin (getWidth(), getHeight()) / 2 - 20;
-         g.setColour (colour1);//.withAlpha (getAlpha()));
-         g.fillRect (-rectSize, -rectSize, rectSize, rectSize);
-         
-         g.setGradientFill (ColourGradient (colour1, 10.0f, (float) -rectSize,
-         colour2, 10.0f + rectSize, 0.0f, false));
-         //g.setOpacity (getAlpha());
-         g.fillRect (10, -rectSize, rectSize, rectSize);
-         
-         g.setGradientFill (ColourGradient (colour1, rectSize * -0.5f, 10.0f + rectSize * 0.5f,
-         colour2, 0, 10.0f + rectSize, true));
-         //g.setOpacity (getAlpha());
-         g.fillRect (-rectSize, 10, rectSize, rectSize);
-         
-         g.setGradientFill (ColourGradient (colour1, 10.0f, 10.0f,
-         colour2, 10.0f + rectSize, 10.0f + rectSize, false));
-         */
-        //g.setOpacity (getAlpha());
-        
+
         int mouse_grid_x = -1;
         int mouse_grid_y = -1;
         
@@ -160,11 +125,7 @@ public:
         //g.fillRect (ga.getBoundingBox (0, ga.getNumGlyphs(), true).getSmallestIntegerContainer().expanded (4));
         
         ga.addFittedText (displayFont,
-                          "Mouse Pos X:\t\t\t" + String(mouse_xpos)
-                          + "\nMouse Pos Y:\t\t\t" + String(mouse_ypos)
-                          + "\nMouse Click X:\t" + String (mouse_click_xpos)
-                          + "\nMouse Click Y:\t" + String (mouse_click_ypos)
-                          + "\nStep Width: " + String(step_width)
+                          "Step Width: " + String(step_width)
                           + " Step Height: " + String(step_height)
                           + "\nSelected Grid Step: " + selected_grid_step,
                           8-fill_x, fill_y-73, 400.0, 400.0, Justification::topLeft, 3);
@@ -179,12 +140,6 @@ public:
     
     float step_width;
     float step_height;
-    
-    Colour colour1, colour2;
-    int mouse_xpos;
-    int mouse_ypos;
-    int mouse_click_xpos;
-    int mouse_click_ypos;
     
     // row major format
     vector<vector<int>> grid_values;

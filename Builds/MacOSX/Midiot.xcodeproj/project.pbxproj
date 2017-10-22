@@ -12,6 +12,7 @@
 		043E8F571F95D26900C0FC1F /* NoteGridEditorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F551F95D26900C0FC1F /* NoteGridEditorComponent.cpp */; };
 		043E8F5A1F9883B900C0FC1F /* GraphicsComponentBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F581F9883B900C0FC1F /* GraphicsComponentBase.cpp */; };
 		043E8F641F98AFC200C0FC1F /* NoteGridViewport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F621F98AFC200C0FC1F /* NoteGridViewport.cpp */; };
+		043E8F671F99C63400C0FC1F /* NoteGridProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F651F99C63400C0FC1F /* NoteGridProperties.cpp */; };
 		08320ED8C74B4B962C49DCD2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27404B52ED23D9D339DF4BFE /* QuartzCore.framework */; };
 		11CC0FB289F21D22659C14B6 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = A56A0E826DDC55DCD60CA016 /* RecentFilesMenuTemplate.nib */; };
 		30D199901FDC872772D9F4A3 /* MainComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FB72D44A8F81102A9EEBC54 /* MainComponent.cpp */; };
@@ -56,6 +57,8 @@
 		043E8F591F9883B900C0FC1F /* GraphicsComponentBase.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GraphicsComponentBase.hpp; sourceTree = "<group>"; };
 		043E8F621F98AFC200C0FC1F /* NoteGridViewport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteGridViewport.cpp; path = ../../Source/NoteGridViewport.cpp; sourceTree = "<group>"; };
 		043E8F631F98AFC200C0FC1F /* NoteGridViewport.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteGridViewport.hpp; path = ../../Source/NoteGridViewport.hpp; sourceTree = "<group>"; };
+		043E8F651F99C63400C0FC1F /* NoteGridProperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteGridProperties.cpp; path = ../../Source/NoteGridProperties.cpp; sourceTree = "<group>"; };
+		043E8F661F99C63400C0FC1F /* NoteGridProperties.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteGridProperties.hpp; path = ../../Source/NoteGridProperties.hpp; sourceTree = "<group>"; };
 		04FC09FDF3338A944E67B214 /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../../modules/juce_video; sourceTree = SOURCE_ROOT; };
 		04FC2113AF0C19167FDDC8F6 /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
 		0B96C1BA5BFF398071203509 /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
@@ -257,6 +260,8 @@
 				043E8F531F92F86100C0FC1F /* MidiClockUtilities.hpp */,
 				043E8F621F98AFC200C0FC1F /* NoteGridViewport.cpp */,
 				043E8F631F98AFC200C0FC1F /* NoteGridViewport.hpp */,
+				043E8F651F99C63400C0FC1F /* NoteGridProperties.cpp */,
+				043E8F661F99C63400C0FC1F /* NoteGridProperties.hpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -353,6 +358,7 @@
 				472DBC8275D4D340B4BA788B /* include_juce_audio_processors.mm in Sources */,
 				043E8F571F95D26900C0FC1F /* NoteGridEditorComponent.cpp in Sources */,
 				CB28E898AA18838367CE52C5 /* include_juce_audio_utils.mm in Sources */,
+				043E8F671F99C63400C0FC1F /* NoteGridProperties.cpp in Sources */,
 				9B7F724B7E31ECFCD876C1E8 /* include_juce_core.mm in Sources */,
 				B8F7ADA5FF81FAC997CC8903 /* include_juce_cryptography.mm in Sources */,
 				043E8F641F98AFC200C0FC1F /* NoteGridViewport.cpp in Sources */,
