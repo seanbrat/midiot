@@ -20,6 +20,7 @@
 
 #include "NoteGridComponent.hpp"
 #include "NoteGridViewport.hpp"
+#include "NoteGridProperties.hpp"
 
 #include "MidiClockUtilities.hpp"
 
@@ -46,19 +47,12 @@ public:
     class NoteGridRulerComponent : public GraphicsComponentBase
     {
     public:
-        NoteGridRulerComponent(NoteGridViewport* viewport)
+        NoteGridRulerComponent(NoteGridProperties* properties, NoteGridViewport* viewport)
         : GraphicsComponentBase ("NoteGridRulerComponent"),
         ruler_viewport(viewport),
-        num_steps(16),
-        num_rows(4),
-        grid_thickness(12.0),
-        grid_resolution(SixteenthNote),
-        division_ppq(24),
-        tick_to_pixel_x_factor(2.0),
-        tick_to_pixel_y_factor(2.0),
+        properties_(properties),
         previous_mouse_pos(Point<int>(0, 0)),
-        previous_mouse_queue_size(5),
-        init_grid(true)
+        previous_mouse_queue_size(5)
         {
             for (int i=0; i<previous_mouse_queue_size; i++)
             {
@@ -74,52 +68,28 @@ public:
         
         void mouseDrag(const MouseEvent& e) override
         {
-            //printf("mouseDrag called with e.tiltX %f\n", e.tiltX);
-
-            //float dragDirection(atan(e.x / e)
-            
             Point<int> mouse_position(e.getPosition());
             Point<int> check_mouse_pos(previous_mouse_positions.front());
-            /*
-            float x_drag(abs(previous_mouse_pos.x - e.getPosition().x));
-            float y_drag(abs(previous_mouse_pos.y - e.getPosition().y));
-            */
+
             float x_drag(abs(check_mouse_pos.x - mouse_position.x));
             float y_drag(abs(check_mouse_pos.y - mouse_position.y));
 
             float drag_angle = atanf(x_drag / y_drag);
             
-            /*
-            printf("\n\nx_drag: %f\t\ty_drag: %f\n", x_drag, y_drag);
-            printf("e.getMouseDownPosition().x: %d\n", e.getMouseDownPosition().x);
-            printf("e.getMouseDownPosition().y: %d\n", e.getMouseDownPosition().y);
-            printf("e.getPosition().x: %d\n", e.getPosition().x);
-            printf("e.getPosition().y: %d\n", e.getPosition().y);
-            printf("drag_angle: %f\n", drag_angle);
-            */
-
             if (0.0 <= drag_angle && drag_angle <= 0.09)
             {
-                printf("--> mouseDrag VERTICAL with drag_angle: %f\n", drag_angle);
                 
                 int delta_y = mouse_position.y - previous_mouse_positions.back().y;
-                printf("-----> delta_y: %d\n", delta_y);
                 
-                tick_to_pixel_x_factor += (0.01 * (float)delta_y);
+                properties_->tick_to_pixel_x_factor_ += (0.01 * (float)delta_y);
                 
-                if (tick_to_pixel_x_factor < 0.25)
+                if (properties_->tick_to_pixel_x_factor_ < 0.25)
                 {
-                    tick_to_pixel_x_factor = 0.25;
+                    properties_->tick_to_pixel_x_factor_ = 0.25;
                 }
                 
-                repaint();
+                properties_->updateGridProperties();
             }
-            /*
-            else if (1.04 < e.orientation && e.orientation < 2.09)
-            {
-                printf("mouseDrag up\n");
-            }
-             */
             
             previous_mouse_positions.pop();
             previous_mouse_positions.push(mouse_position);
@@ -129,7 +99,6 @@ public:
         void mouseMove(const MouseEvent& e) override
         {
             repaint();
-            //printf("mouseMove called with e.x: %d and e.y: %d\n", e.x, e.y);
         }
         
         void mouseDown(const MouseEvent& e) override
@@ -177,8 +146,8 @@ public:
             int grid_width = getWidth();
             int grid_height = getHeight();
             
-            step_width = division_ppq * tick_to_pixel_x_factor;
-            step_height = division_ppq * tick_to_pixel_y_factor;
+            float step_width = properties_->step_width_;
+            float step_height = properties_->step_height_;
             
             int grid_step_x = -(getWidth() / 2);
             int grid_step_y = -(getHeight() / 2);
@@ -188,7 +157,7 @@ public:
             
             int border_x = -(getWidth() / 2);
             int border_y = -(getHeight() / 2);
-            int border_width = 16 * 8 * 24 * tick_to_pixel_x_factor;
+            int border_width = 16 * 8 * 24 * properties_->tick_to_pixel_x_factor_;
             int border_height = step_height * num_notes;
             
             g.setColour (Colours::darkgrey);
@@ -240,52 +209,31 @@ public:
     private:
         NoteGridViewport* ruler_viewport;
         
-        int num_steps;
-        int num_rows;
-        float grid_thickness;
-        
-        float step_width;
-        float step_height;
-                
-        // Editor properties
-        short grid_resolution;
-        
-        float tick_to_pixel_x_factor;
-        float tick_to_pixel_y_factor;
-        
         // MIDI File properties
         BarBeatTime clip_length;
-        int division_ppq;
 
         Point<int> previous_mouse_pos;
         
         std::queue<Point<int>> previous_mouse_positions;
         short previous_mouse_queue_size;
         
-        bool init_grid;
+        NoteGridProperties* properties_;
 
     };
     
     
     NoteGridEditorComponent ()
     : GraphicsComponentBase ("NoteGridEditorComponent"),
-    num_steps(16),
-    num_rows(4),
-    grid_thickness(12.0),
-    grid_resolution(SixteenthNote),
-    division_ppq(24),
-    tick_to_pixel_x_factor(2.0),
-    tick_to_pixel_y_factor(2.0),
-    init_grid(true)
+    properties_(NoteGridProperties())
     {
         addAndMakeVisible(grid_viewport);
-        note_grid = new NoteGridComponent(&grid_viewport);
+        note_grid = new NoteGridComponent(&properties_, &grid_viewport);
         addAndMakeVisible(note_grid);
         grid_viewport.setViewedComponent(note_grid);
         grid_viewport.setScrollBarsShown(false, false, true, true);
         
         addAndMakeVisible(ruler_viewport);
-        grid_ruler = new NoteGridRulerComponent(&ruler_viewport);
+        grid_ruler = new NoteGridRulerComponent(&properties_, &ruler_viewport);
         addAndMakeVisible(grid_ruler);
         ruler_viewport.setViewedComponent(grid_ruler);
         //ruler_viewport.setScrollOnDragEnabled(true);
@@ -293,6 +241,10 @@ public:
         
         grid_viewport.linkViewport(&ruler_viewport);
         ruler_viewport.linkViewport(&grid_viewport);
+        
+        properties_.note_grid_component_ = note_grid;
+        properties_.note_grid_ruler_component_ = grid_ruler;
+        properties_.note_grid_editor_component_ = this;
         
     }
     
@@ -336,28 +288,14 @@ public:
     void drawComponent (Graphics& g) override
     {
     }
-    
-    int num_steps;
-    int num_rows;
-    float grid_thickness;
-    
-    float step_width;
-    float step_height;
-    
 
-    // Editor properties
-    short grid_resolution;
-    
-    float tick_to_pixel_x_factor;
-    float tick_to_pixel_y_factor;
-    
     // MIDI File properties
     BarBeatTime clip_length;
-    int division_ppq;
     
-    bool init_grid;
     
     ComponentBoundsConstrainer* component_bounds;
+    
+    NoteGridProperties properties_;
     
     NoteGridComponent* note_grid;
     NoteGridRulerComponent* grid_ruler;

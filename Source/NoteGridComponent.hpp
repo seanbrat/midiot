@@ -16,7 +16,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 #include "NoteGridViewport.hpp"
-
+#include "NoteGridProperties.hpp"
 
 #include "MidiClockUtilities.hpp"
 
@@ -276,17 +276,10 @@ public:
         NoteGridViewport* grid_viewport;
     };
     
-    NoteGridComponent (NoteGridViewport* viewport)
+    NoteGridComponent (NoteGridProperties* properties, NoteGridViewport* viewport)
     : GraphicsComponentBase ("NoteGridComponent"),
     grid_viewport(viewport),
-    num_steps(16),
-    num_rows(4),
-    grid_thickness(12.0),
-    grid_resolution(SixteenthNote),
-    division_ppq(24),
-    tick_to_pixel_x_factor(2.0),
-    tick_to_pixel_y_factor(2.0),
-    init_grid(true)
+    properties_(properties)
     {
         
         MidiFile inputMidiFile;
@@ -347,6 +340,9 @@ public:
         int fill_x = getWidth() / 2;
         int fill_y = getHeight() / 2;
         
+        float step_width = properties_->step_width_;
+        float step_height = properties_->step_height_;
+        
         g.addTransform (getTransform());
         
         g.setColour (Colours::grey);
@@ -354,9 +350,6 @@ public:
         
         int grid_width = getWidth();
         int grid_height = getHeight();
-        
-        step_width = division_ppq * tick_to_pixel_x_factor;
-        step_height = division_ppq * tick_to_pixel_y_factor;
         
         int grid_step_x = -(getWidth() / 2);
         int grid_step_y = -(getHeight() / 2);
@@ -366,7 +359,7 @@ public:
         
         int border_x = -(getWidth() / 2);
         int border_y = -(getHeight() / 2);
-        int border_width = 16 * 8 * 24 * tick_to_pixel_x_factor;
+        int border_width = 16 * 8 * 24 * properties_->tick_to_pixel_x_factor_;
         int border_height = step_height * num_notes;
         
         g.setColour (Colours::darkgrey);
@@ -416,8 +409,7 @@ public:
         
         int note_button_index = 0;
         
-        
-        if (init_grid)
+        if (properties_->init_grid_)
         {
             for (int i=0; i<num_events; i++)
             {
@@ -431,63 +423,34 @@ public:
 
                     int note_num = midi_msg.getNoteNumber();
                     
-                    int note_y = -(getHeight() / 2);
                     int note_height = step_height;
-                    int note_x = -(getWidth() / 2) + note_on_time * tick_to_pixel_x_factor;
-                    int note_width = (note_off_time - note_on_time) * tick_to_pixel_x_factor;
+                    int note_width = (note_off_time - note_on_time) * properties_->tick_to_pixel_x_factor_;
                     
-                    
-                    int note_pos_x = note_on_time * tick_to_pixel_x_factor;
-                    int note_pos_y = (step_height)*abs(num_notes-note_num-1);
+                    int note_pos_x = note_on_time * properties_->tick_to_pixel_x_factor_;
+                    int note_pos_y = (step_height)*abs(num_notes - note_num - 1);
                     
                     note_components[note_button_index++]->setBounds(note_pos_x, note_pos_y, note_width, note_height);
                 }
             }
             
-            init_grid = false;
+            properties_->init_grid_ = false;
         }
-        
-        /*
-        g.setColour (Colours::white);
-        GlyphArrangement ga;
-        
-        ga.addFittedText (displayFont,
-                          "Step Width: " + String(step_width)
-                          + " Step Height: " + String(step_height),
-                          8-fill_x, fill_y-73, 400.0, 400.0, Justification::topLeft, 3);
-        
-        ga.draw (g);
-        */
-        
     }
-    
-    int num_steps;
-    int num_rows;
-    float grid_thickness;
-    
-    float step_width;
-    float step_height;
     
     // row major format
     vector<vector<int>> grid_values;
     
     OwnedArray<NoteComponent> note_components;
     
-    // Editor properties
-    short grid_resolution;
-    
-    float tick_to_pixel_x_factor;
-    float tick_to_pixel_y_factor;
     
     // MIDI File properties
     BarBeatTime clip_length;
-    int division_ppq;
-
-    bool init_grid;
     
     ComponentBoundsConstrainer* component_bounds;
     
     NoteGridViewport* grid_viewport;
+    
+    NoteGridProperties* properties_;
 
 };
 
