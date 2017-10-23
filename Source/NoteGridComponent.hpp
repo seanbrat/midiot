@@ -28,6 +28,29 @@ enum MouseMode {
     RightEdgeResizeMouseMode
 };
 
+class MIDINote
+{
+public:
+    MIDINote(int note_num = 0,
+             int velocity = 0,
+             int note_on_time = 0,
+             int note_off_time = 0,
+             int channel = 0)
+    : note_num_(note_num),
+    velocity_(velocity),
+    note_on_time_(note_on_time),
+    note_off_time_(note_off_time),
+    channel_(channel)
+    {
+    }
+    
+    int note_num_;
+    int velocity_;
+    int note_on_time_;
+    int note_off_time_;
+    int channel_;
+};
+
 //==============================================================================
 class NoteGridComponent  : public GraphicsComponentBase
 {
@@ -167,12 +190,20 @@ public:
     {
     public:
         
-        NoteComponent(NoteGridViewport* viewport) :
-        grid_viewport(viewport),
+        NoteComponent(NoteGridViewport* viewport,
+                      int note_num,
+                      int velocity,
+                      int note_on_time,
+                      int note_off_time) :
+        mouse_cursor_mode(NormalMouseMode),
         normal_mouse_cursor(MouseCursor::StandardCursorType::NormalCursor),
         left_edge_mouse_cursor(MouseCursor::StandardCursorType::LeftEdgeResizeCursor),
         right_edge_mouse_cursor(MouseCursor::StandardCursorType::RightEdgeResizeCursor),
-        mouse_cursor_mode(NormalMouseMode)
+        grid_viewport(viewport),
+        midi_note(MIDINote(note_num,
+                           velocity,
+                           note_on_time,
+                           note_off_time))
         {
             note_bounds = new NoteComponentBoundsConstrainer();
             
@@ -187,6 +218,11 @@ public:
             delete left_edge;
             delete right_edge;
             delete note_bounds;
+        }
+        
+        MIDINote& getMidiNote()
+        {
+            return midi_note;
         }
         
         void resized() override
@@ -274,6 +310,9 @@ public:
         MouseCursor right_edge_mouse_cursor;
         
         NoteGridViewport* grid_viewport;
+        
+        // MIDI note info
+        MIDINote midi_note;
     };
     
     NoteGridComponent (NoteGridProperties* properties, NoteGridViewport* viewport)
@@ -302,7 +341,16 @@ public:
             
             if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
             {
-                NoteComponent *note_component = new NoteComponent(grid_viewport);
+                int note_num(midi_msg.getNoteNumber());
+                int note_velocity(midi_msg.getVelocity());
+                int note_on_time(midi_msg_seq->getEventTime(i));
+                int note_off_time(midi_msg_seq->getTimeOfMatchingKeyUp(i));
+
+                NoteComponent *note_component = new NoteComponent(grid_viewport,
+                                                                  note_num,
+                                                                  note_velocity,
+                                                                  note_on_time,
+                                                                  note_off_time);
                 note_components.add(note_component);
                 note_component->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::firebrick);
                 
@@ -390,47 +438,24 @@ public:
             grid_step_y += step_height;
         }
         
-        int grid_button_index = 0;
-        
-        MidiFile inputMidiFile;
-        
-        File midiFile = File::createFileWithoutCheckingPath (String("/Users/seanb/Development/JUCE/Midiot/Resources/basic808.mid"));
-        FileInputStream midiStream (midiFile);
-        inputMidiFile.readFrom (midiStream);
-        
-        String log_message_string;
-        
-        int num_tracks = inputMidiFile.getNumTracks();
-        
-        const MidiMessageSequence* midi_msg_seq(inputMidiFile.getTrack(0));
-        int num_events = midi_msg_seq->getNumEvents();
-        
+
         g.setColour (Colours::firebrick);
         
         int note_button_index = 0;
         
         if (properties_->init_grid_)
         {
-            for (int i=0; i<num_events; i++)
+            for (int note_index=0; note_index<note_components.size(); note_index++)
             {
-                MidiMessageSequence::MidiEventHolder* midi_event_ptr(midi_msg_seq->getEventPointer(i));
-                MidiMessage midi_msg(midi_event_ptr->message);
+                NoteComponent* note_component = note_components[note_index];
+                MIDINote note = note_component->getMidiNote();
                 
-                if (midi_msg.isNoteOn() && midi_event_ptr->noteOffObject)
-                {
-                    int note_on_time(midi_msg_seq->getEventTime(i));
-                    int note_off_time = midi_msg_seq->getTimeOfMatchingKeyUp(i);
-
-                    int note_num = midi_msg.getNoteNumber();
-                    
-                    int note_height = step_height;
-                    int note_width = (note_off_time - note_on_time) * properties_->tick_to_pixel_x_factor_;
-                    
-                    int note_pos_x = note_on_time * properties_->tick_to_pixel_x_factor_;
-                    int note_pos_y = (step_height)*abs(num_notes - note_num - 1);
-                    
-                    note_components[note_button_index++]->setBounds(note_pos_x, note_pos_y, note_width, note_height);
-                }
+                int note_height = step_height;
+                int note_width = (note.note_off_time_ - note.note_on_time_) * properties_->tick_to_pixel_x_factor_;
+                int note_pos_x = note.note_on_time_ * properties_->tick_to_pixel_x_factor_;
+                int note_pos_y = (step_height)*abs(num_notes - note.note_num_ - 1);
+                
+                note_component->setBounds(note_pos_x, note_pos_y, note_width, note_height);
             }
             
             properties_->init_grid_ = false;
@@ -449,7 +474,6 @@ public:
     ComponentBoundsConstrainer* component_bounds;
     
     NoteGridViewport* grid_viewport;
-    
     NoteGridProperties* properties_;
 
 };
