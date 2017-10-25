@@ -15,6 +15,38 @@
 
 #include "MidiClockUtilities.hpp"
 
+class MIDINote
+{
+public:
+    MIDINote(int note_num = 0,
+             int velocity = 0,
+             int note_on_time = 0,
+             int note_off_time = 0,
+             int channel = 0)
+    : note_num_(note_num),
+    velocity_(velocity),
+    note_on_time_(note_on_time),
+    note_off_time_(note_off_time),
+    channel_(channel)
+    {
+    }
+    
+    int note_num_;
+    int velocity_;
+    int note_on_time_;
+    int note_off_time_;
+    int channel_;
+};
+
+enum MouseMode {
+    NormalMouseMode = 0,
+    LeftEdgeResizeMouseMode,
+    RightEdgeResizeMouseMode
+};
+
+const int num_midi_notes_ = 128;
+
+
 class NoteGridProperties {
 public:
     
