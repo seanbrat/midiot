@@ -13,6 +13,9 @@
 		043E8F5A1F9883B900C0FC1F /* GraphicsComponentBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F581F9883B900C0FC1F /* GraphicsComponentBase.cpp */; };
 		043E8F641F98AFC200C0FC1F /* NoteGridViewport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F621F98AFC200C0FC1F /* NoteGridViewport.cpp */; };
 		043E8F671F99C63400C0FC1F /* NoteGridProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F651F99C63400C0FC1F /* NoteGridProperties.cpp */; };
+		043E8F6A1FA05A1800C0FC1F /* NoteGridRulerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F681FA05A1800C0FC1F /* NoteGridRulerComponent.cpp */; };
+		043E8F6D1FA05B6400C0FC1F /* NoteComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F6B1FA05B6400C0FC1F /* NoteComponent.cpp */; };
+		043E8F701FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */; };
 		08320ED8C74B4B962C49DCD2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27404B52ED23D9D339DF4BFE /* QuartzCore.framework */; };
 		11CC0FB289F21D22659C14B6 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = A56A0E826DDC55DCD60CA016 /* RecentFilesMenuTemplate.nib */; };
 		30D199901FDC872772D9F4A3 /* MainComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FB72D44A8F81102A9EEBC54 /* MainComponent.cpp */; };
@@ -59,6 +62,12 @@
 		043E8F631F98AFC200C0FC1F /* NoteGridViewport.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteGridViewport.hpp; path = ../../Source/NoteGridViewport.hpp; sourceTree = "<group>"; };
 		043E8F651F99C63400C0FC1F /* NoteGridProperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteGridProperties.cpp; path = ../../Source/NoteGridProperties.cpp; sourceTree = "<group>"; };
 		043E8F661F99C63400C0FC1F /* NoteGridProperties.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteGridProperties.hpp; path = ../../Source/NoteGridProperties.hpp; sourceTree = "<group>"; };
+		043E8F681FA05A1800C0FC1F /* NoteGridRulerComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteGridRulerComponent.cpp; path = ../../Source/NoteGridRulerComponent.cpp; sourceTree = "<group>"; };
+		043E8F691FA05A1800C0FC1F /* NoteGridRulerComponent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteGridRulerComponent.hpp; path = ../../Source/NoteGridRulerComponent.hpp; sourceTree = "<group>"; };
+		043E8F6B1FA05B6400C0FC1F /* NoteComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponent.cpp; path = ../../Source/NoteComponent.cpp; sourceTree = "<group>"; };
+		043E8F6C1FA05B6400C0FC1F /* NoteComponent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteComponent.hpp; path = ../../Source/NoteComponent.hpp; sourceTree = "<group>"; };
+		043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponentBoundsConstrainer.cpp; path = ../../Source/NoteComponentBoundsConstrainer.cpp; sourceTree = "<group>"; };
+		043E8F6F1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteComponentBoundsConstrainer.hpp; path = ../../Source/NoteComponentBoundsConstrainer.hpp; sourceTree = "<group>"; };
 		04FC09FDF3338A944E67B214 /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../../modules/juce_video; sourceTree = SOURCE_ROOT; };
 		04FC2113AF0C19167FDDC8F6 /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
 		0B96C1BA5BFF398071203509 /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
@@ -262,6 +271,12 @@
 				043E8F631F98AFC200C0FC1F /* NoteGridViewport.hpp */,
 				043E8F651F99C63400C0FC1F /* NoteGridProperties.cpp */,
 				043E8F661F99C63400C0FC1F /* NoteGridProperties.hpp */,
+				043E8F681FA05A1800C0FC1F /* NoteGridRulerComponent.cpp */,
+				043E8F691FA05A1800C0FC1F /* NoteGridRulerComponent.hpp */,
+				043E8F6B1FA05B6400C0FC1F /* NoteComponent.cpp */,
+				043E8F6C1FA05B6400C0FC1F /* NoteComponent.hpp */,
+				043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */,
+				043E8F6F1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.hpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -351,6 +366,8 @@
 				D1AE8D0897055754B0A14210 /* StepGridComponent.cpp in Sources */,
 				30D199901FDC872772D9F4A3 /* MainComponent.cpp in Sources */,
 				9D966BA81CD05B994A4D63AB /* Main.cpp in Sources */,
+				043E8F6A1FA05A1800C0FC1F /* NoteGridRulerComponent.cpp in Sources */,
+				043E8F6D1FA05B6400C0FC1F /* NoteComponent.cpp in Sources */,
 				F741A853A12789ABA94DEEA0 /* include_juce_audio_basics.mm in Sources */,
 				043E8F5A1F9883B900C0FC1F /* GraphicsComponentBase.cpp in Sources */,
 				59D96C407A61A9FB762B17E4 /* include_juce_audio_devices.mm in Sources */,
@@ -368,6 +385,7 @@
 				EDAD59B17913C2B1BB25C7B4 /* include_juce_graphics.mm in Sources */,
 				78D20CDAF56892F002D9D100 /* include_juce_gui_basics.mm in Sources */,
 				BDC5928AAE6B0BF462980083 /* include_juce_gui_extra.mm in Sources */,
+				043E8F701FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp in Sources */,
 				574B1206EF5DA18006A24B86 /* include_juce_opengl.mm in Sources */,
 				00DBDE5CE37C529657396139 /* include_juce_video.mm in Sources */,
 			);
