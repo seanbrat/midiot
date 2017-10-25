@@ -51,11 +51,17 @@ public:
     void setParentNoteGridViewport(NoteGridViewport* viewport);
     void drawComponent (Graphics& g) override;
     
-    void checkNoteGridBounds(Rectangle<int> grid_bounds, NoteComponent* note_component);
+    void checkNoteGridBounds(Rectangle<int> grid_bounds, NoteComponent* selected_note_component);
+    
+    void flushNoteRemovePool();
     
     int getNoteNum(int y);
     int getNoteOnTime(int x);
     int getNoteOffTime(int note_on_time, int width);
+
+    bool doesNoteOverlap(MIDINote& selected_note,
+                         MIDINote& check_note,
+                         bool debug_print = true);
     
 private:
     const MidiMessageSequence* midi_msg_seq;
@@ -81,7 +87,8 @@ private:
     int selected_note_num_;
     int selected_note_on_time_;
     int selected_note_off_time_;
-    
+  
+    MIDINote selected_note_;
 };
 
 

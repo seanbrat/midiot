@@ -52,6 +52,7 @@ public:
     ~NoteComponent();
     
     MIDINote& getMidiNote();
+    void setMidiNote(MIDINote& midi_note) { midi_note_ = midi_note; };
     
     void resized() override;
     
@@ -80,7 +81,7 @@ private:
     NoteGridComponent* note_grid_;
     
     // MIDI note info
-    MIDINote midi_note;
+    MIDINote midi_note_;
     
     // pointer to MidiEventHolders for note
     MidiMessageSequence::MidiEventHolder* note_on_ptr_;

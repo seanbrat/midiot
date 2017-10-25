@@ -61,7 +61,7 @@ normal_mouse_cursor(MouseCursor::StandardCursorType::NormalCursor),
 left_edge_mouse_cursor(MouseCursor::StandardCursorType::LeftEdgeResizeCursor),
 right_edge_mouse_cursor(MouseCursor::StandardCursorType::RightEdgeResizeCursor),
 grid_viewport(viewport),
-midi_note(MIDINote(note_num,
+midi_note_(MIDINote(note_num,
                    velocity,
                    note_on_time,
                    note_off_time)),
@@ -71,7 +71,7 @@ note_grid_(note_grid)
 {
     setName(String("NoteComponent"));
     
-    note_bounds = new NoteComponentBoundsConstrainer(midi_note, this);
+    note_bounds = new NoteComponentBoundsConstrainer(midi_note_, this);
     
     left_edge = new NoteEdgeComponent(this, 0, ResizableEdgeComponent::Edge::leftEdge, grid_viewport);
     addAndMakeVisible(left_edge);
@@ -85,12 +85,12 @@ NoteComponent::~NoteComponent()
 {
     delete left_edge;
     delete right_edge;
-    delete note_bounds;
+    //delete note_bounds;
 }
 
 MIDINote& NoteComponent::getMidiNote()
 {
-    return midi_note;
+    return midi_note_;
 }
 
 void NoteComponent::resized()
@@ -99,6 +99,7 @@ void NoteComponent::resized()
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
     
     note_grid_->checkNoteGridBounds(getBoundsInParent(), this);
+    note_grid_->flushNoteRemovePool();
 }
 
 
@@ -149,7 +150,7 @@ void NoteComponent::mouseDrag (const MouseEvent& e)
     left_edge->setBounds(0, 0, 2, getHeight());
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
     
-    printf("\nmouseDrag note_num: %d\n", midi_note.note_num_);
+    //printf("\nmouseDrag note_num: %d\n", midi_note.note_num_);
     
     note_grid_->checkNoteGridBounds(grid_bounds, this);
     
@@ -166,6 +167,10 @@ void NoteComponent::mouseUp (const MouseEvent& e)
     
     mouse_drag_x = -1;
     mouse_drag_y = -1;
+    
+    Rectangle<int> grid_bounds = getBoundsInParent();
+    note_grid_->checkNoteGridBounds(grid_bounds, this);
+    note_grid_->flushNoteRemovePool();
     
     note_grid_->repaint();
 }
