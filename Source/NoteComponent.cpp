@@ -7,9 +7,10 @@
 //
 
 #include "NoteComponent.hpp"
-
+#include "NoteComponentSorter.hpp"
 #include "NoteGridViewport.hpp"
 #include "NoteComponentBoundsConstrainer.hpp"
+#include "NoteGridComponent.hpp"
 
 NoteEdgeComponent::NoteEdgeComponent(Component *componentToResize,
                   ComponentBoundsConstrainer *constrainer,
@@ -51,7 +52,10 @@ NoteComponent::NoteComponent(NoteGridViewport* viewport,
               int note_num,
               int velocity,
               int note_on_time,
-              int note_off_time) :
+              int note_off_time,
+              MidiMessageSequence::MidiEventHolder* note_on_ptr,
+              MidiMessageSequence::MidiEventHolder* note_off_ptr,
+              NoteGridComponent* note_grid) :
 mouse_cursor_mode(NormalMouseMode),
 normal_mouse_cursor(MouseCursor::StandardCursorType::NormalCursor),
 left_edge_mouse_cursor(MouseCursor::StandardCursorType::LeftEdgeResizeCursor),
@@ -60,11 +64,14 @@ grid_viewport(viewport),
 midi_note(MIDINote(note_num,
                    velocity,
                    note_on_time,
-                   note_off_time))
+                   note_off_time)),
+note_on_ptr_(note_on_ptr),
+note_off_ptr_(note_off_ptr),
+note_grid_(note_grid)
 {
     setName(String("NoteComponent"));
     
-    note_bounds = new NoteComponentBoundsConstrainer(midi_note);
+    note_bounds = new NoteComponentBoundsConstrainer(midi_note, this);
     
     left_edge = new NoteEdgeComponent(this, 0, ResizableEdgeComponent::Edge::leftEdge, grid_viewport);
     addAndMakeVisible(left_edge);
@@ -88,9 +95,10 @@ MIDINote& NoteComponent::getMidiNote()
 
 void NoteComponent::resized()
 {
-    
     left_edge->setBounds(0, 0, 2, getHeight());
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
+    
+    note_grid_->checkNoteGridBounds(getBoundsInParent(), this);
 }
 
 
@@ -129,6 +137,8 @@ void NoteComponent::mouseDrag (const MouseEvent& e)
 {
     note_bounds->set_mouse_drag_pos(e.x, e.y);
     
+    Rectangle<int> grid_bounds = getBoundsInParent();
+        
     mouse_drag_x = e.x;
     mouse_drag_y = e.y;
     
@@ -138,6 +148,10 @@ void NoteComponent::mouseDrag (const MouseEvent& e)
     
     left_edge->setBounds(0, 0, 2, getHeight());
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
+    
+    printf("\nmouseDrag note_num: %d\n", midi_note.note_num_);
+    
+    note_grid_->checkNoteGridBounds(grid_bounds, this);
     
     grid_viewport->autoScroll(e.x + this->getX() - grid_viewport->getViewPositionX(),
                               e.y + this->getY() - grid_viewport->getViewPositionY(),
@@ -152,4 +166,7 @@ void NoteComponent::mouseUp (const MouseEvent& e)
     
     mouse_drag_x = -1;
     mouse_drag_y = -1;
+    
+    note_grid_->repaint();
 }
+

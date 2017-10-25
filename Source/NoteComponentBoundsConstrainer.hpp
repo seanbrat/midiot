@@ -14,11 +14,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+class NoteComponent;
 
 class NoteComponentBoundsConstrainer : public ComponentBoundsConstrainer
 {
 public:
-    NoteComponentBoundsConstrainer(MIDINote& midi_note);
+    NoteComponentBoundsConstrainer(MIDINote& midi_note,
+                                   NoteComponent* note_component);
     
     void checkBounds(Rectangle< int > & 	bounds,
                      const Rectangle< int > & 	previousBounds,
@@ -45,6 +47,7 @@ private:
     int mouse_drag_mode_;
     int resize_amount_;
     MIDINote& midi_note_;
+    NoteComponent* note_component_;
 };
 
 

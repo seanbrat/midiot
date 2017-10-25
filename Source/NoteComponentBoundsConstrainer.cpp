@@ -7,15 +7,19 @@
 //
 
 #include "NoteComponentBoundsConstrainer.hpp"
+#include "NoteComponent.hpp"
 
 
-NoteComponentBoundsConstrainer::NoteComponentBoundsConstrainer(MIDINote& midi_note) :
+NoteComponentBoundsConstrainer::NoteComponentBoundsConstrainer(MIDINote& midi_note,
+                                                               NoteComponent* note_component) :
 midi_note_(midi_note),
 mouse_drag_x_(0),
 mouse_drag_y_(0),
 mouse_drag_mode_(NormalMouseMode),
-resize_amount_(0)
+resize_amount_(0),
+note_component_(note_component)
 {
+    setMinimumOnscreenAmounts(0,0,0,0);
 }
 
 void NoteComponentBoundsConstrainer::checkBounds(Rectangle< int > & 	bounds,

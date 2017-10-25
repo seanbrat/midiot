@@ -18,6 +18,7 @@
 
 class NoteGridViewport;
 class NoteComponentBoundsConstrainer;
+class NoteGridComponent;
 
 class NoteEdgeComponent : public ResizableEdgeComponent
 {
@@ -43,7 +44,10 @@ public:
                   int note_num,
                   int velocity,
                   int note_on_time,
-                  int note_off_time);
+                  int note_off_time,
+                  MidiMessageSequence::MidiEventHolder* note_on_ptr,
+                  MidiMessageSequence::MidiEventHolder* note_off_ptr,
+                  NoteGridComponent* note_grid);
     
     ~NoteComponent();
     
@@ -73,9 +77,16 @@ private:
     MouseCursor right_edge_mouse_cursor;
     
     NoteGridViewport* grid_viewport;
+    NoteGridComponent* note_grid_;
     
     // MIDI note info
     MIDINote midi_note;
+    
+    // pointer to MidiEventHolders for note
+    MidiMessageSequence::MidiEventHolder* note_on_ptr_;
+    MidiMessageSequence::MidiEventHolder* note_off_ptr_;
 };
+
+
 
 #endif /* NoteComponent_hpp */

@@ -16,6 +16,7 @@
 		043E8F6A1FA05A1800C0FC1F /* NoteGridRulerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F681FA05A1800C0FC1F /* NoteGridRulerComponent.cpp */; };
 		043E8F6D1FA05B6400C0FC1F /* NoteComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F6B1FA05B6400C0FC1F /* NoteComponent.cpp */; };
 		043E8F701FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */; };
+		043E8F761FA0798000C0FC1F /* NoteComponentSorter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F741FA0798000C0FC1F /* NoteComponentSorter.cpp */; };
 		08320ED8C74B4B962C49DCD2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27404B52ED23D9D339DF4BFE /* QuartzCore.framework */; };
 		11CC0FB289F21D22659C14B6 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = A56A0E826DDC55DCD60CA016 /* RecentFilesMenuTemplate.nib */; };
 		30D199901FDC872772D9F4A3 /* MainComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FB72D44A8F81102A9EEBC54 /* MainComponent.cpp */; };
@@ -68,6 +69,8 @@
 		043E8F6C1FA05B6400C0FC1F /* NoteComponent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteComponent.hpp; path = ../../Source/NoteComponent.hpp; sourceTree = "<group>"; };
 		043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponentBoundsConstrainer.cpp; path = ../../Source/NoteComponentBoundsConstrainer.cpp; sourceTree = "<group>"; };
 		043E8F6F1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteComponentBoundsConstrainer.hpp; path = ../../Source/NoteComponentBoundsConstrainer.hpp; sourceTree = "<group>"; };
+		043E8F741FA0798000C0FC1F /* NoteComponentSorter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponentSorter.cpp; path = ../../Source/NoteComponentSorter.cpp; sourceTree = "<group>"; };
+		043E8F751FA0798000C0FC1F /* NoteComponentSorter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteComponentSorter.hpp; path = ../../Source/NoteComponentSorter.hpp; sourceTree = "<group>"; };
 		04FC09FDF3338A944E67B214 /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../../modules/juce_video; sourceTree = SOURCE_ROOT; };
 		04FC2113AF0C19167FDDC8F6 /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
 		0B96C1BA5BFF398071203509 /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
@@ -257,6 +260,10 @@
 				043E8F581F9883B900C0FC1F /* GraphicsComponentBase.cpp */,
 				043E8F591F9883B900C0FC1F /* GraphicsComponentBase.hpp */,
 				F22222D5FE1626D119425CA5 /* DemoUtilities.h */,
+				043E8F6B1FA05B6400C0FC1F /* NoteComponent.cpp */,
+				043E8F6C1FA05B6400C0FC1F /* NoteComponent.hpp */,
+				043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */,
+				043E8F6F1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.hpp */,
 				AFD4B773800E66138C9414BB /* NoteGridComponent.cpp */,
 				55F287595096B1306337E2D0 /* NoteGridComponent.hpp */,
 				043E8F551F95D26900C0FC1F /* NoteGridEditorComponent.cpp */,
@@ -273,10 +280,8 @@
 				043E8F661F99C63400C0FC1F /* NoteGridProperties.hpp */,
 				043E8F681FA05A1800C0FC1F /* NoteGridRulerComponent.cpp */,
 				043E8F691FA05A1800C0FC1F /* NoteGridRulerComponent.hpp */,
-				043E8F6B1FA05B6400C0FC1F /* NoteComponent.cpp */,
-				043E8F6C1FA05B6400C0FC1F /* NoteComponent.hpp */,
-				043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */,
-				043E8F6F1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.hpp */,
+				043E8F741FA0798000C0FC1F /* NoteComponentSorter.cpp */,
+				043E8F751FA0798000C0FC1F /* NoteComponentSorter.hpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -388,6 +393,7 @@
 				043E8F701FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp in Sources */,
 				574B1206EF5DA18006A24B86 /* include_juce_opengl.mm in Sources */,
 				00DBDE5CE37C529657396139 /* include_juce_video.mm in Sources */,
+				043E8F761FA0798000C0FC1F /* NoteComponentSorter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
