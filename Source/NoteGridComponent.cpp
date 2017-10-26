@@ -75,6 +75,21 @@ NoteGridComponent::~NoteGridComponent()
     delete note_sorter_;
 }
 
+void NoteGridComponent::clearSelectedNotes()
+{
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+        selected_note->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::firebrick);
+        
+    }
+    selected_notes_.deselectAll();
+}
+
+
 void NoteGridComponent::mouseMove(const MouseEvent& e)
 {
     repaint();
@@ -82,8 +97,76 @@ void NoteGridComponent::mouseMove(const MouseEvent& e)
 
 void NoteGridComponent::mouseUp (const MouseEvent& e)
 {
+    note_lasso_.endLasso();
+    removeChildComponent(&note_lasso_);
+    
+    if (! (e.mouseWasDraggedSinceMouseDown() || e.mods.isAnyModifierKeyDown()))
+    {
+        NoteComponent** selected_note_iter;
+        for (selected_note_iter = selected_notes_.begin();
+             selected_note_iter != selected_notes_.end();
+             selected_note_iter++)
+        {
+            NoteComponent* selected_note = *selected_note_iter;
+            selected_note->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::firebrick);
+
+        }
+        selected_notes_.deselectAll();
+    }
+
     repaint();
 }
+
+void NoteGridComponent::setSelectedNote(NoteComponent *note_component)
+{
+    clearSelectedNotes();
+    selected_notes_.selectOnly(note_component);
+    note_component->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::lightblue);
+
+}
+
+
+void NoteGridComponent::mouseDown (const MouseEvent& e)
+{
+    clearSelectedNotes();
+    
+    addChildComponent(note_lasso_);
+    note_lasso_.setAlpha(0.5);
+    note_lasso_.beginLasso(e, this);
+}
+
+void NoteGridComponent::mouseDrag (const MouseEvent& e)
+{
+    note_lasso_.toFront(false);
+    note_lasso_.dragLasso(e);
+}
+
+void NoteGridComponent::changeListenerCallback(ChangeBroadcaster*)
+{
+    repaint();
+}
+
+void NoteGridComponent::findLassoItemsInArea (Array <NoteComponent*>& results, const Rectangle<int>& area)
+{
+    const Rectangle<int> lasso (area);// - subCompHolder->getPosition());
+    
+    for (int i=0; i<note_components.size(); i++)
+    {
+        NoteComponent* note = note_components[i];
+        
+        if (note->getBounds().intersects(lasso))
+        {
+            results.add(note);
+        }
+    }
+}
+
+SelectedItemSet<NoteComponent*>& NoteGridComponent::getLassoSelection()
+{
+    return selected_notes_;
+}
+
+
 
 bool NoteGridComponent::mouseGridStepPosition(int &x, int &y)
 {
@@ -151,6 +234,8 @@ bool NoteGridComponent::doesNoteOverlap(MIDINote& selected_note,
     return false;
 }
 
+#define USE_ORIGINAL_SELECTED   1
+
 void NoteGridComponent::updateSelectedNotes()
 {
     
@@ -160,12 +245,22 @@ void NoteGridComponent::updateSelectedNotes()
     selected_note_on_time_ = getNoteOnTime(grid_bounds.getX());
     selected_note_num_ = getNoteNum(grid_bounds.getY());
     selected_note_off_time_ = getNoteOffTime(selected_note_on_time_, grid_bounds.getWidth());
-    
+
+#if USE_ORIGINAL_SELECTED
     for (int selected_note_index=0;
          selected_note_index<selected_note_components_.size();
          selected_note_index++)
     {
         selected_note_component = selected_note_components_[selected_note_index];
+        
+#else
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter=selected_notes_.begin();
+         selected_note_iter!=selected_notes_.end();
+         selected_note_iter++)
+    {
+        selected_note_component = *selected_note_iter;
+#endif
         MIDINote selected_note = selected_note_component->getMidiNote();
         Rectangle<int> selected_note_bounds = selected_note_component->getBoundsInParent();
         selected_note_num_ = getNoteNum(selected_note_bounds.getY());
@@ -227,13 +322,15 @@ void NoteGridComponent::updateSelectedNotes()
         }
     }
     
-    
     repaint();
 }
 
 
 void NoteGridComponent::grabSelectedNoteComponent(NoteComponent* selected_note_component)
 {
+#if !USE_ORIGINAL_SELECTED
+    return;
+#endif
     int selected_note_index = note_components.indexOf(selected_note_component);
     note_components.remove(selected_note_index, false);
     selected_note_components_.add(selected_note_component);
@@ -241,6 +338,9 @@ void NoteGridComponent::grabSelectedNoteComponent(NoteComponent* selected_note_c
 
 void NoteGridComponent::releaseSelectedNoteComponent()
 {
+#if !USE_ORIGINAL_SELECTED
+    return;
+#endif
     for (int i=0; i<selected_note_components_.size(); i++)
     {
         NoteComponent* restore_selected_note = selected_note_components_.removeAndReturn(i);
@@ -339,8 +439,17 @@ void NoteGridComponent::drawComponent (Graphics& g)
         {
             updateNoteComponentBounds(selected_note_components_[note_index]);
         }
-        
+     
         properties_->init_grid_ = false;
+    }
+    
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+        selected_note->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::lightblue);
     }
     
     grid_step_x = -(getWidth() / 2) + 2;

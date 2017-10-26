@@ -26,7 +26,9 @@ class NoteComponent;
 class NoteComponentSorter;
 
 //==============================================================================
-class NoteGridComponent  : public GraphicsComponentBase
+class NoteGridComponent  :  public GraphicsComponentBase,
+                            public ChangeListener,
+                            public LassoSource<NoteComponent*>
 {
 public:
     enum GridResolution {
@@ -47,10 +49,15 @@ public:
     
     void mouseMove(const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
+    void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
     bool mouseGridStepPosition(int &x, int &y);
     void setParentNoteGridViewport(NoteGridViewport* viewport);
     void drawComponent (Graphics& g) override;
-        
+    
+    void setSelectedNote(NoteComponent *note_component);
+    void clearSelectedNotes();
+    
     void updateSelectedNotes();
     void updateNoteComponentBounds(NoteComponent* note_component);
     
@@ -65,6 +72,11 @@ public:
     bool doesNoteOverlap(MIDINote& selected_note,
                          MIDINote& check_note,
                          bool debug_print = false);
+    
+    void findLassoItemsInArea (Array <NoteComponent*>& results, const Rectangle<int>& area) override;
+    SelectedItemSet<NoteComponent*>& getLassoSelection() override;
+    void changeListenerCallback(ChangeBroadcaster*) override;
+
     
 private:
     const MidiMessageSequence* midi_msg_seq;
@@ -91,6 +103,10 @@ private:
     int selected_note_off_time_;
   
     MIDINote selected_note_;
+    
+    LassoComponent<NoteComponent*> note_lasso_;
+    SelectedItemSet<NoteComponent*> selected_notes_;
+
 };
 
 

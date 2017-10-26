@@ -130,7 +130,19 @@ void NoteComponent::resized()
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
 }
 
+/*
+void NoteComponent::focusGained(FocusChangeType cause)
+{
+    printf("focusGained\n");
+    setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::lightblue);
+}
 
+void NoteComponent::focusLost(FocusChangeType cause)
+{
+    printf("focusLost\n");
+    setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::firebrick);
+}
+*/
 MouseCursor NoteComponent::getMouseCursor()
 {
     switch (mouse_cursor_mode)
@@ -161,6 +173,8 @@ void NoteComponent::mouseDown (const MouseEvent& e)
     startDraggingComponent(this, e);
     
     note_grid_->grabSelectedNoteComponent(this);
+    
+    note_grid_->setSelectedNote(this);
 }
 
 void NoteComponent::mouseDrag (const MouseEvent& e)

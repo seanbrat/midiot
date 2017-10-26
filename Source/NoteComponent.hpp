@@ -67,6 +67,9 @@ public:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
     
+    //virtual void focusGained(FocusChangeType cause);
+    //virtual void focusLost(FocusChangeType cause);
+
 private:
     ScopedPointer<NoteComponentBoundsConstrainer> note_bounds;
     
