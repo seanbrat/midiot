@@ -19,20 +19,25 @@
 class NoteGridViewport;
 class NoteComponentBoundsConstrainer;
 class NoteGridComponent;
+class NoteComponent;
 
 class NoteEdgeComponent : public ResizableEdgeComponent
 {
 public:
-    NoteEdgeComponent(Component *componentToResize,
-                                         ComponentBoundsConstrainer *constrainer,
-                                         Edge edgeToResize,
-                                         NoteGridViewport* viewport);
+    NoteEdgeComponent(NoteComponent *componentToResize,
+                      ComponentBoundsConstrainer *constrainer,
+                      Edge edgeToResize,
+                      NoteGridViewport* viewport,
+                      NoteGridComponent* note_grid);
 
     void mouseDrag(const MouseEvent& e) override;
+    void mouseDown(const MouseEvent& e) override;
+    void mouseUp(const MouseEvent& e) override;
 
 private:
     NoteGridViewport* grid_viewport;
-    Component* note_component;
+    NoteGridComponent* note_grid_;
+    NoteComponent* note_component;
 };
 
 

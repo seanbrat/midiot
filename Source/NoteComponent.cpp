@@ -12,15 +12,34 @@
 #include "NoteComponentBoundsConstrainer.hpp"
 #include "NoteGridComponent.hpp"
 
-NoteEdgeComponent::NoteEdgeComponent(Component *componentToResize,
+NoteEdgeComponent::NoteEdgeComponent(NoteComponent *componentToResize,
                   ComponentBoundsConstrainer *constrainer,
                   Edge edgeToResize,
-                  NoteGridViewport* viewport) :
+                  NoteGridViewport* viewport,
+                  NoteGridComponent* note_grid) :
 ResizableEdgeComponent(componentToResize, constrainer, edgeToResize),
 grid_viewport(viewport),
-note_component(componentToResize)
+note_component(componentToResize),
+note_grid_(note_grid)
 {
     setName(String("NoteEdgeComponent"));
+}
+
+void NoteEdgeComponent::mouseDown(const MouseEvent& e)
+{
+    ResizableEdgeComponent::mouseDown(e);
+    
+    printf("NoteEdgeComponent::mouseDown()\n");
+    note_grid_->grabSelectedNoteComponent(note_component);
+}
+
+void NoteEdgeComponent::mouseUp(const MouseEvent& e)
+{
+    ResizableEdgeComponent::mouseUp(e);
+    
+    printf("NoteEdgeComponent::mouseUp()\n");
+    note_grid_->releaseSelectedNoteComponent();
+    note_grid_->flushNoteRemovePool();
 }
 
 void NoteEdgeComponent::mouseDrag(const MouseEvent& e)
@@ -39,6 +58,9 @@ void NoteEdgeComponent::mouseDrag(const MouseEvent& e)
     
     //printf("NoteEdgeComponent mouseDrag with e.x: %d\t\tedge_x: %d\t\tcomponent_x: %d\n", e.x, edge_x, component_x);
     
+//    note_grid_->updateSelectedNote(note_component->getBoundsInParent(), note_component);
+  
+    note_grid_->updateSelectedNotes();
     
     grid_viewport->autoScroll(this->getX() + note_component->getX() - grid_viewport->getViewPositionX(),
                               this->getY() + note_component->getY() - grid_viewport->getViewPositionY(),
@@ -73,9 +95,17 @@ note_grid_(note_grid)
     
     note_bounds = new NoteComponentBoundsConstrainer(midi_note_, this);
     
-    left_edge = new NoteEdgeComponent(this, 0, ResizableEdgeComponent::Edge::leftEdge, grid_viewport);
+    left_edge = new NoteEdgeComponent(this,
+                                      0,
+                                      ResizableEdgeComponent::Edge::leftEdge,
+                                      grid_viewport,
+                                      note_grid_);
     addAndMakeVisible(left_edge);
-    right_edge = new NoteEdgeComponent(this, 0, ResizableEdgeComponent::Edge::rightEdge, grid_viewport);
+    right_edge = new NoteEdgeComponent(this,
+                                       0,
+                                       ResizableEdgeComponent::Edge::rightEdge,
+                                       grid_viewport,
+                                       note_grid_);
     addAndMakeVisible(right_edge);
     
     
@@ -83,6 +113,7 @@ note_grid_(note_grid)
 
 NoteComponent::~NoteComponent()
 {
+    printf("~NoteComponent() destructor...\n");
     delete left_edge;
     delete right_edge;
     //delete note_bounds;
@@ -97,9 +128,6 @@ void NoteComponent::resized()
 {
     left_edge->setBounds(0, 0, 2, getHeight());
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
-    
-    note_grid_->checkNoteGridBounds(getBoundsInParent(), this);
-    note_grid_->flushNoteRemovePool();
 }
 
 
@@ -132,10 +160,12 @@ void NoteComponent::mouseDown (const MouseEvent& e)
     startDraggingComponent(right_edge, e);
     startDraggingComponent(this, e);
     
+    note_grid_->grabSelectedNoteComponent(this);
 }
 
 void NoteComponent::mouseDrag (const MouseEvent& e)
 {
+    printf("NoteComponent::mouseDrag() called\n");
     note_bounds->set_mouse_drag_pos(e.x, e.y);
     
     Rectangle<int> grid_bounds = getBoundsInParent();
@@ -152,7 +182,9 @@ void NoteComponent::mouseDrag (const MouseEvent& e)
     
     //printf("\nmouseDrag note_num: %d\n", midi_note.note_num_);
     
-    note_grid_->checkNoteGridBounds(grid_bounds, this);
+    //note_grid_->updateSelectedNote(grid_bounds, this);
+
+    note_grid_->updateSelectedNotes();
     
     grid_viewport->autoScroll(e.x + this->getX() - grid_viewport->getViewPositionX(),
                               e.y + this->getY() - grid_viewport->getViewPositionY(),
@@ -168,9 +200,12 @@ void NoteComponent::mouseUp (const MouseEvent& e)
     mouse_drag_x = -1;
     mouse_drag_y = -1;
     
-    Rectangle<int> grid_bounds = getBoundsInParent();
-    note_grid_->checkNoteGridBounds(grid_bounds, this);
+//    note_grid_->updateSelectedNote(getBoundsInParent(), this);
+    
+    note_grid_->updateSelectedNotes();
     note_grid_->flushNoteRemovePool();
+    
+    note_grid_->releaseSelectedNoteComponent();
     
     note_grid_->repaint();
 }

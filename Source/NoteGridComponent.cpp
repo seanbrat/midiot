@@ -151,48 +151,43 @@ bool NoteGridComponent::doesNoteOverlap(MIDINote& selected_note,
     return false;
 }
 
-
-void NoteGridComponent::checkNoteGridBounds(Rectangle<int> grid_bounds, NoteComponent* selected_note_component)
+void NoteGridComponent::updateSelectedNotes()
 {
-    //printf("\ncheckNoteGridBounds at x: %d\t\ty: %d\t\twidth: %d\t\theight: %d\n", grid_bounds.getX(), grid_bounds.getY(), grid_bounds.getWidth(), grid_bounds.getHeight());
+    
+    Rectangle<int> grid_bounds;
+    NoteComponent* selected_note_component;
     
     selected_note_on_time_ = getNoteOnTime(grid_bounds.getX());
     selected_note_num_ = getNoteNum(grid_bounds.getY());
     selected_note_off_time_ = getNoteOffTime(selected_note_on_time_, grid_bounds.getWidth());
     
-    MIDINote selected_note_info = selected_note_component->getMidiNote();
-    selected_note_info.note_num_ = selected_note_num_;
-    selected_note_info.note_on_time_ = selected_note_on_time_;
-    selected_note_info.note_off_time_ = selected_note_off_time_;
-    
-    selected_note_ = MIDINote(selected_note_num_,
-                              selected_note_info.velocity_,
-                              selected_note_on_time_,
-                              selected_note_off_time_);
-    
-    selected_note_component->setMidiNote(selected_note_info);
-    
-    int selected_note_index = note_components.indexOf(selected_note_component);
-    
-    //printf("note_num: %d\t\tnote_on_time: %d\t\tnote_off_time: %d\n", selected_note_num_, selected_note_on_time_, selected_note_off_time_);
-    
-    // check for overlapping notes
-    
-    if (selected_note_num_ >= 0)
+    for (int selected_note_index=0;
+         selected_note_index<selected_note_components_.size();
+         selected_note_index++)
     {
+        selected_note_component = selected_note_components_[selected_note_index];
+        MIDINote selected_note = selected_note_component->getMidiNote();
+        Rectangle<int> selected_note_bounds = selected_note_component->getBoundsInParent();
+        selected_note_num_ = getNoteNum(selected_note_bounds.getY());
+        selected_note_on_time_ = getNoteOnTime(selected_note_bounds.getX());
+        selected_note_off_time_ = getNoteOffTime(selected_note_on_time_,
+                                                 selected_note_bounds.getWidth());
+
+        selected_note.note_num_ = getNoteNum(selected_note_bounds.getY());
+        selected_note.note_on_time_ = getNoteOnTime(selected_note_bounds.getX());
+        selected_note.note_off_time_ = getNoteOffTime(selected_note_on_time_,
+                                                 selected_note_bounds.getWidth());
+        
+        selected_note_component->setMidiNote(selected_note);
+        
         for (int overlap_note_index=0;
              overlap_note_index<note_components.size();
              overlap_note_index++)
         {
-            if (overlap_note_index == selected_note_index)
-            {
-                continue;
-            }
-            
             NoteComponent* overlap_note_component = note_components[overlap_note_index];
             MIDINote overlap_note = overlap_note_component->getMidiNote();
             
-            if (doesNoteOverlap(selected_note_, overlap_note))
+            if (doesNoteOverlap(selected_note, overlap_note))
             {
                 overlap_note_component->setVisible(false);
                 note_components.remove(overlap_note_index, false);
@@ -210,12 +205,14 @@ void NoteGridComponent::checkNoteGridBounds(Rectangle<int> grid_bounds, NoteComp
         
         bool should_restore_note = true;
         
-        for (int check_note_index=0; check_note_index<note_components.size(); check_note_index++)
+        for (int check_note_index=0;
+             check_note_index<selected_note_components_.size();
+             check_note_index++)
         {
-            NoteComponent* check_note_component = note_components[check_note_index];
+            NoteComponent* check_note_component = selected_note_components_[check_note_index];
             MIDINote check_note = check_note_component->getMidiNote();
             
-            if (doesNoteOverlap(restore_note, check_note, true))
+            if (doesNoteOverlap(restore_note, check_note, false))
             {
                 should_restore_note = false;
             }
@@ -234,9 +231,44 @@ void NoteGridComponent::checkNoteGridBounds(Rectangle<int> grid_bounds, NoteComp
     repaint();
 }
 
+
+void NoteGridComponent::grabSelectedNoteComponent(NoteComponent* selected_note_component)
+{
+    int selected_note_index = note_components.indexOf(selected_note_component);
+    note_components.remove(selected_note_index, false);
+    selected_note_components_.add(selected_note_component);
+}
+
+void NoteGridComponent::releaseSelectedNoteComponent()
+{
+    for (int i=0; i<selected_note_components_.size(); i++)
+    {
+        NoteComponent* restore_selected_note = selected_note_components_.removeAndReturn(i);
+        note_components.addSorted(*note_sorter_, restore_selected_note);
+    }
+}
+
 void NoteGridComponent::flushNoteRemovePool()
 {
     note_remove_pool.clear();
+}
+
+void NoteGridComponent::updateNoteComponentBounds(NoteComponent* note_component)
+{
+    if (!note_component)
+    {
+        return;
+    }
+    
+    MIDINote note = note_component->getMidiNote();
+    int num_notes = 128;
+    int note_height = properties_->step_height_;
+    int note_width = (note.note_off_time_ - note.note_on_time_) * properties_->tick_to_pixel_x_factor_;
+    int note_pos_x = note.note_on_time_ * properties_->tick_to_pixel_x_factor_;
+    int note_pos_y = (properties_->step_height_)*(num_notes - note.note_num_ - 1);
+    
+    note_component->setBounds(note_pos_x, note_pos_y, note_width, note_height);
+
 }
 
 void NoteGridComponent::drawComponent (Graphics& g)
@@ -298,27 +330,16 @@ void NoteGridComponent::drawComponent (Graphics& g)
     
     if (properties_->init_grid_)
     {
-        int note_array_size = note_components.size();
-        
-        for (int note_index=0; note_index<note_array_size; note_index++)
+        for (int note_index=0; note_index<note_components.size(); note_index++)
         {
-            NoteComponent* note_component = note_components[note_index];
-            
-            if (!note_component)
-            {
-                continue;
-            }
-            
-            MIDINote note = note_component->getMidiNote();
-            
-            int note_height = step_height;
-            int note_width = (note.note_off_time_ - note.note_on_time_) * properties_->tick_to_pixel_x_factor_;
-            int note_pos_x = note.note_on_time_ * properties_->tick_to_pixel_x_factor_;
-            int note_pos_y = (step_height)*(num_notes - note.note_num_ - 1);
-            
-            note_component->setBounds(note_pos_x, note_pos_y, note_width, note_height);
+            updateNoteComponentBounds(note_components[note_index]);
         }
-    
+
+        for (int note_index=0; note_index<selected_note_components_.size(); note_index++)
+        {
+            updateNoteComponentBounds(selected_note_components_[note_index]);
+        }
+        
         properties_->init_grid_ = false;
     }
     

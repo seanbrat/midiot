@@ -50,9 +50,12 @@ public:
     bool mouseGridStepPosition(int &x, int &y);
     void setParentNoteGridViewport(NoteGridViewport* viewport);
     void drawComponent (Graphics& g) override;
+        
+    void updateSelectedNotes();
+    void updateNoteComponentBounds(NoteComponent* note_component);
     
-    void checkNoteGridBounds(Rectangle<int> grid_bounds, NoteComponent* selected_note_component);
-    
+    void grabSelectedNoteComponent(NoteComponent* selected_note_component);
+    void releaseSelectedNoteComponent();
     void flushNoteRemovePool();
     
     int getNoteNum(int y);
@@ -61,7 +64,7 @@ public:
 
     bool doesNoteOverlap(MIDINote& selected_note,
                          MIDINote& check_note,
-                         bool debug_print = true);
+                         bool debug_print = false);
     
 private:
     const MidiMessageSequence* midi_msg_seq;
@@ -71,8 +74,7 @@ private:
     
     OwnedArray<NoteComponent> note_components;
     OwnedArray<NoteComponent> note_remove_pool;
-    
-    OwnedArray<NoteComponent> note_comps[num_midi_notes_];
+    OwnedArray<NoteComponent> selected_note_components_;
     
     // MIDI File properties
     BarBeatTime clip_length;
