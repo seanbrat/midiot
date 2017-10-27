@@ -31,7 +31,11 @@ void NoteEdgeComponent::mouseDown(const MouseEvent& e)
     
     printf("NoteEdgeComponent::mouseDown()\n");
     
-    note_grid_->setSelectedNote(note_component);
+    if (!note_grid_->isNoteSelected(note_component))
+    {
+        note_component->setMouseDownBounds(getBounds());
+        note_grid_->setSelectedNote(note_component);
+    }
 }
 
 void NoteEdgeComponent::mouseUp(const MouseEvent& e)
@@ -89,7 +93,9 @@ midi_note_(MIDINote(note_num,
                    note_off_time)),
 note_on_ptr_(note_on_ptr),
 note_off_ptr_(note_off_ptr),
-note_grid_(note_grid)
+note_grid_(note_grid),
+mouse_down_bounds_(0,0,0,0),
+mouse_drag_y(0)
 {
     setName(String("NoteComponent"));
     
@@ -124,11 +130,21 @@ MIDINote& NoteComponent::getMidiNote()
     return midi_note_;
 }
 
+
 void NoteComponent::resized()
 {
     left_edge->setBounds(0, 0, 2, getHeight());
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
 }
+
+
+void NoteComponent::moved()
+{
+    printf("moved\n");
+    left_edge->setBounds(0, 0, 2, getHeight());
+    right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
+}
+
 
 /*
 void NoteComponent::focusGained(FocusChangeType cause)
@@ -168,23 +184,37 @@ void NoteComponent::mouseDown (const MouseEvent& e)
     mouse_drag_x = e.x;
     mouse_drag_y = e.y;
     
+    mouse_down_y_ = e.y;
+    
+    printf("mouse_down_y_: %d\n", mouse_down_y_);
+    
     startDraggingComponent(left_edge, e);
     startDraggingComponent(right_edge, e);
     startDraggingComponent(this, e);
     
-    note_grid_->setSelectedNote(this);
+    if (!note_grid_->isNoteSelected(this))
+    {
+        note_grid_->setSelectedNote(this);
+    }
+    else
+    {
+        note_grid_->initSelectedNotes();
+    }
 }
+
+
 
 void NoteComponent::mouseDrag (const MouseEvent& e)
 {
-    //printf("NoteComponent::mouseDrag() called\n");
+    printf("NoteComponent::mouseDrag() called with e.x: %d and e.y: %d\n", e.x, e.y);
     note_bounds->set_mouse_drag_pos(e.x, e.y);
     
     Rectangle<int> grid_bounds = getBoundsInParent();
         
     mouse_drag_x = e.x;
     mouse_drag_y = e.y;
-    
+
+
     dragComponent(left_edge, e, note_bounds);
     dragComponent(right_edge, e, note_bounds);
     dragComponent(this, e, note_bounds);
@@ -192,10 +222,12 @@ void NoteComponent::mouseDrag (const MouseEvent& e)
     left_edge->setBounds(0, 0, 2, getHeight());
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
     
+    note_grid_->dragSelectedNotes(e, this, mouse_down_y_);
+    
     //printf("\nmouseDrag note_num: %d\n", midi_note.note_num_);
     
     //note_grid_->updateSelectedNote(grid_bounds, this);
-
+    
     note_grid_->updateSelectedNotes();
     
     grid_viewport->autoScroll(e.x + this->getX() - grid_viewport->getViewPositionX(),

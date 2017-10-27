@@ -48,6 +48,7 @@ bool NoteGridViewport::autoScroll(int    mouseX,
                 int 	distanceFromEdge,
                 int 	maximumSpeed)
 {
+    printf("autoScroll\n");
     bool retval = Viewport::autoScroll(mouseX, mouseY, distanceFromEdge, maximumSpeed);
     
     if (linkedViewport)

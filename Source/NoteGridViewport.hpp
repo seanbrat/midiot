@@ -27,7 +27,7 @@ public:
                     int mouseY,
                     int distanceFromEdge,
                     int maximumSpeed);
-    
+        
     
 private:
     NoteGridViewport* linkedViewport;

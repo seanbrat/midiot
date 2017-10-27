@@ -120,11 +120,104 @@ void NoteGridComponent::mouseUp (const MouseEvent& e)
 void NoteGridComponent::setSelectedNote(NoteComponent *note_component)
 {
     clearSelectedNotes();
+    note_component->setMouseDownBounds(note_component->getBounds());
     selected_notes_.addToSelection(note_component);
     note_component->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::lightblue);
 
 }
 
+void NoteGridComponent::initSelectedNotes()
+{
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+        selected_note->setMouseDownBounds(selected_note->getBounds());
+    }
+}
+
+void NoteGridComponent::dragSelectedNotes(const MouseEvent& e,
+                                          NoteComponent* dragged_note,
+                                          int y_drag_compensation)
+{
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+
+        if (dragged_note == selected_note)
+        {
+            continue;
+        }
+        
+        Rectangle<int> drag_bounds = selected_note->getMouseDownBounds();
+        
+        drag_bounds.setX(drag_bounds.getX() + e.getDistanceFromDragStartX());
+        
+        int y_distance = e.getDistanceFromDragStartY();
+        int y_direction = y_distance >= 0 ? 1 : -1;
+        
+        int move_y_steps;
+        
+        if (y_direction == 1)
+        {
+            move_y_steps =
+            abs(y_distance + y_drag_compensation - 1) / properties_->step_height_;
+        }
+        else
+        {
+            if ((y_drag_compensation + y_distance) < 0)
+            {
+                move_y_steps =
+                (abs(y_distance + y_drag_compensation) + properties_->step_height_) / properties_->step_height_;
+            }
+            else
+            {
+                move_y_steps = 0;
+            }
+        }
+        
+        
+        
+        printf("\ne.getDistanceFromDragStartY(): %d\ty_drag_compensation: %d\n", e.getDistanceFromDragStartY(), y_drag_compensation);
+        
+        int move_y_amount = 0;
+        
+        for (int i=0; i<move_y_steps; i++)
+        {
+            move_y_amount += (y_direction * properties_->step_height_);
+        }
+        
+        printf("move_y_steps: %d\ty_direction: %d\tmove_y_amount: %d\n",
+               move_y_steps, y_direction, move_y_amount);
+        
+        drag_bounds.setY(drag_bounds.getY() + move_y_amount);
+
+        selected_note->setBounds(drag_bounds);
+    }
+}
+
+bool NoteGridComponent::isNoteSelected(NoteComponent* note_component)
+{
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+        
+        if (selected_note == note_component)
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
 
 void NoteGridComponent::mouseDown (const MouseEvent& e)
 {

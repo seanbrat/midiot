@@ -60,6 +60,7 @@ public:
     void setMidiNote(MIDINote& midi_note) { midi_note_ = midi_note; };
     
     void resized() override;
+    void moved() override;
     
     MouseCursor getMouseCursor() override;
     void mouseMove (const MouseEvent& e) override;
@@ -69,12 +70,18 @@ public:
     
     //virtual void focusGained(FocusChangeType cause);
     //virtual void focusLost(FocusChangeType cause);
-
+    
+    void setMouseDownBounds(Rectangle<int> bounds) { mouse_down_bounds_ = bounds; };
+    Rectangle<int> getMouseDownBounds() { return mouse_down_bounds_; };
+    
 private:
     ScopedPointer<NoteComponentBoundsConstrainer> note_bounds;
     
     int mouse_drag_x;
     int mouse_drag_y;
+    
+    Rectangle<int> mouse_down_bounds_;
+    int mouse_down_y_;
     
     ResizableEdgeComponent *left_edge;
     ResizableEdgeComponent *right_edge;

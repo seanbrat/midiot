@@ -55,8 +55,14 @@ public:
     void setParentNoteGridViewport(NoteGridViewport* viewport);
     void drawComponent (Graphics& g) override;
     
-    void setSelectedNote(NoteComponent *note_component);
+    bool isNoteSelected(NoteComponent* note_component);
+    void setSelectedNote(NoteComponent* note_component);
+    void initSelectedNotes();
     void clearSelectedNotes();
+    
+    void dragSelectedNotes(const MouseEvent& e,
+                           NoteComponent* dragged_note,
+                           int y_drag_compensation);
     
     void updateSelectedNotes();
     void updateNoteComponentBounds(NoteComponent* note_component);
