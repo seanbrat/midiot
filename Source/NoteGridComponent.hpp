@@ -61,8 +61,6 @@ public:
     void updateSelectedNotes();
     void updateNoteComponentBounds(NoteComponent* note_component);
     
-    void grabSelectedNoteComponent(NoteComponent* selected_note_component);
-    void releaseSelectedNoteComponent();
     void flushNoteRemovePool();
     
     int getNoteNum(int y);

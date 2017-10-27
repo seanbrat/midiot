@@ -30,7 +30,8 @@ void NoteEdgeComponent::mouseDown(const MouseEvent& e)
     ResizableEdgeComponent::mouseDown(e);
     
     printf("NoteEdgeComponent::mouseDown()\n");
-    note_grid_->grabSelectedNoteComponent(note_component);
+    
+    note_grid_->setSelectedNote(note_component);
 }
 
 void NoteEdgeComponent::mouseUp(const MouseEvent& e)
@@ -38,7 +39,6 @@ void NoteEdgeComponent::mouseUp(const MouseEvent& e)
     ResizableEdgeComponent::mouseUp(e);
     
     printf("NoteEdgeComponent::mouseUp()\n");
-    note_grid_->releaseSelectedNoteComponent();
     note_grid_->flushNoteRemovePool();
 }
 
@@ -172,8 +172,6 @@ void NoteComponent::mouseDown (const MouseEvent& e)
     startDraggingComponent(right_edge, e);
     startDraggingComponent(this, e);
     
-    note_grid_->grabSelectedNoteComponent(this);
-    
     note_grid_->setSelectedNote(this);
 }
 
@@ -218,9 +216,7 @@ void NoteComponent::mouseUp (const MouseEvent& e)
     
     note_grid_->updateSelectedNotes();
     note_grid_->flushNoteRemovePool();
-    
-    note_grid_->releaseSelectedNoteComponent();
-    
+        
     note_grid_->repaint();
 }
 
