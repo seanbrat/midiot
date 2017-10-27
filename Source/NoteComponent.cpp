@@ -179,7 +179,7 @@ void NoteComponent::mouseDown (const MouseEvent& e)
 
 void NoteComponent::mouseDrag (const MouseEvent& e)
 {
-    printf("NoteComponent::mouseDrag() called\n");
+    //printf("NoteComponent::mouseDrag() called\n");
     note_bounds->set_mouse_drag_pos(e.x, e.y);
     
     Rectangle<int> grid_bounds = getBoundsInParent();

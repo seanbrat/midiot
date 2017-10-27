@@ -120,7 +120,7 @@ void NoteGridComponent::mouseUp (const MouseEvent& e)
 void NoteGridComponent::setSelectedNote(NoteComponent *note_component)
 {
     clearSelectedNotes();
-    selected_notes_.selectOnly(note_component);
+    selected_notes_.addToSelection(note_component);
     note_component->setColour(NoteComponent::TextButton::ColourIds::buttonColourId, Colours::lightblue);
 
 }
@@ -234,7 +234,7 @@ bool NoteGridComponent::doesNoteOverlap(MIDINote& selected_note,
     return false;
 }
 
-#define USE_ORIGINAL_SELECTED   1
+#define USE_ORIGINAL_SELECTED   0
 
 void NoteGridComponent::updateSelectedNotes()
 {
@@ -268,6 +268,7 @@ void NoteGridComponent::updateSelectedNotes()
         selected_note_off_time_ = getNoteOffTime(selected_note_on_time_,
                                                  selected_note_bounds.getWidth());
 
+        //printf("selected_note_num_: %d selected_note_on_time_: %d selected_note_off_time_: %d\n", selected_note_num_, selected_note_on_time_, selected_note_off_time_);
         selected_note.note_num_ = getNoteNum(selected_note_bounds.getY());
         selected_note.note_on_time_ = getNoteOnTime(selected_note_bounds.getX());
         selected_note.note_off_time_ = getNoteOffTime(selected_note_on_time_,
@@ -279,11 +280,25 @@ void NoteGridComponent::updateSelectedNotes()
              overlap_note_index<note_components.size();
              overlap_note_index++)
         {
+ 
             NoteComponent* overlap_note_component = note_components[overlap_note_index];
+#if !USE_ORIGINAL_SELECTED
+            if (selected_note_component == overlap_note_component)
+            {
+                continue;
+            }
+#endif
+            
             MIDINote overlap_note = overlap_note_component->getMidiNote();
+            
+            if (overlap_note.note_num_ == selected_note.note_num_)
+            {
+                //printf("overlap_note.note_num_: %d overlap_note.note_on_time_: %d overlap_note.note_off_time_: %d\n", overlap_note.note_num_, overlap_note.note_on_time_, overlap_note.note_off_time_);
+            }
             
             if (doesNoteOverlap(selected_note, overlap_note))
             {
+                printf("found OVERLAP!\n");
                 overlap_note_component->setVisible(false);
                 note_components.remove(overlap_note_index, false);
                 note_remove_pool.addSorted(*note_sorter_, overlap_note_component);
@@ -300,11 +315,20 @@ void NoteGridComponent::updateSelectedNotes()
         
         bool should_restore_note = true;
         
+#if USE_ORIGINAL_SELECTED
         for (int check_note_index=0;
              check_note_index<selected_note_components_.size();
              check_note_index++)
         {
             NoteComponent* check_note_component = selected_note_components_[check_note_index];
+#else
+        NoteComponent** selected_note_iter;
+        for (selected_note_iter=selected_notes_.begin();
+             selected_note_iter!=selected_notes_.end();
+             selected_note_iter++)
+        {
+            NoteComponent* check_note_component = *selected_note_iter;
+#endif
             MIDINote check_note = check_note_component->getMidiNote();
             
             if (doesNoteOverlap(restore_note, check_note, false))
