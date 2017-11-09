@@ -60,9 +60,15 @@ public:
     void initSelectedNotes();
     void clearSelectedNotes();
     
+    
+    
     void dragSelectedNotes(const MouseEvent& e,
                            NoteComponent* dragged_note,
                            int y_drag_compensation);
+    
+    void doDragSelectedNotes();
+    void startDrag();
+    void endDrag();
     
     void updateSelectedNotes();
     void updateNoteComponentBounds(NoteComponent* note_component);
@@ -110,6 +116,12 @@ private:
     
     LassoComponent<NoteComponent*> note_lasso_;
     SelectedItemSet<NoteComponent*> selected_notes_;
+    
+    NoteComponent* dragged_note_;
+    int drag_x_distance_;
+    int drag_y_distance_;
+    int drag_y_compensation_;
+    int note_grid_viewpos_x_;
 
 };
 

@@ -20,8 +20,11 @@ properties_(NoteGridProperties())
     setName(String("NoteGridEditorComponent"));
     grid_viewport = new NoteGridViewport();
     addAndMakeVisible(grid_viewport);
+    
     note_grid = new NoteGridComponent(&properties_, grid_viewport);
+    grid_viewport->setNoteGrid(note_grid);
     addAndMakeVisible(note_grid);
+
     grid_viewport->setViewedComponent(note_grid);
     grid_viewport->setScrollBarsShown(false, false, true, true);
     

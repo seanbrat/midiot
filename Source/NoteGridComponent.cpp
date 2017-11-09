@@ -18,7 +18,12 @@ grid_viewport(viewport),
 properties_(properties),
 selected_note_num_(-1),
 selected_note_on_time_(0),
-selected_note_off_time_(0)
+selected_note_off_time_(0),
+dragged_note_(NULL),
+drag_x_distance_(0),
+drag_y_distance_(0),
+drag_y_compensation_(0),
+note_grid_viewpos_x_(0)
 {
     setName(String("NoteGridComponent"));
     
@@ -138,27 +143,58 @@ void NoteGridComponent::initSelectedNotes()
     }
 }
 
+void NoteGridComponent::startDrag()
+{
+    note_grid_viewpos_x_ = grid_viewport->getViewPositionX();
+}
+
+void NoteGridComponent::endDrag()
+{
+    dragged_note_ = NULL;
+    drag_x_distance_ = 0;
+    drag_y_distance_ = 0;
+    note_grid_viewpos_x_ = 0;
+}
+
 void NoteGridComponent::dragSelectedNotes(const MouseEvent& e,
                                           NoteComponent* dragged_note,
                                           int y_drag_compensation)
 {
+    dragged_note_ = dragged_note;
+    drag_x_distance_ = e.getDistanceFromDragStartX();
+    drag_y_distance_ = e.getDistanceFromDragStartY();
+    drag_y_compensation_ = y_drag_compensation;
+    
+    doDragSelectedNotes();
+}
+
+void NoteGridComponent::doDragSelectedNotes()
+{
+    if (!dragged_note_)
+    {
+        return;
+    }
+    
     NoteComponent** selected_note_iter;
     for (selected_note_iter = selected_notes_.begin();
          selected_note_iter != selected_notes_.end();
          selected_note_iter++)
     {
         NoteComponent* selected_note = *selected_note_iter;
-
-        if (dragged_note == selected_note)
+        
+        if (dragged_note_ == selected_note)
         {
             continue;
         }
         
         Rectangle<int> drag_bounds = selected_note->getMouseDownBounds();
         
-        drag_bounds.setX(drag_bounds.getX() + e.getDistanceFromDragStartX());
+        int note_grid_viewpos_x_delta = grid_viewport->getViewPositionX() - note_grid_viewpos_x_;
         
-        int y_distance = e.getDistanceFromDragStartY();
+        printf("note_grid_viewpos_x_delta: %d\n", note_grid_viewpos_x_delta);
+        drag_bounds.setX(drag_bounds.getX() + drag_x_distance_ + note_grid_viewpos_x_delta);
+        
+        int y_distance = drag_y_distance_;
         int y_direction = y_distance >= 0 ? 1 : -1;
         
         int move_y_steps;
@@ -166,14 +202,14 @@ void NoteGridComponent::dragSelectedNotes(const MouseEvent& e,
         if (y_direction == 1)
         {
             move_y_steps =
-            abs(y_distance + y_drag_compensation - 1) / properties_->step_height_;
+            abs(y_distance + drag_y_compensation_ - 1) / properties_->step_height_;
         }
         else
         {
-            if ((y_drag_compensation + y_distance) < 0)
+            if ((drag_y_compensation_ + y_distance) < 0)
             {
                 move_y_steps =
-                (abs(y_distance + y_drag_compensation) + properties_->step_height_) / properties_->step_height_;
+                (abs(y_distance + drag_y_compensation_) + properties_->step_height_) / properties_->step_height_;
             }
             else
             {
@@ -181,9 +217,7 @@ void NoteGridComponent::dragSelectedNotes(const MouseEvent& e,
             }
         }
         
-        
-        
-        printf("\ne.getDistanceFromDragStartY(): %d\ty_drag_compensation: %d\n", e.getDistanceFromDragStartY(), y_drag_compensation);
+        printf("\ndrag_y_distance_: %d\tdrag_y_compensation_: %d\n", drag_y_distance_, drag_y_compensation_);
         
         int move_y_amount = 0;
         
@@ -196,7 +230,7 @@ void NoteGridComponent::dragSelectedNotes(const MouseEvent& e,
                move_y_steps, y_direction, move_y_amount);
         
         drag_bounds.setY(drag_bounds.getY() + move_y_amount);
-
+        
         selected_note->setBounds(drag_bounds);
     }
 }
@@ -330,13 +364,7 @@ bool NoteGridComponent::doesNoteOverlap(MIDINote& selected_note,
 
 void NoteGridComponent::updateSelectedNotes()
 {
-    
-    Rectangle<int> grid_bounds;
     NoteComponent* selected_note_component;
-    
-    selected_note_on_time_ = getNoteOnTime(grid_bounds.getX());
-    selected_note_num_ = getNoteNum(grid_bounds.getY());
-    selected_note_off_time_ = getNoteOffTime(selected_note_on_time_, grid_bounds.getWidth());
 
     NoteComponent** selected_note_iter;
     for (selected_note_iter=selected_notes_.begin();

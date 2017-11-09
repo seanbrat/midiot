@@ -42,6 +42,8 @@ void NoteGridRulerComponent::mouseDrag(const MouseEvent& e)
     
     float drag_angle = atanf(x_drag / y_drag);
     
+    printf("NoteGridRulerComponent::mouseDrag\n\n");
+    
     if (0.0 <= drag_angle && drag_angle <= 0.09)
     {
         
@@ -56,7 +58,7 @@ void NoteGridRulerComponent::mouseDrag(const MouseEvent& e)
         
         properties_->updateGridProperties();
     }
-    
+
     previous_mouse_positions.pop();
     previous_mouse_positions.push(mouse_position);
     
@@ -107,7 +109,6 @@ void NoteGridRulerComponent::drawComponent (Graphics& g)
     
     g.setColour (Colours::lightgrey);
     g.fillRect (-fill_x, -fill_y, getWidth(), getHeight());
-    
     
     int grid_width = getWidth();
     int grid_height = getHeight();

@@ -7,11 +7,12 @@
 //
 
 #include "NoteGridViewport.hpp"
-
+#include "NoteGridComponent.hpp"
 
 NoteGridViewport::NoteGridViewport(const String& componentName) :
 Viewport(componentName),
-linkedViewport(NULL)
+linkedViewport(NULL),
+note_grid_(NULL)
 {
 }
 
@@ -48,7 +49,7 @@ bool NoteGridViewport::autoScroll(int    mouseX,
                 int 	distanceFromEdge,
                 int 	maximumSpeed)
 {
-    printf("autoScroll\n");
+    printf("NoteGridViewport::autoScroll\n");
     bool retval = Viewport::autoScroll(mouseX, mouseY, distanceFromEdge, maximumSpeed);
     
     if (linkedViewport)

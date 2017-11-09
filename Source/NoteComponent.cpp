@@ -140,7 +140,6 @@ void NoteComponent::resized()
 
 void NoteComponent::moved()
 {
-    printf("moved\n");
     left_edge->setBounds(0, 0, 2, getHeight());
     right_edge->setBounds(getWidth()-2, 0, 2, getHeight());
 }
@@ -183,8 +182,9 @@ void NoteComponent::mouseDown (const MouseEvent& e)
     
     mouse_drag_x = e.x;
     mouse_drag_y = e.y;
-    
     mouse_down_y_ = e.y;
+    
+    note_grid_->startDrag();
     
     printf("mouse_down_y_: %d\n", mouse_down_y_);
     
@@ -214,7 +214,6 @@ void NoteComponent::mouseDrag (const MouseEvent& e)
     mouse_drag_x = e.x;
     mouse_drag_y = e.y;
 
-
     dragComponent(left_edge, e, note_bounds);
     dragComponent(right_edge, e, note_bounds);
     dragComponent(this, e, note_bounds);
@@ -225,7 +224,6 @@ void NoteComponent::mouseDrag (const MouseEvent& e)
     note_grid_->dragSelectedNotes(e, this, mouse_down_y_);
     
     //printf("\nmouseDrag note_num: %d\n", midi_note.note_num_);
-    
     //note_grid_->updateSelectedNote(grid_bounds, this);
     
     note_grid_->updateSelectedNotes();
@@ -248,6 +246,7 @@ void NoteComponent::mouseUp (const MouseEvent& e)
     
     note_grid_->updateSelectedNotes();
     note_grid_->flushNoteRemovePool();
+    note_grid_->endDrag();
         
     note_grid_->repaint();
 }

@@ -13,6 +13,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+class NoteGridComponent;
+
 class NoteGridViewport : public Viewport
 {
 public:
@@ -27,10 +29,12 @@ public:
                     int mouseY,
                     int distanceFromEdge,
                     int maximumSpeed);
-        
+    
+    void setNoteGrid(NoteGridComponent* note_grid) { note_grid_ = note_grid; };
     
 private:
     NoteGridViewport* linkedViewport;
+    NoteGridComponent* note_grid_;
 };
 
 
