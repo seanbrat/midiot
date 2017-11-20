@@ -197,14 +197,14 @@ void NoteGridComponent::doResizeSelectedNotes()
          selected_note_iter != selected_notes_.end();
          selected_note_iter++)
     {
-        NoteComponent* selected_note = *selected_note_iter;
+        NoteComponent* selected_note_component = *selected_note_iter;
         
-        if (resized_note_ == selected_note)
+        if (resized_note_ == selected_note_component)
         {
             continue;
         }
         
-        Rectangle<int> resize_bounds = selected_note->getMouseDownBounds();
+        Rectangle<int> resize_bounds = selected_note_component->getMouseDownBounds();
         
         int note_grid_viewpos_x_delta = grid_viewport->getViewPositionX() - note_grid_viewpos_x_;
         
@@ -213,50 +213,51 @@ void NoteGridComponent::doResizeSelectedNotes()
         resize_bounds.setWidth(resize_bounds.getWidth() + resize_delta);
         resize_bounds.setX(resize_bounds.getX() + resize_x_delta);
         
-        selected_note->setBounds(resize_bounds);
+        MIDINote selected_note = selected_note_component->getMidiNote();
         
         /*
-        drag_bounds.setX(drag_bounds.getX() + drag_x_distance_ + note_grid_viewpos_x_delta);
-        
-        int y_distance = drag_y_distance_;
-        int y_direction = y_distance >= 0 ? 1 : -1;
-        
-        int move_y_steps;
-        
-        if (y_direction == 1)
-        {
-            move_y_steps =
-            abs(y_distance + drag_y_compensation_ - 1) / properties_->step_height_;
-        }
-        else
-        {
-            if ((drag_y_compensation_ + y_distance) < 0)
-            {
-                move_y_steps =
-                (abs(y_distance + drag_y_compensation_) + properties_->step_height_) / properties_->step_height_;
-            }
-            else
-            {
-                move_y_steps = 0;
-            }
-        }
-        
-        printf("\ndrag_y_distance_: %d\tdrag_y_compensation_: %d\n", drag_y_distance_, drag_y_compensation_);
-        
-        int move_y_amount = 0;
-        
-        for (int i=0; i<move_y_steps; i++)
-        {
-            move_y_amount += (y_direction * properties_->step_height_);
-        }
-        
-        printf("move_y_steps: %d\ty_direction: %d\tmove_y_amount: %d\n",
-               move_y_steps, y_direction, move_y_amount);
-        
-        drag_bounds.setY(drag_bounds.getY() + move_y_amount);
-        
-        selected_note->setBounds(drag_bounds);
+        Rectangle<int> selected_note_bounds = selected_note_component->getBoundsInParent();
+        selected_note_num_ = getNoteNum(selected_note_bounds.getY());
+        selected_note_on_time_ = getNoteOnTime(selected_note_bounds.getX());
+        selected_note_off_time_ = getNoteOffTime(selected_note_on_time_,
+                                                 selected_note_bounds.getWidth());
         */
+        
+        printf("selected_note_num_: %d selected_note_on_time_: %d selected_note_off_time_: %d\n", selected_note_num_, selected_note_on_time_, selected_note_off_time_);
+        selected_note.note_num_ = getNoteNum(resize_bounds.getY());
+        selected_note.note_on_time_ = getNoteOnTime(resize_bounds.getX());
+        selected_note.note_off_time_ = getNoteOffTime(selected_note.note_on_time_,
+                                                      resize_bounds.getWidth());
+        
+        
+        bool found_overlap = false;
+        
+        for (int overlap_note_index=0;
+             overlap_note_index<note_components.size();
+             overlap_note_index++)
+        {
+            
+            NoteComponent* overlap_note_component = note_components[overlap_note_index];
+            
+            if (selected_note_component == overlap_note_component)
+            {
+                continue;
+            }
+            
+            MIDINote overlap_note = overlap_note_component->getMidiNote();
+            
+            if (doesNoteOverlap(selected_note, overlap_note) &&
+                isNoteSelected(overlap_note_component))
+            {
+                found_overlap = true;
+                printf("found resize OVERLAP!\n");
+            }
+        }
+        
+        if (!found_overlap)
+        {
+            selected_note_component->setBounds(resize_bounds);
+        }
     }
 }
 
@@ -493,11 +494,6 @@ void NoteGridComponent::updateSelectedNotes()
             }
 
             MIDINote overlap_note = overlap_note_component->getMidiNote();
-            
-            if (overlap_note.note_num_ == selected_note.note_num_)
-            {
-                printf("overlap_note.note_num_: %d overlap_note.note_on_time_: %d overlap_note.note_off_time_: %d\n", overlap_note.note_num_, overlap_note.note_on_time_, overlap_note.note_off_time_);
-            }
             
             if (doesNoteOverlap(selected_note, overlap_note))
             {
