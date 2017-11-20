@@ -27,6 +27,10 @@ note_grid_(note_grid)
 
 void NoteEdgeComponent::mouseDown(const MouseEvent& e)
 {
+    mouse_drag_x = e.x;
+    mouse_drag_y = e.y;
+    mouse_down_y_ = e.y;
+    note_grid_->setResizeDownWidth(note_component->getWidth());
     ResizableEdgeComponent::mouseDown(e);
     
     printf("NoteEdgeComponent::mouseDown()\n");
@@ -35,6 +39,10 @@ void NoteEdgeComponent::mouseDown(const MouseEvent& e)
     {
         note_component->setMouseDownBounds(getBounds());
         note_grid_->setSelectedNote(note_component);
+    }
+    else
+    {
+        note_grid_->initSelectedNotes();
     }
 }
 
@@ -64,6 +72,9 @@ void NoteEdgeComponent::mouseDrag(const MouseEvent& e)
     
 //    note_grid_->updateSelectedNote(note_component->getBoundsInParent(), note_component);
   
+    note_grid_->resizeSelectedNotes(e, note_component, mouse_down_y_);
+
+    
     note_grid_->updateSelectedNotes();
     
     grid_viewport->autoScroll(this->getX() + note_component->getX() - grid_viewport->getViewPositionX(),
@@ -201,8 +212,6 @@ void NoteComponent::mouseDown (const MouseEvent& e)
         note_grid_->initSelectedNotes();
     }
 }
-
-
 
 void NoteComponent::mouseDrag (const MouseEvent& e)
 {

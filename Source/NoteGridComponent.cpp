@@ -168,6 +168,98 @@ void NoteGridComponent::dragSelectedNotes(const MouseEvent& e,
     doDragSelectedNotes();
 }
 
+void NoteGridComponent::resizeSelectedNotes(const MouseEvent& e,
+                                          NoteComponent* resized_note,
+                                          int y_resize_compensation)
+{
+    resized_note_ = resized_note;
+    resize_x_distance_ = e.getDistanceFromDragStartX();
+    resize_y_distance_ = e.getDistanceFromDragStartY();
+    resize_y_compensation_ = y_resize_compensation;
+    
+    doResizeSelectedNotes();
+}
+
+void NoteGridComponent::doResizeSelectedNotes()
+{
+    if (!resized_note_)
+    {
+        return;
+    }
+    
+    int resize_delta = resized_note_->getWidth() - resize_down_width_;
+    int resize_x_delta = resized_note_->getX() - resized_note_->getMouseDownBounds().getX();
+    
+    printf("resize_delta: %d\n", resize_delta);
+    
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+        
+        if (resized_note_ == selected_note)
+        {
+            continue;
+        }
+        
+        Rectangle<int> resize_bounds = selected_note->getMouseDownBounds();
+        
+        int note_grid_viewpos_x_delta = grid_viewport->getViewPositionX() - note_grid_viewpos_x_;
+        
+        printf("note_grid_viewpos_x_delta: %d\n", note_grid_viewpos_x_delta);
+        
+        resize_bounds.setWidth(resize_bounds.getWidth() + resize_delta);
+        resize_bounds.setX(resize_bounds.getX() + resize_x_delta);
+        
+        selected_note->setBounds(resize_bounds);
+        
+        /*
+        drag_bounds.setX(drag_bounds.getX() + drag_x_distance_ + note_grid_viewpos_x_delta);
+        
+        int y_distance = drag_y_distance_;
+        int y_direction = y_distance >= 0 ? 1 : -1;
+        
+        int move_y_steps;
+        
+        if (y_direction == 1)
+        {
+            move_y_steps =
+            abs(y_distance + drag_y_compensation_ - 1) / properties_->step_height_;
+        }
+        else
+        {
+            if ((drag_y_compensation_ + y_distance) < 0)
+            {
+                move_y_steps =
+                (abs(y_distance + drag_y_compensation_) + properties_->step_height_) / properties_->step_height_;
+            }
+            else
+            {
+                move_y_steps = 0;
+            }
+        }
+        
+        printf("\ndrag_y_distance_: %d\tdrag_y_compensation_: %d\n", drag_y_distance_, drag_y_compensation_);
+        
+        int move_y_amount = 0;
+        
+        for (int i=0; i<move_y_steps; i++)
+        {
+            move_y_amount += (y_direction * properties_->step_height_);
+        }
+        
+        printf("move_y_steps: %d\ty_direction: %d\tmove_y_amount: %d\n",
+               move_y_steps, y_direction, move_y_amount);
+        
+        drag_bounds.setY(drag_bounds.getY() + move_y_amount);
+        
+        selected_note->setBounds(drag_bounds);
+        */
+    }
+}
+
 void NoteGridComponent::doDragSelectedNotes()
 {
     if (!dragged_note_)
@@ -380,7 +472,7 @@ void NoteGridComponent::updateSelectedNotes()
         selected_note_off_time_ = getNoteOffTime(selected_note_on_time_,
                                                  selected_note_bounds.getWidth());
 
-        //printf("selected_note_num_: %d selected_note_on_time_: %d selected_note_off_time_: %d\n", selected_note_num_, selected_note_on_time_, selected_note_off_time_);
+        printf("selected_note_num_: %d selected_note_on_time_: %d selected_note_off_time_: %d\n", selected_note_num_, selected_note_on_time_, selected_note_off_time_);
         selected_note.note_num_ = getNoteNum(selected_note_bounds.getY());
         selected_note.note_on_time_ = getNoteOnTime(selected_note_bounds.getX());
         selected_note.note_off_time_ = getNoteOffTime(selected_note_on_time_,
@@ -404,7 +496,7 @@ void NoteGridComponent::updateSelectedNotes()
             
             if (overlap_note.note_num_ == selected_note.note_num_)
             {
-                //printf("overlap_note.note_num_: %d overlap_note.note_on_time_: %d overlap_note.note_off_time_: %d\n", overlap_note.note_num_, overlap_note.note_on_time_, overlap_note.note_off_time_);
+                printf("overlap_note.note_num_: %d overlap_note.note_on_time_: %d overlap_note.note_off_time_: %d\n", overlap_note.note_num_, overlap_note.note_on_time_, overlap_note.note_off_time_);
             }
             
             if (doesNoteOverlap(selected_note, overlap_note))

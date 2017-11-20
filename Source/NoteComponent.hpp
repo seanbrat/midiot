@@ -38,6 +38,12 @@ private:
     NoteGridViewport* grid_viewport;
     NoteGridComponent* note_grid_;
     NoteComponent* note_component;
+    
+    int mouse_drag_x;
+    int mouse_drag_y;
+    int mouse_down_y_;
+
+
 };
 
 
@@ -79,9 +85,9 @@ private:
     
     int mouse_drag_x;
     int mouse_drag_y;
+    int mouse_down_y_;
     
     Rectangle<int> mouse_down_bounds_;
-    int mouse_down_y_;
     
     ResizableEdgeComponent *left_edge;
     ResizableEdgeComponent *right_edge;

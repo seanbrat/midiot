@@ -65,10 +65,17 @@ public:
     void dragSelectedNotes(const MouseEvent& e,
                            NoteComponent* dragged_note,
                            int y_drag_compensation);
-    
     void doDragSelectedNotes();
+
+    void resizeSelectedNotes(const MouseEvent& e,
+                           NoteComponent* resize_note,
+                           int y_resize_compensation);
+    void doResizeSelectedNotes();
+
     void startDrag();
     void endDrag();
+    
+    void setResizeDownWidth(int width) { resize_down_width_ = width; };
     
     void updateSelectedNotes();
     void updateNoteComponentBounds(NoteComponent* note_component);
@@ -123,6 +130,12 @@ private:
     int drag_y_compensation_;
     int note_grid_viewpos_x_;
 
+    NoteComponent* resized_note_;
+    int resize_x_distance_;
+    int resize_y_distance_;
+    int resize_y_compensation_;
+    int resize_grid_viewpos_x_;
+    int resize_down_width_;
 };
 
 
