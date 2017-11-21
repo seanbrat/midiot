@@ -97,6 +97,14 @@ public:
     SelectedItemSet<NoteComponent*>& getLassoSelection() override;
     void changeListenerCallback(ChangeBroadcaster*) override;
 
+    MouseCursor& getDrawModeCursor() { return draw_mode_mouse_cursor_; };
+    MouseCursor& getEraseModeCursor() { return erase_mode_mouse_cursor_; };
+    
+    void setDrawMode(bool draw_mode) { draw_mode_ = draw_mode; };
+    bool getDrawMode() { return draw_mode_; };
+    
+    void setEraseMode(bool erase_mode) { erase_mode_ = erase_mode; };
+    bool getEraseMode() { return erase_mode_; };
     
 private:
     const MidiMessageSequence* midi_msg_seq;

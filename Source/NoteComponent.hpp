@@ -74,6 +74,8 @@ public:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
     
+    void modifierKeysChanged(const ModifierKeys &modifiers) override;
+
     //virtual void focusGained(FocusChangeType cause);
     //virtual void focusLost(FocusChangeType cause);
     
@@ -107,6 +109,7 @@ private:
     // pointer to MidiEventHolders for note
     MidiMessageSequence::MidiEventHolder* note_on_ptr_;
     MidiMessageSequence::MidiEventHolder* note_off_ptr_;
+    
 };
 
 

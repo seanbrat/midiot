@@ -124,8 +124,6 @@ mouse_drag_y(0)
                                        grid_viewport,
                                        note_grid_);
     addAndMakeVisible(right_edge);
-    
-    
 }
 
 NoteComponent::~NoteComponent()
@@ -156,6 +154,28 @@ void NoteComponent::moved()
 }
 
 
+void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
+{
+    if (modifiers.isCtrlDown())
+    {
+        if (modifiers.isShiftDown())
+        {
+            note_grid_->setDrawMode(false);
+            note_grid_->setEraseMode(true);
+        }
+        else
+        {
+            note_grid_->setDrawMode(true);
+            note_grid_->setEraseMode(false);
+        }
+    }
+    else
+    {
+        note_grid_->setDrawMode(false);
+        note_grid_->setEraseMode(false);
+    }
+}
+
 /*
 void NoteComponent::focusGained(FocusChangeType cause)
 {
@@ -179,12 +199,26 @@ MouseCursor NoteComponent::getMouseCursor()
             return right_edge_mouse_cursor;
         case NormalMouseMode:
         default:
-            return normal_mouse_cursor;
+        {
+            if (note_grid_->getDrawMode())
+            {
+                return note_grid_->getDrawModeCursor();
+            }
+            else if (note_grid_->getEraseMode())
+            {
+                return note_grid_->getEraseModeCursor();
+            }
+            else
+            {
+                return normal_mouse_cursor;
+            }
+        }
     };
 }
 
 void NoteComponent::mouseMove (const MouseEvent& e)
 {
+    printf("NoteComponent::mouseMove() with e.x: %d and e.y: %d\n", e.getScreenX(), e.getScreenY());
 }
 
 void NoteComponent::mouseDown (const MouseEvent& e)

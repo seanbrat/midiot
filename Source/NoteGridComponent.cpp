@@ -76,13 +76,13 @@ erase_mode_(false)
     component_bounds = new ComponentBoundsConstrainer();
     
     draw_mode_cursor_image_file_ = File::createFileWithoutCheckingPath (String("/Users/seanb/Development/JUCE/Midiot/Resources/images/icons/Pencil-icon.png"));
-    draw_mode_cursor_image_ = ImageFileFormat::loadFrom(draw_mode_cursor_image_file_);
+    draw_mode_cursor_image_ = ImageCache::getFromFile(draw_mode_cursor_image_file_);
     draw_mode_cursor_image_size_ = draw_mode_cursor_image_file_.getSize();
     draw_mode_mouse_cursor_ = MouseCursor(draw_mode_cursor_image_, 0, 0);
     
     
     erase_mode_cursor_image_file_ = File::createFileWithoutCheckingPath (String("/Users/seanb/Development/JUCE/Midiot/Resources/images/icons/Eraser-3-icon.png"));
-    erase_mode_cursor_image_ = ImageFileFormat::loadFrom(erase_mode_cursor_image_file_);
+    erase_mode_cursor_image_ = ImageCache::getFromFile(erase_mode_cursor_image_file_);
     erase_mode_cursor_image_size_ = erase_mode_cursor_image_file_.getSize();
     erase_mode_mouse_cursor_ = MouseCursor(erase_mode_cursor_image_, 0, 0);
 
@@ -143,21 +143,21 @@ void NoteGridComponent::modifierKeysChanged(const ModifierKeys &modifiers)
         if (modifiers.isShiftDown())
         {
             setMouseCursor(erase_mode_mouse_cursor_);
-            draw_mode_ = false;
-            erase_mode_ = true;
+            setDrawMode(false);
+            setEraseMode(true);
         }
         else
         {
             setMouseCursor(draw_mode_mouse_cursor_);
-            draw_mode_ = true;
-            erase_mode_ = false;
+            setDrawMode(true);
+            setEraseMode(false);
         }
     }
     else
     {
         setMouseCursor(MouseCursor(juce::MouseCursor::NormalCursor));
-        erase_mode_ = false;
-        draw_mode_ = false;
+        setDrawMode(false);
+        setEraseMode(false);
     }
 }
 
