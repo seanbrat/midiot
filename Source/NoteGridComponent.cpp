@@ -23,7 +23,9 @@ dragged_note_(NULL),
 drag_x_distance_(0),
 drag_y_distance_(0),
 drag_y_compensation_(0),
-note_grid_viewpos_x_(0)
+note_grid_viewpos_x_(0),
+draw_mode_(false),
+erase_mode_(false)
 {
     setName(String("NoteGridComponent"));
     
@@ -72,6 +74,18 @@ note_grid_viewpos_x_(0)
     }
     
     component_bounds = new ComponentBoundsConstrainer();
+    
+    draw_mode_cursor_image_file_ = File::createFileWithoutCheckingPath (String("/Users/seanb/Development/JUCE/Midiot/Resources/images/icons/Pencil-icon.png"));
+    draw_mode_cursor_image_ = ImageFileFormat::loadFrom(draw_mode_cursor_image_file_);
+    draw_mode_cursor_image_size_ = draw_mode_cursor_image_file_.getSize();
+    draw_mode_mouse_cursor_ = MouseCursor(draw_mode_cursor_image_, 0, 0);
+    
+    
+    erase_mode_cursor_image_file_ = File::createFileWithoutCheckingPath (String("/Users/seanb/Development/JUCE/Midiot/Resources/images/icons/Eraser-3-icon.png"));
+    erase_mode_cursor_image_ = ImageFileFormat::loadFrom(erase_mode_cursor_image_file_);
+    erase_mode_cursor_image_size_ = erase_mode_cursor_image_file_.getSize();
+    erase_mode_mouse_cursor_ = MouseCursor(erase_mode_cursor_image_, 0, 0);
+
 }
 
 NoteGridComponent::~NoteGridComponent()
@@ -121,6 +135,38 @@ void NoteGridComponent::mouseUp (const MouseEvent& e)
 
     repaint();
 }
+
+void NoteGridComponent::modifierKeysChanged(const ModifierKeys &modifiers)
+{
+    if (modifiers.isCtrlDown())
+    {
+        if (modifiers.isShiftDown())
+        {
+            setMouseCursor(erase_mode_mouse_cursor_);
+            draw_mode_ = false;
+            erase_mode_ = true;
+        }
+        else
+        {
+            setMouseCursor(draw_mode_mouse_cursor_);
+            draw_mode_ = true;
+            erase_mode_ = false;
+        }
+    }
+    else
+    {
+        setMouseCursor(MouseCursor(juce::MouseCursor::NormalCursor));
+        erase_mode_ = false;
+        draw_mode_ = false;
+    }
+}
+
+
+bool NoteGridComponent::keyStateChanged(bool isKeyDown)
+{
+    return false;
+}
+
 
 void NoteGridComponent::setSelectedNote(NoteComponent *note_component)
 {
@@ -215,13 +261,12 @@ void NoteGridComponent::doResizeSelectedNotes()
         
         MIDINote selected_note = selected_note_component->getMidiNote();
         
-        /*
         Rectangle<int> selected_note_bounds = selected_note_component->getBoundsInParent();
         selected_note_num_ = getNoteNum(selected_note_bounds.getY());
         selected_note_on_time_ = getNoteOnTime(selected_note_bounds.getX());
         selected_note_off_time_ = getNoteOffTime(selected_note_on_time_,
                                                  selected_note_bounds.getWidth());
-        */
+        
         
         printf("selected_note_num_: %d selected_note_on_time_: %d selected_note_off_time_: %d\n", selected_note_num_, selected_note_on_time_, selected_note_off_time_);
         selected_note.note_num_ = getNoteNum(resize_bounds.getY());

@@ -55,6 +55,9 @@ public:
     void setParentNoteGridViewport(NoteGridViewport* viewport);
     void drawComponent (Graphics& g) override;
     
+    bool keyStateChanged(bool isKeyDown) override;
+    void modifierKeysChanged(const ModifierKeys &modifiers) override;
+    
     bool isNoteSelected(NoteComponent* note_component);
     void setSelectedNote(NoteComponent* note_component);
     void initSelectedNotes();
@@ -136,6 +139,20 @@ private:
     int resize_y_compensation_;
     int resize_grid_viewpos_x_;
     int resize_down_width_;
+    
+    bool draw_mode_;
+    bool erase_mode_;
+    
+    File draw_mode_cursor_image_file_;
+    Image draw_mode_cursor_image_;
+    int64 draw_mode_cursor_image_size_;
+    MouseCursor draw_mode_mouse_cursor_;
+    
+    File erase_mode_cursor_image_file_;
+    Image erase_mode_cursor_image_;
+    int64 erase_mode_cursor_image_size_;
+    MouseCursor erase_mode_mouse_cursor_;
+    
 };
 
 
