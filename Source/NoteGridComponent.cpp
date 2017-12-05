@@ -177,6 +177,36 @@ void NoteGridComponent::setSelectedNote(NoteComponent *note_component)
 
 }
 
+void NoteGridComponent::removeNoteComponent(NoteComponent* note_component, bool delete_note)
+{
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+        selected_notes_.deselect(selected_note);
+    }
+    
+    int note_index = note_components.indexOf(note_component);
+    note_components.remove(note_index, delete_note);
+    }
+
+void NoteGridComponent::removeSelectedNotes(bool delete_note)
+{
+    int note_index;
+    NoteComponent** selected_note_iter;
+    for (selected_note_iter = selected_notes_.begin();
+         selected_note_iter != selected_notes_.end();
+         selected_note_iter++)
+    {
+        NoteComponent* selected_note = *selected_note_iter;
+        selected_notes_.deselect(selected_note);
+        note_index = note_components.indexOf(selected_note);
+        note_components.remove(note_index);
+    }
+}
+
 void NoteGridComponent::initSelectedNotes()
 {
     NoteComponent** selected_note_iter;
@@ -673,12 +703,13 @@ void NoteGridComponent::drawComponent (Graphics& g)
         {
             updateNoteComponentBounds(note_components[note_index]);
         }
-
+        /*
         for (int note_index=0; note_index<selected_note_components_.size(); note_index++)
         {
+            printf("updateNoteComponentBounds!*(!(!(!!!!*!*!*!\n");
             updateNoteComponentBounds(selected_note_components_[note_index]);
         }
-     
+        */
         properties_->init_grid_ = false;
     }
     

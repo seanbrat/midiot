@@ -290,7 +290,14 @@ void NoteComponent::mouseUp (const MouseEvent& e)
     note_grid_->updateSelectedNotes();
     note_grid_->flushNoteRemovePool();
     note_grid_->endDrag();
-        
+    
     note_grid_->repaint();
+    
+    if (note_grid_->getEraseMode())
+    {
+        //note_grid_->removeSelectedNotes();
+        note_grid_->removeNoteComponent(this, false);
+        delete this;
+    }
 }
 

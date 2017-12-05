@@ -63,7 +63,8 @@ public:
     void initSelectedNotes();
     void clearSelectedNotes();
     
-    
+    void removeNoteComponent(NoteComponent* note_component, bool delete_note = true);
+    void removeSelectedNotes(bool delete_note = true);
     
     void dragSelectedNotes(const MouseEvent& e,
                            NoteComponent* dragged_note,
