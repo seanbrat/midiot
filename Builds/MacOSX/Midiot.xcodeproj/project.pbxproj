@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		00DBDE5CE37C529657396139 /* include_juce_video.mm in Sources */ = {isa = PBXBuildFile; fileRef = F87FD9DD72D5FFFC1FC2A3DC /* include_juce_video.mm */; };
+		041445861FD65FC7002375C5 /* NoteGridConsoleComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041445841FD65FC7002375C5 /* NoteGridConsoleComponent.cpp */; };
+		041445891FD680B5002375C5 /* MidiInstrumentConsoleComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 041445871FD680B5002375C5 /* MidiInstrumentConsoleComponent.cpp */; };
 		043E8F541F92F86100C0FC1F /* MidiClockUtilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F521F92F86100C0FC1F /* MidiClockUtilities.cpp */; };
 		043E8F571F95D26900C0FC1F /* NoteGridEditorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F551F95D26900C0FC1F /* NoteGridEditorComponent.cpp */; };
 		043E8F5A1F9883B900C0FC1F /* GraphicsComponentBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F581F9883B900C0FC1F /* GraphicsComponentBase.cpp */; };
@@ -17,6 +19,10 @@
 		043E8F6D1FA05B6400C0FC1F /* NoteComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F6B1FA05B6400C0FC1F /* NoteComponent.cpp */; };
 		043E8F701FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F6E1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp */; };
 		043E8F761FA0798000C0FC1F /* NoteComponentSorter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 043E8F741FA0798000C0FC1F /* NoteComponentSorter.cpp */; };
+		04B8C4CC1FD683FF00F4E06D /* MainTabbedComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04B8C4CA1FD683FF00F4E06D /* MainTabbedComponent.cpp */; };
+		04B8C4CF1FD68E2E00F4E06D /* MidiInstrumentEditorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04B8C4CD1FD68E2E00F4E06D /* MidiInstrumentEditorComponent.cpp */; };
+		04B8C4D21FD6942500F4E06D /* MidiInstrumentModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04B8C4D01FD6942500F4E06D /* MidiInstrumentModel.cpp */; };
+		04B8C4D51FD6946400F4E06D /* MidiInstrumentControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04B8C4D31FD6946400F4E06D /* MidiInstrumentControl.cpp */; };
 		08320ED8C74B4B962C49DCD2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27404B52ED23D9D339DF4BFE /* QuartzCore.framework */; };
 		11CC0FB289F21D22659C14B6 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = A56A0E826DDC55DCD60CA016 /* RecentFilesMenuTemplate.nib */; };
 		30D199901FDC872772D9F4A3 /* MainComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FB72D44A8F81102A9EEBC54 /* MainComponent.cpp */; };
@@ -53,6 +59,10 @@
 
 /* Begin PBXFileReference section */
 		018010FBAB6C21C0105E6577 /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = ../../../modules/juce_graphics; sourceTree = SOURCE_ROOT; };
+		041445841FD65FC7002375C5 /* NoteGridConsoleComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteGridConsoleComponent.cpp; path = ../../Source/NoteGridConsoleComponent.cpp; sourceTree = "<group>"; };
+		041445851FD65FC7002375C5 /* NoteGridConsoleComponent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteGridConsoleComponent.hpp; path = ../../Source/NoteGridConsoleComponent.hpp; sourceTree = "<group>"; };
+		041445871FD680B5002375C5 /* MidiInstrumentConsoleComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MidiInstrumentConsoleComponent.cpp; path = ../../Source/MidiInstrumentConsoleComponent.cpp; sourceTree = "<group>"; };
+		041445881FD680B5002375C5 /* MidiInstrumentConsoleComponent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiInstrumentConsoleComponent.hpp; path = ../../Source/MidiInstrumentConsoleComponent.hpp; sourceTree = "<group>"; };
 		043E8F521F92F86100C0FC1F /* MidiClockUtilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MidiClockUtilities.cpp; path = ../../Source/MidiClockUtilities.cpp; sourceTree = "<group>"; };
 		043E8F531F92F86100C0FC1F /* MidiClockUtilities.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiClockUtilities.hpp; path = ../../Source/MidiClockUtilities.hpp; sourceTree = "<group>"; };
 		043E8F551F95D26900C0FC1F /* NoteGridEditorComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteGridEditorComponent.cpp; path = ../../Source/NoteGridEditorComponent.cpp; sourceTree = "<group>"; };
@@ -71,6 +81,14 @@
 		043E8F6F1FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteComponentBoundsConstrainer.hpp; path = ../../Source/NoteComponentBoundsConstrainer.hpp; sourceTree = "<group>"; };
 		043E8F741FA0798000C0FC1F /* NoteComponentSorter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponentSorter.cpp; path = ../../Source/NoteComponentSorter.cpp; sourceTree = "<group>"; };
 		043E8F751FA0798000C0FC1F /* NoteComponentSorter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NoteComponentSorter.hpp; path = ../../Source/NoteComponentSorter.hpp; sourceTree = "<group>"; };
+		04B8C4CA1FD683FF00F4E06D /* MainTabbedComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MainTabbedComponent.cpp; path = ../../Source/MainTabbedComponent.cpp; sourceTree = "<group>"; };
+		04B8C4CB1FD683FF00F4E06D /* MainTabbedComponent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MainTabbedComponent.hpp; path = ../../Source/MainTabbedComponent.hpp; sourceTree = "<group>"; };
+		04B8C4CD1FD68E2E00F4E06D /* MidiInstrumentEditorComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MidiInstrumentEditorComponent.cpp; path = ../../Source/MidiInstrumentEditorComponent.cpp; sourceTree = "<group>"; };
+		04B8C4CE1FD68E2E00F4E06D /* MidiInstrumentEditorComponent.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiInstrumentEditorComponent.hpp; path = ../../Source/MidiInstrumentEditorComponent.hpp; sourceTree = "<group>"; };
+		04B8C4D01FD6942500F4E06D /* MidiInstrumentModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MidiInstrumentModel.cpp; path = ../../Source/MidiInstrumentModel.cpp; sourceTree = "<group>"; };
+		04B8C4D11FD6942500F4E06D /* MidiInstrumentModel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiInstrumentModel.hpp; path = ../../Source/MidiInstrumentModel.hpp; sourceTree = "<group>"; };
+		04B8C4D31FD6946400F4E06D /* MidiInstrumentControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MidiInstrumentControl.cpp; path = ../../Source/MidiInstrumentControl.cpp; sourceTree = "<group>"; };
+		04B8C4D41FD6946400F4E06D /* MidiInstrumentControl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiInstrumentControl.hpp; path = ../../Source/MidiInstrumentControl.hpp; sourceTree = "<group>"; };
 		04FC09FDF3338A944E67B214 /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../../modules/juce_video; sourceTree = SOURCE_ROOT; };
 		04FC2113AF0C19167FDDC8F6 /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
 		0B96C1BA5BFF398071203509 /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
@@ -270,6 +288,8 @@
 				043E8F561F95D26900C0FC1F /* NoteGridEditorComponent.hpp */,
 				FE664E344AFD57B8A0A39C1F /* StepGridComponent.cpp */,
 				3AEB599E691D7E32B854442A /* StepGridComponent.hpp */,
+				04B8C4CA1FD683FF00F4E06D /* MainTabbedComponent.cpp */,
+				04B8C4CB1FD683FF00F4E06D /* MainTabbedComponent.hpp */,
 				9FB72D44A8F81102A9EEBC54 /* MainComponent.cpp */,
 				4CB5B50AE1A9421FA0AB4D8D /* Main.cpp */,
 				043E8F521F92F86100C0FC1F /* MidiClockUtilities.cpp */,
@@ -282,6 +302,16 @@
 				043E8F691FA05A1800C0FC1F /* NoteGridRulerComponent.hpp */,
 				043E8F741FA0798000C0FC1F /* NoteComponentSorter.cpp */,
 				043E8F751FA0798000C0FC1F /* NoteComponentSorter.hpp */,
+				041445841FD65FC7002375C5 /* NoteGridConsoleComponent.cpp */,
+				041445851FD65FC7002375C5 /* NoteGridConsoleComponent.hpp */,
+				041445871FD680B5002375C5 /* MidiInstrumentConsoleComponent.cpp */,
+				041445881FD680B5002375C5 /* MidiInstrumentConsoleComponent.hpp */,
+				04B8C4CD1FD68E2E00F4E06D /* MidiInstrumentEditorComponent.cpp */,
+				04B8C4CE1FD68E2E00F4E06D /* MidiInstrumentEditorComponent.hpp */,
+				04B8C4D01FD6942500F4E06D /* MidiInstrumentModel.cpp */,
+				04B8C4D11FD6942500F4E06D /* MidiInstrumentModel.hpp */,
+				04B8C4D31FD6946400F4E06D /* MidiInstrumentControl.cpp */,
+				04B8C4D41FD6946400F4E06D /* MidiInstrumentControl.hpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -370,6 +400,7 @@
 				E029D4CB68FCB5ED24163817 /* NoteGridComponent.cpp in Sources */,
 				D1AE8D0897055754B0A14210 /* StepGridComponent.cpp in Sources */,
 				30D199901FDC872772D9F4A3 /* MainComponent.cpp in Sources */,
+				04B8C4D51FD6946400F4E06D /* MidiInstrumentControl.cpp in Sources */,
 				9D966BA81CD05B994A4D63AB /* Main.cpp in Sources */,
 				043E8F6A1FA05A1800C0FC1F /* NoteGridRulerComponent.cpp in Sources */,
 				043E8F6D1FA05B6400C0FC1F /* NoteComponent.cpp in Sources */,
@@ -383,12 +414,17 @@
 				043E8F671F99C63400C0FC1F /* NoteGridProperties.cpp in Sources */,
 				9B7F724B7E31ECFCD876C1E8 /* include_juce_core.mm in Sources */,
 				B8F7ADA5FF81FAC997CC8903 /* include_juce_cryptography.mm in Sources */,
+				04B8C4CC1FD683FF00F4E06D /* MainTabbedComponent.cpp in Sources */,
 				043E8F641F98AFC200C0FC1F /* NoteGridViewport.cpp in Sources */,
 				8780EB8F11929371E3F5C0D0 /* include_juce_data_structures.mm in Sources */,
 				9543245FA4522C5FFFB1A1D6 /* include_juce_events.mm in Sources */,
+				041445861FD65FC7002375C5 /* NoteGridConsoleComponent.cpp in Sources */,
+				04B8C4D21FD6942500F4E06D /* MidiInstrumentModel.cpp in Sources */,
 				043E8F541F92F86100C0FC1F /* MidiClockUtilities.cpp in Sources */,
 				EDAD59B17913C2B1BB25C7B4 /* include_juce_graphics.mm in Sources */,
+				04B8C4CF1FD68E2E00F4E06D /* MidiInstrumentEditorComponent.cpp in Sources */,
 				78D20CDAF56892F002D9D100 /* include_juce_gui_basics.mm in Sources */,
+				041445891FD680B5002375C5 /* MidiInstrumentConsoleComponent.cpp in Sources */,
 				BDC5928AAE6B0BF462980083 /* include_juce_gui_extra.mm in Sources */,
 				043E8F701FA05C8B00C0FC1F /* NoteComponentBoundsConstrainer.cpp in Sources */,
 				574B1206EF5DA18006A24B86 /* include_juce_opengl.mm in Sources */,
