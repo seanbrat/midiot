@@ -218,7 +218,7 @@ MouseCursor NoteComponent::getMouseCursor()
 
 void NoteComponent::mouseMove (const MouseEvent& e)
 {
-    printf("NoteComponent::mouseMove() with e.x: %d and e.y: %d\n", e.getScreenX(), e.getScreenY());
+    //printf("NoteComponent::mouseMove() with e.x: %d and e.y: %d\n", e.getScreenX(), e.getScreenY());
 }
 
 void NoteComponent::mouseDown (const MouseEvent& e)
@@ -231,7 +231,7 @@ void NoteComponent::mouseDown (const MouseEvent& e)
     
     note_grid_->startDrag();
     
-    printf("mouse_down_y_: %d\n", mouse_down_y_);
+    //printf("mouse_down_y_: %d\n", mouse_down_y_);
     
     startDraggingComponent(left_edge, e);
     startDraggingComponent(right_edge, e);

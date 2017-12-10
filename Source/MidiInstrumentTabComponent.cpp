@@ -1,15 +1,15 @@
 //
-//  NoteGridConsoleComponent.cpp
+//  MidiInstrumentTabComponent.cpp
 //  Midiot
 //
 //  Created by Sean Bratnober on 12/4/17.
 //
 //
 
-#include "NoteGridConsoleComponent.hpp"
+#include "MidiInstrumentTabComponent.hpp"
 
 
-NoteGridConsoleComponent::NoteGridConsoleComponent()
+MidiInstrumentTabComponent::MidiInstrumentTabComponent()
 : lastInputIndex (0),
 isAddingFromMidiInput (false),
 keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard),
@@ -88,10 +88,12 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001)
     midiMessagesBox.setColour (TextEditor::outlineColourId, Colour (0x1c000000));
     midiMessagesBox.setColour (TextEditor::shadowColourId, Colour (0x16000000));
     
+    //create_test_studio();
+    
     setSize (1200, 1000);
 }
 
-NoteGridConsoleComponent::~NoteGridConsoleComponent()
+MidiInstrumentTabComponent::~MidiInstrumentTabComponent()
 {
     keyboardState.removeListener (this);
     deviceManager.removeMidiInputCallback (MidiInput::getDevices()[midiInputList.getSelectedItemIndex()], this);
@@ -100,12 +102,12 @@ NoteGridConsoleComponent::~NoteGridConsoleComponent()
     midiOutputList.removeListener(this);
 }
 
-void NoteGridConsoleComponent::paint (Graphics& g)
+void MidiInstrumentTabComponent::paint (Graphics& g)
 {
     g.fillAll (Colours::black);
 }
 
-void NoteGridConsoleComponent::resized()
+void MidiInstrumentTabComponent::resized()
 {
     Rectangle<int> area (getLocalBounds());
     //midiInputList.setBounds (area.removeFromTop (36).removeFromRight (getWidth() - 150).reduced (8));
@@ -127,7 +129,7 @@ void NoteGridConsoleComponent::resized()
     
 }
 
-String NoteGridConsoleComponent::getMidiMessageDescription (const MidiMessage& m)
+String MidiInstrumentTabComponent::getMidiMessageDescription (const MidiMessage& m)
 {
     if (m.isNoteOn())           return "Note on "  + MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
     if (m.isNoteOff())          return "Note off " + MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
@@ -152,14 +154,14 @@ String NoteGridConsoleComponent::getMidiMessageDescription (const MidiMessage& m
     return String::toHexString (m.getRawData(), m.getRawDataSize());
 }
 
-void NoteGridConsoleComponent::logMessage (const String& m)
+void MidiInstrumentTabComponent::logMessage (const String& m)
 {
     midiMessagesBox.moveCaretToEnd();
     midiMessagesBox.insertTextAtCaret (m + newLine);
 }
 
 /** Starts listening to a MIDI input device, enabling it if necessary. */
-void NoteGridConsoleComponent::setMidiInput (int index)
+void MidiInstrumentTabComponent::setMidiInput (int index)
 {
     const StringArray list (MidiInput::getDevices());
     
@@ -177,7 +179,7 @@ void NoteGridConsoleComponent::setMidiInput (int index)
 }
 
 /** Starts listening to a MIDI output device, enabling it if necessary. */
-void NoteGridConsoleComponent::setMidiOutput (int index)
+void MidiInstrumentTabComponent::setMidiOutput (int index)
 {
     const StringArray list (MidiOutput::getDevices());
     const String newOutput (list[index]);
@@ -188,7 +190,7 @@ void NoteGridConsoleComponent::setMidiOutput (int index)
     midiOutputDevice = MidiOutput::openDevice(index);
 }
 
-void NoteGridConsoleComponent::buttonClicked (Button* button)
+void MidiInstrumentTabComponent::buttonClicked (Button* button)
 {
     if (button == &readMidiFileButton)
     {
@@ -223,7 +225,7 @@ void NoteGridConsoleComponent::buttonClicked (Button* button)
     }
 }
 
-void NoteGridConsoleComponent::comboBoxChanged (ComboBox* box)
+void MidiInstrumentTabComponent::comboBoxChanged (ComboBox* box)
 {
     if (box == &midiInputList)
         setMidiInput (midiInputList.getSelectedItemIndex());
@@ -233,14 +235,14 @@ void NoteGridConsoleComponent::comboBoxChanged (ComboBox* box)
 }
 
 // These methods handle callbacks from the midi device + on-screen keyboard..
-void NoteGridConsoleComponent::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
+void MidiInstrumentTabComponent::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
 {
     const ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput, true);
     keyboardState.processNextMidiEvent (message);
     postMessageToList (message, source->getName());
 }
 
-void NoteGridConsoleComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity)
+void MidiInstrumentTabComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity)
 {
     if (! isAddingFromMidiInput)
     {
@@ -273,7 +275,7 @@ void NoteGridConsoleComponent::handleNoteOn (MidiKeyboardState*, int midiChannel
      */
 }
 
-void NoteGridConsoleComponent::handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float /*velocity*/)
+void MidiInstrumentTabComponent::handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float /*velocity*/)
 {
     if (! isAddingFromMidiInput)
     {
@@ -285,12 +287,12 @@ void NoteGridConsoleComponent::handleNoteOff (MidiKeyboardState*, int midiChanne
     }
 }
 
-void NoteGridConsoleComponent::postMessageToList (const MidiMessage& message, const String& source)
+void MidiInstrumentTabComponent::postMessageToList (const MidiMessage& message, const String& source)
 {
-    (new NoteGridConsoleComponent::IncomingMessageCallback (this, message, source))->post();
+    (new MidiInstrumentTabComponent::IncomingMessageCallback (this, message, source))->post();
 }
 
-void NoteGridConsoleComponent::addMessageToList (const MidiMessage& message, const String& source)
+void MidiInstrumentTabComponent::addMessageToList (const MidiMessage& message, const String& source)
 {
     const double time = message.getTimeStamp() - startTime;
     
@@ -309,7 +311,7 @@ void NoteGridConsoleComponent::addMessageToList (const MidiMessage& message, con
     
     if (description != "f8")
     {
-//        const String midiMessageString (timecode + "  -  " + description + " (" + source + ")"); // [7]
+        //        const String midiMessageString (timecode + "  -  " + description + " (" + source + ")"); // [7]
         const String midiByteString(String::toHexString (message.getRawData(), message.getRawDataSize()));
         const String midiMessageString (description + " " + source + ":   " + midiByteString); // [7]
         logMessage (midiMessageString);

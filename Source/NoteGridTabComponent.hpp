@@ -1,19 +1,19 @@
 //
-//  MidiInstrumentConsoleComponent.hpp
+//  NoteGridTabComponent.hpp
 //  Midiot
 //
 //  Created by Sean Bratnober on 12/4/17.
 //
 //
 
-#ifndef MidiInstrumentConsoleComponent_hpp
-#define MidiInstrumentConsoleComponent_hpp
+#ifndef NoteGridTabComponent_hpp
+#define NoteGridTabComponent_hpp
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
 #include "DemoUtilities.h"
 
-#include "MidiInstrumentEditorComponent.hpp"
+#include "NoteGridEditorComponent.hpp"
 #include "StepGridComponent.hpp"
 #include "GraphicsComponentBase.hpp"
 
@@ -27,15 +27,15 @@
 using std::vector;
 using std::pair;
 
-class MidiInstrumentConsoleComponent  : public Component,
+class NoteGridTabComponent  : public Component,
 private Button::Listener,
 private ComboBox::Listener,
 private MidiInputCallback,
 private MidiKeyboardStateListener
 {
 public:
-    MidiInstrumentConsoleComponent();
-    ~MidiInstrumentConsoleComponent();
+    NoteGridTabComponent();
+    ~NoteGridTabComponent();
     
     void paint (Graphics& g) override;
     
@@ -45,7 +45,7 @@ public:
     class IncomingMessageCallback   : public CallbackMessage
     {
     public:
-        IncomingMessageCallback (MidiInstrumentConsoleComponent* o, const MidiMessage& m, const String& s)
+        IncomingMessageCallback (NoteGridTabComponent* o, const MidiMessage& m, const String& s)
         : owner (o), message (m), source (s)
         {}
         
@@ -55,11 +55,11 @@ public:
                 owner->addMessageToList (message, source);
                 }
         
-        Component::SafePointer<MidiInstrumentConsoleComponent> owner;
+        Component::SafePointer<NoteGridTabComponent> owner;
         MidiMessage message;
         String source;
     };
-    
+
     
 private:
     static String getMidiMessageDescription (const MidiMessage& m);
@@ -114,15 +114,15 @@ private:
     Label testLabel;
     
     StepGridComponent step_grid_component;
-    MidiInstrumentEditorComponent note_grid_editor;
+    NoteGridEditorComponent note_grid_editor;
     
     OwnedArray<TextButton> gridButtons;
     
     MidiFile inputMidiFile;
     
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiInstrumentConsoleComponent);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoteGridTabComponent);
 };
 
 
-#endif /* MidiInstrumentConsoleComponent_hpp */
+#endif /* NoteGridTabComponent_hpp */

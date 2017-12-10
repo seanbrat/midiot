@@ -1,13 +1,13 @@
 //
-//  MidiInstrumentEditorComponent.hpp
+//  MidiInstrumentControllerComponent.hpp
 //  Midiot
 //
 //  Created by Sean Bratnober on 10/16/17.
 //
 //
 
-#ifndef MidiInstrumentEditorComponent_hpp
-#define MidiInstrumentEditorComponent_hpp
+#ifndef MidiInstrumentControllerComponent_hpp
+#define MidiInstrumentControllerComponent_hpp
 
 #include <stdio.h>
 
@@ -28,7 +28,7 @@ class NoteGridViewport;
 class NoteGridRulerComponent;
 
 //==============================================================================
-class MidiInstrumentEditorComponent  : public GraphicsComponentBase
+class MidiInstrumentControllerComponent  : public GraphicsComponentBase
 {
 public:
     enum GridResolution {
@@ -45,8 +45,8 @@ public:
     };
     
     
-    MidiInstrumentEditorComponent ();
-    ~MidiInstrumentEditorComponent();
+    MidiInstrumentControllerComponent ();
+    ~MidiInstrumentControllerComponent();
     
     void resized() override;
     void mouseDrag(const MouseEvent& e) override;
@@ -63,4 +63,4 @@ private:
 
 
 
-#endif /* MidiInstrumentEditorComponent_hpp */
+#endif /* MidiInstrumentControllerComponent_hpp */

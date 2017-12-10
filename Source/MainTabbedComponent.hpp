@@ -13,8 +13,8 @@
 
 #include "DemoUtilities.h"
 
-#include "NoteGridConsoleComponent.hpp"
-#include "MidiInstrumentConsoleComponent.hpp"
+#include "NoteGridTabComponent.hpp"
+#include "MidiInstrumentTabComponent.hpp"
 
 #include <stdio.h>
 
@@ -59,8 +59,8 @@ private:
         updateTabColours();
     }
     
-    NoteGridConsoleComponent note_grid_console_component_;
-    MidiInstrumentConsoleComponent midi_instrument_console_component_;
+    NoteGridTabComponent note_grid_console_component_;
+    MidiInstrumentTabComponent midi_instrument_console_component_;
 };
 
 #endif /* MainTabbedComponent_hpp */
