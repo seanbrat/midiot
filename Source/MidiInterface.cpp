@@ -9,7 +9,7 @@
 #include "MidiInterface.hpp"
 #include "MidiInstrument.hpp"
 
-MidiInputPort::MidiInputPort(String name)
+MidiInputPort::MidiInputPort(const String name)
 : name_(name)
 {
 
@@ -43,7 +43,10 @@ void MidiInputPort::remove_instrument_from_port(MidiInstrument* instrument)
 void MidiInputPort::handleIncomingMidiMessage(MidiInput* source,
                                               const MidiMessage& message)
 {
-    
+    if (message.isNoteOn())
+    {
+        printf("MidiInputPort::handleIncomingMidiMessage()\n");
+    }
 }
 
 void MidiInputPort::handlePartialSysexMessage(MidiInput* source,
@@ -60,7 +63,7 @@ void MidiInputPort::handleNoteOn (MidiKeyboardState* keyboard_state,
                    int midi_note_number,
                    float velocity)
 {
-    
+    printf("MidiInputPort::handleNoteOn() with note number: %d\n", midi_note_number);
 }
 
 void MidiInputPort::handleNoteOff (MidiKeyboardState* keyboard_state,
@@ -71,7 +74,7 @@ void MidiInputPort::handleNoteOff (MidiKeyboardState* keyboard_state,
     
 }
 
-MidiOutputPort::MidiOutputPort(String name, MidiOutput* midi_output)
+MidiOutputPort::MidiOutputPort(const String name, MidiOutput* midi_output)
 : name_(name),
 midi_output_(midi_output)
 {
@@ -85,6 +88,7 @@ MidiOutputPort::~MidiOutputPort()
 
 
 MidiInterface::MidiInterface()
+: device_manager_(new AudioDeviceManager())
 {
     const StringArray midi_inputs(MidiInput::getDevices());
     
@@ -102,7 +106,7 @@ MidiInterface::MidiInterface()
         device_manager_->addMidiInputCallback(input_name, midi_input_port);
         
         input_ports_.add(midi_input_port);
-        printf("added MidiInputPort %s\n", input_name.toRawUTF8());
+        printf("added MidiInputPort %d: %s\n", i, input_name.toRawUTF8());
     }
     
     const StringArray midi_outputs(MidiOutput::getDevices());
@@ -117,13 +121,63 @@ MidiInterface::MidiInterface()
         MidiOutputPort* midi_output_port = new MidiOutputPort(output_name, midi_output);
 
         output_ports_.add(midi_output_port);
-        printf("added MidiOutputPort %s\n", output_name.toRawUTF8());
-
+        printf("added MidiOutputPort %d: %s\n", i, output_name.toRawUTF8());
     }
-
 }
 
 MidiInterface::~MidiInterface()
 {
     
+}
+
+MidiInputPort* MidiInterface::getMidiInputPort(int port_index)
+{
+    if (port_index < 0 && port_index >= input_ports_.size())
+    {
+        return NULL;
+    }
+    
+    return input_ports_[port_index];
+}
+
+MidiInputPort* MidiInterface::getMidiInputPort(String name)
+{
+    MidiInputPort* midi_port = NULL;
+    
+    for (int i=0; i<input_ports_.size(); i++)
+    {
+        if (input_ports_[i]->name() == name)
+        {
+            midi_port = input_ports_[i];
+            break;
+        }
+    }
+    
+    return midi_port;
+}
+
+MidiOutputPort* MidiInterface::getMidiOutputPort(int port_index)
+{
+    if (port_index < 0 && port_index >= input_ports_.size())
+    {
+        return NULL;
+    }
+    
+    return output_ports_[port_index];
+}
+
+MidiOutputPort* MidiInterface::getMidiOutputPort(String name)
+{
+    MidiOutputPort* midi_port = NULL;
+    
+    for (int i=0; i<output_ports_.size(); i++)
+    {
+        if (output_ports_[i]->name() == name)
+        {
+            midi_port = output_ports_[i];
+            break;
+        }
+    }
+    
+    return midi_port;
 }

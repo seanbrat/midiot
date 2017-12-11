@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 
+class MidiInstrumentControllerComponent;
 
 class MidiStudio
 {
@@ -26,11 +27,13 @@ public:
     
     int addMidiInstrument(MidiInstrument* midi_instrument);
     
+    MidiInterface* getMidiInterface() { return midi_interface_; };
+    
 private:
     OwnedArray<MidiInstrument> midi_instruments_;
     ScopedPointer<MidiInterface> midi_interface_;
 };
 
-MidiStudio* create_test_studio();
+MidiStudio* create_test_studio(MidiInstrumentControllerComponent* controller);
 
 #endif /* MidiStudio_hpp */

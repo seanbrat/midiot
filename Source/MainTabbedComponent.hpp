@@ -29,7 +29,7 @@ public:
         const Colour c;
         addTab("Note Grid", c, &note_grid_console_component_, true);
         addTab("Instrument", c, &midi_instrument_console_component_, true);
-        
+        setCurrentTabIndex(1);
         updateTabColours();
     }
     

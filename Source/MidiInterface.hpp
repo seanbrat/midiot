@@ -21,12 +21,14 @@ public MidiInputCallback,
 public MidiKeyboardStateListener
 {
 public:
-    MidiInputPort(String name);
+    MidiInputPort(const String name);
     ~MidiInputPort();
 
     void add_instrument_to_port(MidiInstrument* instrument);
     void remove_instrument_from_port(MidiInstrument* instrument);
 
+    const String name() { return name_; }
+    
 private:
     void handleIncomingMidiMessage (MidiInput* source,
                                     const MidiMessage& message) override;
@@ -48,18 +50,20 @@ private:
     
     Array<MidiInstrument*> channel_routing_table_[NUM_MIDI_CHANNELS];
     
-    String name_;
+    const String name_;
 
 };
 
 class MidiOutputPort
 {
 public:
-    MidiOutputPort(String name, MidiOutput* midi_output);
+    MidiOutputPort(const String name, MidiOutput* midi_output);
     ~MidiOutputPort();
     
+    const String name() { return name_; }
+    
 private:
-    String name_;
+    const String name_;
     ScopedPointer<MidiOutput> midi_output_;
 };
 
@@ -68,6 +72,11 @@ class MidiInterface
 public:
     MidiInterface();
     ~MidiInterface();
+    
+    MidiInputPort* getMidiInputPort(int port_index);
+    MidiInputPort* getMidiInputPort(String name);
+    MidiOutputPort* getMidiOutputPort(int port_index);
+    MidiOutputPort* getMidiOutputPort(String name);
     
 private:
     ScopedPointer<AudioDeviceManager> device_manager_;

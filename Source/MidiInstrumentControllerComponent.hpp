@@ -26,9 +26,11 @@ using std::vector;
 class NoteGridComponent;
 class NoteGridViewport;
 class NoteGridRulerComponent;
+class MidiStudio;
 
 //==============================================================================
-class MidiInstrumentControllerComponent  : public GraphicsComponentBase
+class MidiInstrumentControllerComponent  : public GraphicsComponentBase,
+private MidiKeyboardStateListener
 {
 public:
     enum GridResolution {
@@ -45,7 +47,7 @@ public:
     };
     
     
-    MidiInstrumentControllerComponent ();
+    MidiInstrumentControllerComponent();
     ~MidiInstrumentControllerComponent();
     
     void resized() override;
@@ -55,8 +57,16 @@ public:
     bool mouseGridStepPosition(int &x, int &y);
     void drawComponent (Graphics& g) override;
     
+    void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
+    void handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
+
+    
 private:
 
+    MidiKeyboardState keyboard_state_;
+    MidiKeyboardComponent keyboard_component_;
+
+    
 };
 
 

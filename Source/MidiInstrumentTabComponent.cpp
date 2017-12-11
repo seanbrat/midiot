@@ -74,7 +74,7 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001)
 #if USE_STEP_GRID
     addAndMakeVisible(step_grid_component);
 #else
-    addAndMakeVisible(note_grid_editor);
+    addAndMakeVisible(midi_instrument_controller);
 #endif
     
     addAndMakeVisible (midiMessagesBox);
@@ -88,7 +88,7 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001)
     midiMessagesBox.setColour (TextEditor::outlineColourId, Colour (0x1c000000));
     midiMessagesBox.setColour (TextEditor::shadowColourId, Colour (0x16000000));
     
-    //create_test_studio();
+    create_test_studio(&midi_instrument_controller);
     
     setSize (1200, 1000);
 }
@@ -122,7 +122,7 @@ void MidiInstrumentTabComponent::resized()
 #if USE_STEP_GRID
     step_grid_component.setBounds(20, 310, 1000, 440);
 #else
-    note_grid_editor.setBounds(20, 310, 1000, 440);
+    midi_instrument_controller.setBounds(20, 310, 1000, 440);
 #endif
     
     midiMessagesBox.setBounds(20, 770, 1000, 150);

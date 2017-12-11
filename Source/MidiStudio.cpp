@@ -8,6 +8,7 @@
 
 #include "MidiStudio.hpp"
 #include "MidiInstrument.hpp"
+#include "MidiInstrumentControllerComponent.hpp"
 
 MidiStudio::MidiStudio()
 {
@@ -17,10 +18,8 @@ MidiStudio::MidiStudio()
 MidiStudio::~MidiStudio()
 {}
 
-MidiStudio* create_test_studio()
+MidiInstrumentModel* createYamahaRefaceCS()
 {
-    MidiStudio* midi_instrument_studio = new MidiStudio();
-    
     MidiInstrumentModel* yamaha_cs_inst = new MidiInstrumentModel(Identifier("Yamaha Reface CS"));
     
     yamaha_cs_inst->addMidiControl(Identifier("LFO Assign"),        // name
@@ -278,11 +277,21 @@ MidiStudio* create_test_studio()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-
-
     
-    
-    return midi_instrument_studio;
+    return yamaha_cs_inst;
+}
+
+MidiStudio* create_test_studio(MidiInstrumentControllerComponent* controller)
+{
+    MidiStudio* midi_studio = new MidiStudio();
+    MidiInterface* midi_interface = midi_studio->getMidiInterface();
+    MidiInstrument* yamaha_cs_inst = new MidiInstrument(
+                                        createYamahaRefaceCS(),
+                                        controller,
+                                        midi_interface->getMidiInputPort("reface CS"),
+                                        midi_interface->getMidiOutputPort("reface CS"));
+
+    return midi_studio;
 }
 
 int MidiStudio::addMidiInstrument(MidiInstrument* midi_instrument)

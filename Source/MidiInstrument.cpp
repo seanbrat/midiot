@@ -7,7 +7,8 @@
 //
 
 #include "MidiInstrument.hpp"
-
+#include "MidiInterface.hpp"
+#include "MidiInstrumentControllerComponent.hpp"
 
 MidiInstrumentModel::ContinuousControl* createContinuousControl(short number,
                                                                 short range_min,
@@ -35,9 +36,14 @@ MidiInstrumentModel::SysexControl* createSysexControl(short param_table,
                                                  range_max);
 }
 
-MidiInstrument::MidiInstrument(MidiInstrumentModel* inst_model)
+MidiInstrument::MidiInstrument(MidiInstrumentModel* inst_model,
+                               MidiInstrumentControllerComponent* controller,
+                               MidiInputPort* input_port,
+                               MidiOutputPort* output_port)
 : inst_model_(inst_model),
-channel_(0)
+channel_(0),
+midi_input_port_(input_port),
+midi_output_port_(output_port)
 {}
 
 MidiInstrument::~MidiInstrument()
@@ -47,3 +53,5 @@ void MidiInstrument::set_instrument_id(int instrument_id)
 {
     instrument_id_ = instrument_id;
 }
+
+

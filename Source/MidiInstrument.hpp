@@ -14,6 +14,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MidiDefines.hpp"
 
+class MidiInputPort;
+class MidiOutputPort;
+class MidiInstrumentControllerComponent;
+
 class MidiInstrumentModel
 {
 public:
@@ -155,6 +159,7 @@ public:
         return control_id;
     }
     
+    MidiControl** getMidiControlIterator() { return midi_controls_.begin(); }
 
     
 private:
@@ -180,7 +185,10 @@ MidiInstrumentModel::SysexControl* createSysexControl(short param_table = 0,
 class MidiInstrument
 {
 public:
-    MidiInstrument(MidiInstrumentModel* inst_model);
+    MidiInstrument(MidiInstrumentModel* inst_model,
+                   MidiInstrumentControllerComponent* controller,
+                   MidiInputPort* input_port,
+                   MidiOutputPort* output_port);
     ~MidiInstrument();
     
     void set_instrument_id(int instrument_id);
@@ -195,6 +203,21 @@ public:
         }
     }
     
+    void setMidiInputPort(MidiInputPort* midi_input_port)
+    {
+        midi_input_port_ = midi_input_port;
+    }
+    
+    void setMidiOutputPort(MidiOutputPort* midi_output_port)
+    {
+        midi_output_port_ = midi_output_port;
+    }
+    
+    MidiInstrumentModel::MidiControl** getMidiControlIterator()
+    {
+        return inst_model_->getMidiControlIterator();
+    }
+    
 private:
     ScopedPointer<MidiInstrumentModel> inst_model_;
     int instrument_id_;
@@ -203,7 +226,10 @@ private:
     short channel_;
     
     // MIDI input port
+    MidiInputPort* midi_input_port_;
+    
     // MIDI output port
+    MidiOutputPort* midi_output_port_;
     
 };
 

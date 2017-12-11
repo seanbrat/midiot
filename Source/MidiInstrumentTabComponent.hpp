@@ -115,7 +115,7 @@ private:
     Label testLabel;
     
     StepGridComponent step_grid_component;
-    MidiInstrumentControllerComponent note_grid_editor;
+    MidiInstrumentControllerComponent midi_instrument_controller;
     
     OwnedArray<TextButton> gridButtons;
     
