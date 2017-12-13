@@ -27,6 +27,21 @@ class NoteGridComponent;
 class NoteGridViewport;
 class NoteGridRulerComponent;
 class MidiStudio;
+class MidiControl;
+
+class MidiControlSlider : public Slider
+{
+public:
+    MidiControlSlider();
+    ~MidiControlSlider() {};
+    
+    void setName(const String& newName) override;
+    
+private:
+    Label control_label_;
+
+
+};
 
 //==============================================================================
 class MidiInstrumentControllerComponent  : public GraphicsComponentBase,
@@ -60,13 +75,15 @@ public:
     void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
     void handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
 
+    bool addMidiControlSlider(MidiControl* midi_control);
     
 private:
 
     MidiKeyboardState keyboard_state_;
     MidiKeyboardComponent keyboard_component_;
-
     
+    OwnedArray<MidiControlSlider> control_sliders_;
+
 };
 
 

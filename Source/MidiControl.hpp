@@ -1,26 +1,18 @@
 //
-//  MidiInstrument.hpp
+//  MidiControl.hpp
 //  Midiot
 //
-//  Created by Sean Bratnober on 12/5/17.
+//  Created by Sean Bratnober on 12/12/17.
 //
 //
 
-#ifndef MidiInstrumentModel_hpp
-#define MidiInstrumentModel_hpp
+#ifndef MidiControl_hpp
+#define MidiControl_hpp
 
 #include <stdio.h>
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "MidiDefines.hpp"
-
-class MidiInputPort;
-class MidiOutputPort;
-class MidiInstrumentControllerComponent;
-
 
 class MidiControl
-: public SliderListener
 {
 public:
     class ContinuousControl
@@ -78,10 +70,6 @@ public:
         const short address_mid() { return address_mid_; }
         const short address_low() { return address_low_; }
         
-        const short size_bytes() { return size_bytes_; }
-        const int range_min() { return range_min_; }
-        const int range_max() { return range_max_; }
-        
     private:
         const short param_table_;
         const short address_high_;
@@ -91,9 +79,10 @@ public:
         const int range_min_;
         const int range_max_;
     };
-
+    
 public:
-    MidiControl(String name,
+    
+    MidiControl(Identifier name,
                 int control_id,
                 int initial_value,
                 ContinuousControl* cc_control = NULL,
@@ -115,53 +104,14 @@ public:
     
     ~MidiControl() {};
     
-    int getRangeMinimum()
-    {
-        int range_min = 0;
-        
-        if (cc_control_)
-        {
-            range_min = cc_control_->range_min();
-        }
-        
-        if (sysex_control_)
-        {
-            range_min = sysex_control_->range_min();
-        }
-        
-        return range_min;
-    }
-
-    int getRangeMaximum()
-    {
-        int range_max = 0;
-        
-        if (cc_control_)
-        {
-            range_max = cc_control_->range_max();
-        }
-        
-        if (sysex_control_)
-        {
-            range_max = sysex_control_->range_max();
-        }
-        
-        return range_max;
-    }
-    
     void set_value(const int value) { value_ = value; }
     const int value() { return value_; }
-    
-    void sliderValueChanged (Slider *slider) override;
-    
-    String name() { return name_; }
     
 private:
     ScopedPointer<ContinuousControl> cc_control_;
     ScopedPointer<SysexControl> sysex_control_;
-
-    String name_;
     
+    Identifier name_;
     int control_id_;
     
     int value_;
@@ -170,9 +120,11 @@ private:
 
 class MidiInstrumentModel
 {
+public:
+    
     
 public:
-    MidiInstrumentModel(String name)
+    MidiInstrumentModel(Identifier name)
     :
     name_(name)
     {
@@ -185,7 +137,7 @@ public:
     ~MidiInstrumentModel()
     {}
     
-    int addMidiControl(String name,
+    int addMidiControl(Identifier name,
                        int intital_value = 0,
                        MidiControl::ContinuousControl* cc_control = NULL,
                        MidiControl::SysexControl* sysex_control = NULL)
@@ -207,8 +159,7 @@ public:
     }
     
     MidiControl** getMidiControlIterator() { return midi_controls_.begin(); }
-    MidiControl** getMidiControlIteratorEnd() { return midi_controls_.end(); }
-
+    
     
 private:
     OwnedArray<MidiControl> midi_controls_;
@@ -218,67 +169,16 @@ private:
 
 
 MidiControl::ContinuousControl* createContinuousControl(short number,
-                                                                short range_min = 0,
-                                                                short range_max = 127);
+                                                        short range_min = 0,
+                                                        short range_max = 127);
 
 MidiControl::SysexControl* createSysexControl(short param_table = 0,
-                                                      short address_high = 0,
-                                                      short address_mid = 0,
-                                                      short address_low = 0,
-                                                      short size_bytes = 0,
-                                                      int min_range = 0,
-                                                      int max_range = 0);
+                                              short address_high = 0,
+                                              short address_mid = 0,
+                                              short address_low = 0,
+                                              short size_bytes = 0,
+                                              int min_range = 0,
+                                              int max_range = 0);
 
 
-class MidiInstrument
-{
-public:
-    MidiInstrument(MidiInstrumentModel* inst_model,
-                   MidiInstrumentControllerComponent* controller,
-                   MidiInputPort* input_port,
-                   MidiOutputPort* output_port);
-    ~MidiInstrument();
-    
-    void set_instrument_id(int instrument_id);
-
-
-    short channel() { return channel_; }
-    void set_channel(short channel)
-    {
-        if (channel >= 0 && channel < NUM_MIDI_CHANNELS)
-        {
-            channel_ = channel;
-        }
-    }
-    
-    void setMidiInputPort(MidiInputPort* midi_input_port)
-    {
-        midi_input_port_ = midi_input_port;
-    }
-    
-    void setMidiOutputPort(MidiOutputPort* midi_output_port)
-    {
-        midi_output_port_ = midi_output_port;
-    }
-    
-    MidiControl** getMidiControlIterator()
-    {
-        return inst_model_->getMidiControlIterator();
-    }
-    
-private:
-    ScopedPointer<MidiInstrumentModel> inst_model_;
-    int instrument_id_;
-    
-    // MIDI channel
-    short channel_;
-    
-    // MIDI input port
-    MidiInputPort* midi_input_port_;
-    
-    // MIDI output port
-    MidiOutputPort* midi_output_port_;
-    
-};
-
-#endif /* MidiInstrumentModel_hpp */
+#endif /* MidiControl_hpp */
