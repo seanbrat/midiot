@@ -84,6 +84,14 @@ MidiOutputPort::~MidiOutputPort()
 {
 }
 
+void MidiOutputPort::sendControllerEvent(int midi_channel,
+                         int controller_type,
+                         int value)
+{
+    MidiMessage m(MidiMessage::controllerEvent(midi_channel, controller_type, value));
+    m.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.0001);
+    midi_output_->sendMessageNow(m);
+}
 
 void MidiOutputPort::sendNoteOn(int midi_channel,
                                 int midi_note_number,
@@ -101,6 +109,11 @@ void MidiOutputPort::sendNoteOff(int midi_channel,
     MidiMessage m (MidiMessage::noteOff (midi_channel, midi_note_number, velocity));
     m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
     midi_output_->sendMessageNow(m);
+}
+
+void MidiOutputPort::sendMessageNow(const MidiMessage& message)
+{
+    midi_output_->sendMessageNow(message);
 }
 
 

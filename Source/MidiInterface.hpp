@@ -66,6 +66,11 @@ public:
     void sendNoteOff(int midi_channel,
                      int midi_note_number,
                      float velocity);
+    void sendControllerEvent(int midi_channel,
+                             int controller_type,
+                             int value);
+    
+    void sendMessageNow(const MidiMessage& message);
     
     const String name() { return name_; }
     

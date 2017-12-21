@@ -9,37 +9,7 @@
 #include "MidiInstrument.hpp"
 #include "MidiInterface.hpp"
 #include "MidiInstrumentControllerComponent.hpp"
-
-MidiControl::ContinuousControl* createContinuousControl(short number,
-                                                                short range_min,
-                                                                short range_max)
-{
-    return new MidiControl::ContinuousControl(number,
-                                                      range_min,
-                                                      range_max);
-}
-
-MidiControl::SysexControl* createSysexControl(short param_table,
-                                                      short address_high,
-                                                      short address_mid,
-                                                      short address_low,
-                                                      short size_bytes,
-                                                      int range_min,
-                                                      int range_max)
-{
-    return new MidiControl::SysexControl(param_table,
-                                                 address_high,
-                                                 address_mid,
-                                                 address_low,
-                                                 size_bytes,
-                                                 range_min,
-                                                 range_max);
-}
-
-void MidiControl::sliderValueChanged (Slider *slider)
-{
-    printf("MidiControl::sliderValueChanged()\n");
-}
+#include "MidiControl.hpp"
 
 MidiInstrument::MidiInstrument(MidiInstrumentModel* inst_model,
                                MidiInstrumentControllerComponent* controller,
@@ -78,7 +48,7 @@ MidiInstrument::~MidiInstrument()
 void MidiInstrument::setupMidiControlInterface(MidiControl* midi_control)
 {
     controller_component_->addMidiControlSlider(midi_control);
-    midi_control->setMidiOutputPort(midi_output_port_);
+    midi_control->setMidiInstrument(this);
 }
 
 void MidiInstrument::listenToControllerComponentKeyboard()
@@ -89,6 +59,34 @@ void MidiInstrument::listenToControllerComponentKeyboard()
 void MidiInstrument::set_instrument_id(int instrument_id)
 {
     instrument_id_ = instrument_id;
+}
+
+
+void MidiInstrument::sendControllerEvent(int midi_channel,
+                                         int controller_type,
+                                         int value)
+{
+    MidiMessage m(MidiMessage::controllerEvent(midi_channel, controller_type, value));
+    m.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.0001);
+    midi_output_port_->sendMessageNow(m);
+}
+
+void MidiInstrument::sendNoteOn(int midi_channel,
+                                int midi_note_number,
+                                float velocity)
+{
+    MidiMessage m (MidiMessage::noteOn (midi_channel, midi_note_number, velocity));
+    m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
+    midi_output_port_->sendMessageNow(m);
+}
+
+void MidiInstrument::sendNoteOff(int midi_channel,
+                                 int midi_note_number,
+                                 float velocity)
+{
+    MidiMessage m (MidiMessage::noteOff (midi_channel, midi_note_number, velocity));
+    m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
+    midi_output_port_->sendMessageNow(m);
 }
 
 

@@ -25,6 +25,7 @@
 		04B8C4CF1FD68E2E00F4E06D /* MidiInstrumentControllerComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04B8C4CD1FD68E2E00F4E06D /* MidiInstrumentControllerComponent.cpp */; };
 		04B8C4D21FD6942500F4E06D /* MidiInstrument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04B8C4D01FD6942500F4E06D /* MidiInstrument.cpp */; };
 		04B8C4D51FD6946400F4E06D /* MidiInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04B8C4D31FD6946400F4E06D /* MidiInterface.cpp */; };
+		04F8D29A1FEB895400EBA6B1 /* MidiControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04F8D2981FEB895400EBA6B1 /* MidiControl.cpp */; };
 		08320ED8C74B4B962C49DCD2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27404B52ED23D9D339DF4BFE /* QuartzCore.framework */; };
 		11CC0FB289F21D22659C14B6 /* RecentFilesMenuTemplate.nib in Resources */ = {isa = PBXBuildFile; fileRef = A56A0E826DDC55DCD60CA016 /* RecentFilesMenuTemplate.nib */; };
 		30D199901FDC872772D9F4A3 /* MainComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FB72D44A8F81102A9EEBC54 /* MainComponent.cpp */; };
@@ -95,6 +96,8 @@
 		04B8C4D11FD6942500F4E06D /* MidiInstrument.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiInstrument.hpp; path = ../../Source/MidiInstrument.hpp; sourceTree = "<group>"; };
 		04B8C4D31FD6946400F4E06D /* MidiInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MidiInterface.cpp; path = ../../Source/MidiInterface.cpp; sourceTree = "<group>"; };
 		04B8C4D41FD6946400F4E06D /* MidiInterface.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiInterface.hpp; path = ../../Source/MidiInterface.hpp; sourceTree = "<group>"; };
+		04F8D2981FEB895400EBA6B1 /* MidiControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MidiControl.cpp; path = ../../Source/MidiControl.cpp; sourceTree = "<group>"; };
+		04F8D2991FEB895400EBA6B1 /* MidiControl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MidiControl.hpp; path = ../../Source/MidiControl.hpp; sourceTree = "<group>"; };
 		04FC09FDF3338A944E67B214 /* juce_video */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_video; path = ../../../modules/juce_video; sourceTree = SOURCE_ROOT; };
 		04FC2113AF0C19167FDDC8F6 /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
 		0B96C1BA5BFF398071203509 /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
@@ -316,6 +319,8 @@
 				04B8C4CE1FD68E2E00F4E06D /* MidiInstrumentControllerComponent.hpp */,
 				04B8C4D01FD6942500F4E06D /* MidiInstrument.cpp */,
 				04B8C4D11FD6942500F4E06D /* MidiInstrument.hpp */,
+				04F8D2981FEB895400EBA6B1 /* MidiControl.cpp */,
+				04F8D2991FEB895400EBA6B1 /* MidiControl.hpp */,
 				048796601FDA35AC00BE6217 /* MidiStudio.cpp */,
 				048796611FDA35AC00BE6217 /* MidiStudio.hpp */,
 				04B8C4D31FD6946400F4E06D /* MidiInterface.cpp */,
@@ -423,6 +428,7 @@
 				043E8F571F95D26900C0FC1F /* NoteGridEditorComponent.cpp in Sources */,
 				CB28E898AA18838367CE52C5 /* include_juce_audio_utils.mm in Sources */,
 				043E8F671F99C63400C0FC1F /* NoteGridProperties.cpp in Sources */,
+				04F8D29A1FEB895400EBA6B1 /* MidiControl.cpp in Sources */,
 				9B7F724B7E31ECFCD876C1E8 /* include_juce_core.mm in Sources */,
 				B8F7ADA5FF81FAC997CC8903 /* include_juce_cryptography.mm in Sources */,
 				04B8C4CC1FD683FF00F4E06D /* MainTabbedComponent.cpp in Sources */,
