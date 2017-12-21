@@ -57,6 +57,8 @@ public:
         return control_id;
     }
     
+    void handleMidiControlEvent(const MidiMessage& message);
+    
     MidiControl** getMidiControlIterator() { return midi_controls_.begin(); }
     MidiControl** getMidiControlIteratorEnd() { return midi_controls_.end(); }
 
@@ -138,8 +140,11 @@ public:
     }
     
     // 1. Adds UI slider for MidiControl to MidiInstrumentControllerComponent
-    // 2. Hooks up MidiInstrument
+    // 2. Hooks up MidiInstrument pointer in MidiControl
+    // 3. Hooks up midi MidiControlSlider to MidiControl
     void setupMidiControlInterface(MidiControl* midi_control);
+    
+    void handleIncomingMidiMessage(const MidiMessage& message);
     
 private:
     ScopedPointer<MidiInstrumentModel> inst_model_;

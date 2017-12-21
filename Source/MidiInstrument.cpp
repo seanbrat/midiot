@@ -11,6 +11,15 @@
 #include "MidiInstrumentControllerComponent.hpp"
 #include "MidiControl.hpp"
 
+
+
+void MidiInstrumentModel::handleMidiControlEvent(const MidiMessage& message)
+{
+    int controller_number = message.getControllerNumber();
+
+    midi_controls_[cc_redirect_table_[controller_number]]->handleMidiControlEvent(message);
+}
+
 MidiInstrument::MidiInstrument(MidiInstrumentModel* inst_model,
                                MidiInstrumentControllerComponent* controller,
                                MidiInputPort* input_port,
@@ -35,6 +44,7 @@ controller_component_(controller)
         setupMidiControlInterface(midi_control);
     }
 
+    midi_input_port_->addInstrumentToPort(this);
 }
 
 MidiInstrument::~MidiInstrument()
@@ -47,8 +57,10 @@ MidiInstrument::~MidiInstrument()
 
 void MidiInstrument::setupMidiControlInterface(MidiControl* midi_control)
 {
-    controller_component_->addMidiControlSlider(midi_control);
+    MidiControlSlider* control_slider = controller_component_->addMidiControlSlider(midi_control);
     midi_control->setMidiInstrument(this);
+    midi_control->setMidiControlSlider(control_slider);
+    midi_input_port_->addInstrumentToPort(this);
 }
 
 void MidiInstrument::listenToControllerComponentKeyboard()
@@ -109,3 +121,20 @@ void MidiInstrument::handleNoteOff (MidiKeyboardState* keyboard_state,
     midi_output_port_->sendNoteOff(midi_channel, midi_note_number, velocity);
 
 }
+
+void MidiInstrument::handleIncomingMidiMessage(const MidiMessage& message)
+{
+    if (message.isNoteOn() || message.isNoteOff())
+    {
+        printf("MidiInstrument::handleIncomingMidiMessage() with note\n");
+        controller_component_->processNextKeyboardMidiEvent(message);
+    }
+    else if (message.isController())
+    {
+        printf("MidiInstrument::handleIncomingMidiMessage() with controller\n");
+        inst_model_->handleMidiControlEvent(message);
+    }
+}
+
+
+

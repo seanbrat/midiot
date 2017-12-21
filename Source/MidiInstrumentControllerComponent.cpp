@@ -115,10 +115,8 @@ void MidiInstrumentControllerComponent::handleNoteOff(
 {
 }
 
-bool MidiInstrumentControllerComponent::addMidiControlSlider(MidiControl* midi_control)
+MidiControlSlider* MidiInstrumentControllerComponent::addMidiControlSlider(MidiControl* midi_control)
 {
-    bool success = true;
-    
     MidiControlSlider* control_slider = new MidiControlSlider();
     control_slider->setName(midi_control->name());
     control_slider->setRange(midi_control->getRangeMinimum(),
@@ -128,5 +126,11 @@ bool MidiInstrumentControllerComponent::addMidiControlSlider(MidiControl* midi_c
     control_sliders_.add(control_slider);
     addAndMakeVisible(control_slider);
     
-    return success;
+    return control_slider;
 }
+
+void MidiInstrumentControllerComponent::processNextKeyboardMidiEvent(const MidiMessage& message)
+{
+    keyboard_state_.processNextMidiEvent (message);
+}
+

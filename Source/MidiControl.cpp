@@ -8,7 +8,7 @@
 
 #include "MidiControl.hpp"
 #include "MidiInstrument.hpp"
-
+#include "MidiInstrumentControllerComponent.hpp"
 
 MidiControl::ContinuousControl* createContinuousControl(short number,
                                                         short range_min,
@@ -35,6 +35,30 @@ MidiControl::SysexControl* createSysexControl(short param_table,
                                          range_min,
                                          range_max);
 }
+
+void MidiControl::handleMidiControlEvent(const MidiMessage& message)
+{
+    value_ = message.getControllerValue();
+
+    const MessageManagerLock mm_lock;
+    
+    if (midi_control_slider_)
+    {
+        midi_control_slider_->setValue(value_, dontSendNotification);
+//        midi_control_slider_-
+    }
+}
+
+void MidiControl::setMidiInstrument(MidiInstrument* midi_instrument)
+{
+    midi_instrument_ = midi_instrument;
+}
+
+void MidiControl::setMidiControlSlider(MidiControlSlider* control_slider)
+{
+    midi_control_slider_ = control_slider;
+}
+
 
 void MidiControl::sliderValueChanged (Slider *slider)
 {

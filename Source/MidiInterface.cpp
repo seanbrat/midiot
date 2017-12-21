@@ -21,14 +21,14 @@ MidiInputPort::~MidiInputPort()
 }
 
 
-void MidiInputPort::add_instrument_to_port(MidiInstrument* instrument)
+void MidiInputPort::addInstrumentToPort(MidiInstrument* instrument)
 {
     short inst_channel = instrument->channel();
     
     channel_routing_table_[inst_channel].addIfNotAlreadyThere(instrument);
 }
 
-void MidiInputPort::remove_instrument_from_port(MidiInstrument* instrument)
+void MidiInputPort::removeInstrumentFromPort(MidiInstrument* instrument)
 {
     short inst_channel = instrument->channel();
     
@@ -43,10 +43,26 @@ void MidiInputPort::remove_instrument_from_port(MidiInstrument* instrument)
 void MidiInputPort::handleIncomingMidiMessage(MidiInput* source,
                                               const MidiMessage& message)
 {
+    short message_channel = message.getChannel();
+
     if (message.isNoteOn())
     {
-        printf("MidiInputPort::handleIncomingMidiMessage()\n");
+        printf("MidiInputPort::handleIncomingMidiMessage() with note\n");
+        printf("message_channel: %d\n", message_channel);
     }
+    else if (message.isController())
+    {
+        printf("MidiInputPort::handleIncomingMidiMessage() with controller\n");
+        printf("message_channel: %d\n", message_channel);
+    }
+    
+    Array<MidiInstrument*> channel_instruments = channel_routing_table_[message_channel-1];
+    
+    for (int i=0; i<channel_instruments.size(); i++)
+    {
+        channel_instruments[i]->handleIncomingMidiMessage(message);
+    }
+
 }
 
 void MidiInputPort::handlePartialSysexMessage(MidiInput* source,

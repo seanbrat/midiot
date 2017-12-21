@@ -76,9 +76,10 @@ public:
     void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
     void handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
 
-    bool addMidiControlSlider(MidiControl* midi_control);
+    MidiControlSlider* addMidiControlSlider(MidiControl* midi_control);
     void addMidiKeyboardStateListener(MidiKeyboardStateListener* const listener);
 
+    void processNextKeyboardMidiEvent(const MidiMessage& message);
     
 private:
 

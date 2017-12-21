@@ -17,6 +17,7 @@
 class MidiInputPort;
 class MidiOutputPort;
 class MidiInstrumentControllerComponent;
+class MidiControlSlider;
 class MidiInstrument;
 
 class MidiControl
@@ -100,7 +101,8 @@ public:
                 SysexControl* sysex_control = NULL)
     : name_(name),
     control_id_(control_id),
-    value_(initial_value)
+    value_(initial_value),
+    midi_control_slider_(NULL)
     {
         if (cc_control)
         {
@@ -153,25 +155,24 @@ public:
     const int value() { return value_; }
     
     void sliderValueChanged (Slider *slider) override;
+    void handleMidiControlEvent(const MidiMessage& message);
     
     String name() { return name_; }
     
-    void setMidiInstrument(MidiInstrument* midi_instrument)
-    {
-        midi_instrument_ = midi_instrument;
-    }
+    void setMidiInstrument(MidiInstrument* midi_instrument);
+    void setMidiControlSlider(MidiControlSlider* control_slider);
     
 private:
     ScopedPointer<ContinuousControl> cc_control_;
     ScopedPointer<SysexControl> sysex_control_;
     
     String name_;
-    
     int control_id_;
-    
     int value_;
     
     MidiInstrument* midi_instrument_;
+    
+    MidiControlSlider* midi_control_slider_;
 };
 
 

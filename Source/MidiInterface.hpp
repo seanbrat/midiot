@@ -24,8 +24,8 @@ public:
     MidiInputPort(const String name);
     ~MidiInputPort();
 
-    void add_instrument_to_port(MidiInstrument* instrument);
-    void remove_instrument_from_port(MidiInstrument* instrument);
+    void addInstrumentToPort(MidiInstrument* instrument);
+    void removeInstrumentFromPort(MidiInstrument* instrument);
 
     const String name() { return name_; }
     
