@@ -100,7 +100,8 @@ public:
                 SysexControl* sysex_control = NULL)
     : name_(name),
     control_id_(control_id),
-    value_(initial_value)
+    value_(initial_value),
+    midi_output_port_(NULL)
     {
         if (cc_control)
         {
@@ -156,6 +157,11 @@ public:
     
     String name() { return name_; }
     
+    void setMidiOutputPort(MidiOutputPort* midi_output_port)
+    {
+        midi_output_port_ = midi_output_port;
+    }
+    
 private:
     ScopedPointer<ContinuousControl> cc_control_;
     ScopedPointer<SysexControl> sysex_control_;
@@ -165,6 +171,8 @@ private:
     int control_id_;
     
     int value_;
+    
+    MidiOutputPort* midi_output_port_;
 };
 
 
@@ -209,7 +217,6 @@ public:
     MidiControl** getMidiControlIterator() { return midi_controls_.begin(); }
     MidiControl** getMidiControlIteratorEnd() { return midi_controls_.end(); }
 
-    
 private:
     OwnedArray<MidiControl> midi_controls_;
     int cc_redirect_table_[NUM_MIDI_CC];
@@ -230,7 +237,7 @@ MidiControl::SysexControl* createSysexControl(short param_table = 0,
                                                       int max_range = 0);
 
 
-class MidiInstrument
+class MidiInstrument : public MidiKeyboardStateListener
 {
 public:
     MidiInstrument(MidiInstrumentModel* inst_model,
@@ -238,6 +245,17 @@ public:
                    MidiInputPort* input_port,
                    MidiOutputPort* output_port);
     ~MidiInstrument();
+    
+    void handleNoteOn (MidiKeyboardState* keyboard_state,
+                       int midi_channel,
+                       int midi_note_number,
+                       float velocity) override;
+    void handleNoteOff (MidiKeyboardState* keyboard_state,
+                        int midi_channel,
+                        int midi_note_number,
+                        float velocity) override;
+    
+    void listenToControllerComponentKeyboard();
     
     void set_instrument_id(int instrument_id);
 
@@ -266,6 +284,10 @@ public:
         return inst_model_->getMidiControlIterator();
     }
     
+    // 1. Adds UI slider for MidiControl to MidiInstrumentControllerComponent
+    // 2. Hooks up MidiControl to MidiOutputPort
+    void setupMidiControlInterface(MidiControl* midi_control);
+    
 private:
     ScopedPointer<MidiInstrumentModel> inst_model_;
     int instrument_id_;
@@ -279,6 +301,7 @@ private:
     // MIDI output port
     MidiOutputPort* midi_output_port_;
     
+    MidiInstrumentControllerComponent* controller_component_;
 };
 
 #endif /* MidiInstrumentModel_hpp */

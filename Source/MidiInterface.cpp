@@ -78,12 +78,29 @@ MidiOutputPort::MidiOutputPort(const String name, MidiOutput* midi_output)
 : name_(name),
 midi_output_(midi_output)
 {
-    
 }
 
 MidiOutputPort::~MidiOutputPort()
 {
-    
+}
+
+
+void MidiOutputPort::sendNoteOn(int midi_channel,
+                                int midi_note_number,
+                                float velocity)
+{
+    MidiMessage m (MidiMessage::noteOn (midi_channel, midi_note_number, velocity));
+    m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
+    midi_output_->sendMessageNow(m);
+}
+
+void MidiOutputPort::sendNoteOff(int midi_channel,
+                                 int midi_note_number,
+                                 float velocity)
+{
+    MidiMessage m (MidiMessage::noteOff (midi_channel, midi_note_number, velocity));
+    m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
+    midi_output_->sendMessageNow(m);
 }
 
 

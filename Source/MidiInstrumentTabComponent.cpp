@@ -275,6 +275,7 @@ void MidiInstrumentTabComponent::handleNoteOn (MidiKeyboardState*, int midiChann
      */
 }
 
+
 void MidiInstrumentTabComponent::handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float /*velocity*/)
 {
     if (! isAddingFromMidiInput)

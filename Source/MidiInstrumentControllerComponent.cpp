@@ -32,13 +32,18 @@ MidiInstrumentControllerComponent::MidiInstrumentControllerComponent ()
 keyboard_component_(keyboard_state_, MidiKeyboardComponent::horizontalKeyboard)
 {
     addAndMakeVisible(keyboard_component_);
-    //keyboard_state_.addListener(this);
+    keyboard_state_.addListener(this);
     
 }
 
 MidiInstrumentControllerComponent::~MidiInstrumentControllerComponent()
 {
 
+}
+
+void MidiInstrumentControllerComponent::addMidiKeyboardStateListener(MidiKeyboardStateListener* const listener)
+{
+    keyboard_state_.addListener(listener);
 }
 
 void MidiInstrumentControllerComponent::resized()
@@ -100,7 +105,6 @@ void MidiInstrumentControllerComponent::handleNoteOn(
                                             int midi_note_number,
                                             float velocity)
 {
-    
 }
 
 void MidiInstrumentControllerComponent::handleNoteOff(
@@ -109,10 +113,7 @@ void MidiInstrumentControllerComponent::handleNoteOff(
                                             int midi_note_number,
                                             float velocity)
 {
-    
 }
-
-
 
 bool MidiInstrumentControllerComponent::addMidiControlSlider(MidiControl* midi_control)
 {

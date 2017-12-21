@@ -60,6 +60,13 @@ public:
     MidiOutputPort(const String name, MidiOutput* midi_output);
     ~MidiOutputPort();
     
+    void sendNoteOn(int midi_channel,
+                    int midi_note_number,
+                    float velocity);
+    void sendNoteOff(int midi_channel,
+                     int midi_note_number,
+                     float velocity);
+    
     const String name() { return name_; }
     
 private:

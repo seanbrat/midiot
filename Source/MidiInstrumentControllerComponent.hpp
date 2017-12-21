@@ -29,6 +29,7 @@ class NoteGridRulerComponent;
 class MidiStudio;
 class MidiControl;
 
+
 class MidiControlSlider : public Slider
 {
 public:
@@ -76,6 +77,8 @@ public:
     void handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
 
     bool addMidiControlSlider(MidiControl* midi_control);
+    void addMidiKeyboardStateListener(MidiKeyboardStateListener* const listener);
+
     
 private:
 
