@@ -6,8 +6,8 @@
 //
 //
 
-#ifndef MidiInstrumentModel_hpp
-#define MidiInstrumentModel_hpp
+#ifndef MidiInstrument_hpp
+#define MidiInstrument_hpp
 
 #include <stdio.h>
 
@@ -19,11 +19,11 @@ class MidiInputPort;
 class MidiOutputPort;
 class MidiInstrumentControllerComponent;
 
-class MidiInstrumentModel
+class MidiInstrumentBaseModel
 {
     
 public:
-    MidiInstrumentModel(String name)
+    MidiInstrumentBaseModel(String name)
     :
     name_(name)
     {
@@ -33,7 +33,7 @@ public:
         }
     }
     
-    ~MidiInstrumentModel()
+    ~MidiInstrumentBaseModel()
     {}
     
     int addMidiControl(String name,
@@ -58,6 +58,7 @@ public:
     }
     
     void handleMidiControlEvent(const MidiMessage& message);
+    void handleMidiSysexEvent(const MidiMessage& message);
     
     MidiControl** getMidiControlIterator() { return midi_controls_.begin(); }
     MidiControl** getMidiControlIteratorEnd() { return midi_controls_.end(); }
@@ -85,7 +86,7 @@ MidiControl::SysexControl* createSysexControl(short param_table = 0,
 class MidiInstrument : public MidiKeyboardStateListener
 {
 public:
-    MidiInstrument(MidiInstrumentModel* inst_model,
+    MidiInstrument(MidiInstrumentBaseModel* inst_model,
                    MidiInstrumentControllerComponent* controller,
                    MidiInputPort* input_port,
                    MidiOutputPort* output_port);
@@ -140,14 +141,17 @@ public:
     }
     
     // 1. Adds UI slider for MidiControl to MidiInstrumentControllerComponent
-    // 2. Hooks up MidiInstrument pointer in MidiControl
-    // 3. Hooks up midi MidiControlSlider to MidiControl
+    // 2. Adds MidiInstrument to MidiInstrumentControllerComponent
+    // 3. Adds MidiInstrument pointer to MidiControl
+    // 4. Adds MidiControlSlider to MidiControl
     void setupMidiControlInterface(MidiControl* midi_control);
     
     void handleIncomingMidiMessage(const MidiMessage& message);
     
+    void sendSysexPatchDumpMessage();
+    
 private:
-    ScopedPointer<MidiInstrumentModel> inst_model_;
+    ScopedPointer<MidiInstrumentBaseModel> inst_model_;
     int instrument_id_;
     
     // MIDI channel
@@ -162,4 +166,4 @@ private:
     MidiInstrumentControllerComponent* controller_component_;
 };
 
-#endif /* MidiInstrumentModel_hpp */
+#endif /* MidiInstrument_hpp */

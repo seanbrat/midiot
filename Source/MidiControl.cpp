@@ -62,7 +62,7 @@ void MidiControl::setMidiControlSlider(MidiControlSlider* control_slider)
 
 void MidiControl::sliderValueChanged (Slider *slider)
 {
-    printf("MidiControl::sliderValueChanged() with value: %f\n", slider->getValue());
+    //printf("MidiControl::sliderValueChanged() with value: %f\n", slider->getValue());
     
     value_ = slider->getValue();
     

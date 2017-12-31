@@ -47,20 +47,40 @@ void MidiInputPort::handleIncomingMidiMessage(MidiInput* source,
 
     if (message.isNoteOn())
     {
-        printf("MidiInputPort::handleIncomingMidiMessage() with note\n");
-        printf("message_channel: %d\n", message_channel);
+        //printf("MidiInputPort::handleIncomingMidiMessage() with note\n");
+        //printf("message_channel: %d\n", message_channel);
     }
     else if (message.isController())
     {
-        printf("MidiInputPort::handleIncomingMidiMessage() with controller\n");
-        printf("message_channel: %d\n", message_channel);
+        //printf("MidiInputPort::handleIncomingMidiMessage() with controller\n");
+        //printf("message_channel: %d\n", message_channel);
+    }
+    else if (!message.isMidiClock())
+    {
+        //printf("MidiInputPort::handleIncomingMessage() is it sysex?\n");
     }
     
-    Array<MidiInstrument*> channel_instruments = channel_routing_table_[message_channel-1];
-    
-    for (int i=0; i<channel_instruments.size(); i++)
+    Array<MidiInstrument*> channel_instruments;
+    if (message_channel) // handling note, cc, other channel-ized MIDI command
     {
-        channel_instruments[i]->handleIncomingMidiMessage(message);
+        channel_instruments = channel_routing_table_[message_channel-1];
+        
+        for (int i=0; i<channel_instruments.size(); i++)
+        {
+            channel_instruments[i]->handleIncomingMidiMessage(message);
+        }
+    }
+    else if (message.isSysEx()) // handle sysex
+    {
+        for (int i=0; i<NUM_MIDI_CHANNELS; i++)
+        {
+            channel_instruments = channel_routing_table_[i];
+            
+            for (int j=0; j<channel_instruments.size(); j++)
+            {
+                channel_instruments[j]->handleIncomingMidiMessage(message);
+            }
+        }
     }
 
 }
@@ -70,7 +90,7 @@ void MidiInputPort::handlePartialSysexMessage(MidiInput* source,
                                               int numBytesSoFar,
                                               double timestamp)
 {
-    
+    //printf("MidiInputPort::handlePartialSysexMessage() called\n");
 }
 
 
@@ -79,7 +99,7 @@ void MidiInputPort::handleNoteOn (MidiKeyboardState* keyboard_state,
                    int midi_note_number,
                    float velocity)
 {
-    printf("MidiInputPort::handleNoteOn() with note number: %d\n", midi_note_number);
+    //printf("MidiInputPort::handleNoteOn() with note number: %d\n", midi_note_number);
 }
 
 void MidiInputPort::handleNoteOff (MidiKeyboardState* keyboard_state,

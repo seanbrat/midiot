@@ -34,11 +34,19 @@ keyboard_component_(keyboard_state_, MidiKeyboardComponent::horizontalKeyboard)
     addAndMakeVisible(keyboard_component_);
     keyboard_state_.addListener(this);
     
+    addAndMakeVisible(patch_request_button_);
+    patch_request_button_.setButtonText("Patch Request");
+    patch_request_button_.addListener(this);
 }
 
 MidiInstrumentControllerComponent::~MidiInstrumentControllerComponent()
 {
 
+}
+
+void MidiInstrumentControllerComponent::addMidiInstrument(MidiInstrument* midi_instrument)
+{
+    midi_instrument_ = midi_instrument;
 }
 
 void MidiInstrumentControllerComponent::addMidiKeyboardStateListener(MidiKeyboardStateListener* const listener)
@@ -60,15 +68,20 @@ void MidiInstrumentControllerComponent::resized()
     
     for (int i=0; i<control_sliders_.size(); i++)
     {
-        control_sliders_[i]->setBounds(x_pos, y_pos, slider_width, slider_height);
-        x_pos += slider_width;
-        
         if (x_pos + slider_width >= 1000)
         {
             x_pos = 0;
             y_pos += slider_height + 30;
         }
+        
+        control_sliders_[i]->setBounds(x_pos, y_pos, slider_width, slider_height);
+        x_pos += slider_width;
     }
+    
+    x_pos = 0;
+    y_pos += slider_height + 30;
+    
+    patch_request_button_.setBounds(x_pos, y_pos, 100, 40);
 }
 
 
@@ -98,6 +111,13 @@ void MidiInstrumentControllerComponent::drawComponent (Graphics& g)
 {
 }
 
+void MidiInstrumentControllerComponent::buttonClicked (Button* button)
+{
+    if (button == &patch_request_button_)
+    {
+        midi_instrument_->sendSysexPatchDumpMessage();
+    }
+}
 
 void MidiInstrumentControllerComponent::handleNoteOn(
                                             MidiKeyboardState* keyboard_state,

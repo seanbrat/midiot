@@ -57,16 +57,16 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001)
     addAndMakeVisible (keyboardComponent);
     keyboardState.addListener (this);
     
-    /*
-     addAndMakeVisible(sysexDataDumpButton);
-     sysexDataDumpButton.setButtonText("Dump Systemmm Data");
+    
+    addAndMakeVisible(sysexDataDumpButton);
+    sysexDataDumpButton.setButtonText("Dump Systemmm Data");
      
-     addAndMakeVisible(sysexDataPatchDumpButton);
-     sysexDataPatchDumpButton.setButtonText("Dump Patch Data");
+    addAndMakeVisible(sysexDataPatchDumpButton);
+    sysexDataPatchDumpButton.setButtonText("Dump Patch Data");
      
-     addAndMakeVisible(sysexDataIdButton);
-     sysexDataIdButton.setButtonText("Data ID Request");
-     */
+    addAndMakeVisible(sysexDataIdButton);
+    sysexDataIdButton.setButtonText("Data ID Request");
+     
     addAndMakeVisible(readMidiFileButton);
     readMidiFileButton.setButtonText("Read MIDI File");
     readMidiFileButton.addListener(this);
@@ -116,16 +116,19 @@ void MidiInstrumentTabComponent::resized()
     midiOutputList.setBounds (100, 70, 400, 40);
     
     readMidiFileButton.setBounds(100, 120, 400, 40);
+    sysexDataDumpButton.setBounds(100, 160, 400, 40);
+    sysexDataPatchDumpButton.setBounds(100, 200, 400, 40);
+    sysexDataIdButton.setBounds(100, 240, 400, 40);
     
-    keyboardComponent.setBounds (20, 170, 1000, 120);
+    keyboardComponent.setBounds (20, 290, 1000, 120);
     
 #if USE_STEP_GRID
     step_grid_component.setBounds(20, 310, 1000, 440);
 #else
-    midi_instrument_controller.setBounds(20, 310, 1000, 440);
+    midi_instrument_controller.setBounds(20, 430, 1000, 540);
 #endif
     
-    midiMessagesBox.setBounds(20, 770, 1000, 150);
+    //midiMessagesBox.setBounds(20, 870, 1000, 150);
     
 }
 

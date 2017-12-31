@@ -18,9 +18,9 @@ MidiStudio::MidiStudio()
 MidiStudio::~MidiStudio()
 {}
 
-MidiInstrumentModel* createYamahaRefaceCS()
+MidiInstrumentBaseModel* createYamahaRefaceCS()
 {
-    MidiInstrumentModel* yamaha_cs_inst = new MidiInstrumentModel(String("Yamaha Reface CS"));
+    MidiInstrumentBaseModel* yamaha_cs_inst = new MidiInstrumentBaseModel(String("Yamaha Reface CS"));
     
     yamaha_cs_inst->addMidiControl(String("LFO Assign"),        // name
                                    0,                               // initial value
@@ -291,6 +291,8 @@ MidiStudio* create_test_studio(MidiInstrumentControllerComponent* controller)
                                         midi_interface->getMidiInputPort("reface CS"),
                                         midi_interface->getMidiOutputPort("reface CS"));
 
+    //yamaha_cs_inst->sendSysexPatchDumpMessage();
+    
     return midi_studio;
 }
 

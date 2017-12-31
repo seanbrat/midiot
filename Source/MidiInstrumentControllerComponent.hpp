@@ -28,7 +28,7 @@ class NoteGridViewport;
 class NoteGridRulerComponent;
 class MidiStudio;
 class MidiControl;
-
+class MidiInstrument;
 
 class MidiControlSlider : public Slider
 {
@@ -46,7 +46,8 @@ private:
 
 //==============================================================================
 class MidiInstrumentControllerComponent  : public GraphicsComponentBase,
-private MidiKeyboardStateListener
+private MidiKeyboardStateListener,
+private Button::Listener
 {
 public:
     enum GridResolution {
@@ -78,9 +79,12 @@ public:
 
     MidiControlSlider* addMidiControlSlider(MidiControl* midi_control);
     void addMidiKeyboardStateListener(MidiKeyboardStateListener* const listener);
+    void addMidiInstrument(MidiInstrument* midi_instrument);
 
     void processNextKeyboardMidiEvent(const MidiMessage& message);
     
+    void buttonClicked (Button* button) override;
+
 private:
 
     MidiKeyboardState keyboard_state_;
@@ -88,6 +92,10 @@ private:
     
     OwnedArray<MidiControlSlider> control_sliders_;
 
+    TextButton patch_request_button_;
+    Label patch_request_label_;
+    
+    MidiInstrument* midi_instrument_;
 };
 
 
