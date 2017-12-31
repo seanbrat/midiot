@@ -151,7 +151,7 @@ public:
         return range_max;
     }
     
-    void set_value(const int value) { value_ = value; }
+    void set_value(const int value, bool update_slider = false);
     const int value() { return value_; }
     
     void sliderValueChanged (Slider *slider) override;
@@ -174,6 +174,20 @@ private:
     
     MidiControlSlider* midi_control_slider_;
 };
+
+
+MidiControl::ContinuousControl* createContinuousControl(short number,
+                                                        short range_min = 0,
+                                                        short range_max = 127);
+
+MidiControl::SysexControl* createSysexControl(short param_table = 0,
+                                              short address_high = 0,
+                                              short address_mid = 0,
+                                              short address_low = 0,
+                                              short size_bytes = 0,
+                                              int min_range = 0,
+                                              int max_range = 0);
+
 
 
 #endif /* MidiControl_hpp */

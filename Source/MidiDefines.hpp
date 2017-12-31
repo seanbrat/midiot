@@ -11,10 +11,8 @@
 
 #include <stdio.h>
 
-
 const int NUM_MIDI_CC = 128;
 const int NUM_MIDI_CHANNELS = 16;
-
 
 
 #endif /* MidiDefines_hpp */

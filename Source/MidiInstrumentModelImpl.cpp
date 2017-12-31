@@ -1,31 +1,45 @@
 //
-//  MidiStudio.cpp
+//  MidiInstrumentModelImpl.cpp
 //  Midiot
 //
-//  Created by Sean Bratnober on 12/7/17.
+//  Created by Sean Bratnober on 12/31/17.
 //
 //
 
-#include "MidiStudio.hpp"
-#include "MidiInstrument.hpp"
-#include "MidiInstrumentControllerComponent.hpp"
 #include "MidiInstrumentModelImpl.hpp"
 
-MidiStudio::MidiStudio()
-{
-    midi_interface_ = new MidiInterface();
-}
+const uint8 NUM_REFACE_CS_PARAMS = 18;
 
-MidiStudio::~MidiStudio()
-{}
-
-MidiInstrumentModel* createYamahaRefaceCS()
+YamahaRefaceCSModel::YamahaRefaceCSModel()
+: MidiInstrumentModel("Yamaha Reface CS")
 {
-    MidiInstrumentModel* yamaha_cs_inst = new MidiInstrumentModel(String("Yamaha Reface CS"));
+    sysex_manufacturer_id_ = 0x43;
+    sysex_device_id_ = 0x00;
+    sysex_model_id_bytes_ = 1;
+    sysex_model_id_[0] = 0x03;
+    sysex_group_number_high_ = 0x7f;
+    sysex_group_number_low_ = 0x1c;
     
-    yamaha_cs_inst->addMidiControl(String("LFO Assign"),        // name
+    addMidiControl(String("Volume"),        // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(7,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x00,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+
+    
+    addMidiControl(String("LFO Assign"),        // name
                                    0,                               // initial value
-                                   
+                   
                                    createContinuousControl(78,      // cc number
                                                            0,       // range_min
                                                            127),    // range_max
@@ -36,9 +50,9 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x02,         // address_low
                                                       1,            // size (bytes)
                                                       0x00,         // range_min
-                                                      0x04));       // range_max
+                                                      0x127));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("LFO Depth"),        // name
+    addMidiControl(String("LFO Depth"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(77,      // cc number
@@ -53,7 +67,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("LFO Speed"),        // name
+    addMidiControl(String("LFO Speed"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(76,      // cc number
@@ -68,7 +82,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Portamento"),        // name
+    addMidiControl(String("Portamento"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(20,      // cc number
@@ -83,7 +97,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Osc Type"),        // name
+    addMidiControl(String("Osc Type"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(80,      // cc number
@@ -96,9 +110,9 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x06,         // address_low
                                                       1,            // size (bytes)
                                                       0x00,         // range_min
-                                                      0x04));       // range_max
+                                                      0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Osc Texture"),        // name
+    addMidiControl(String("Osc Texture"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(81,      // cc number
@@ -113,7 +127,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Osc Mod"),        // name
+    addMidiControl(String("Osc Mod"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(82,      // cc number
@@ -128,7 +142,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Filter Cutoff"),        // name
+    addMidiControl(String("Filter Cutoff"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(74,      // cc number
@@ -143,7 +157,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Filter Resonance"),        // name
+    addMidiControl(String("Filter Resonance"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(71,      // cc number
@@ -158,7 +172,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("EG Balance"),        // name
+    addMidiControl(String("EG Balance"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(83,      // cc number
@@ -173,7 +187,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("EG Attack"),        // name
+    addMidiControl(String("EG Attack"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(73,      // cc number
@@ -188,7 +202,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("EG Decay"),        // name
+    addMidiControl(String("EG Decay"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(75,      // cc number
@@ -203,7 +217,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("EG Sustain"),        // name
+    addMidiControl(String("EG Sustain"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(79,      // cc number
@@ -218,7 +232,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("EG Release"),        // name
+    addMidiControl(String("EG Release"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(72,      // cc number
@@ -233,7 +247,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Effect Type"),        // name
+    addMidiControl(String("Effect Type"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(17,      // cc number
@@ -246,9 +260,9 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x10,         // address_low
                                                       1,            // size (bytes)
                                                       0x00,         // range_min
-                                                      0x04));       // range_max
+                                                      0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Effect Depth"),        // name
+    addMidiControl(String("Effect Depth"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(18,      // cc number
@@ -263,7 +277,7 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
-    yamaha_cs_inst->addMidiControl(String("Effect Rate"),        // name
+    addMidiControl(String("Effect Rate"),        // name
                                    0,                               // initial value
                                    
                                    createContinuousControl(19,      // cc number
@@ -278,34 +292,66 @@ MidiInstrumentModel* createYamahaRefaceCS()
                                                       0x00,         // range_min
                                                       0x7F));       // range_max
     
+
     
-    return yamaha_cs_inst;
 }
 
-MidiStudio* create_test_studio(MidiInstrumentControllerComponent* controller)
+bool YamahaRefaceCSModel::handleMidiSysexEvent(const MidiMessage& message)
 {
-    MidiStudio* midi_studio = new MidiStudio();
-    MidiInterface* midi_interface = midi_studio->getMidiInterface();
-    YamahaRefaceCSModel* yamaha_cs_model = new YamahaRefaceCSModel();
-    MidiInstrument* yamaha_cs_inst = new MidiInstrument(
-                                        yamaha_cs_model,
-                                        controller,
-                                        midi_interface->getMidiInputPort("reface CS"),
-                                        midi_interface->getMidiOutputPort("reface CS"));
-
-    //yamaha_cs_inst->sendSysexPatchDumpMessage();
+    printf("MidiInstrumentModel::handleMidiSysexEvent with sysex data size: %d and data size: %d\n", message.getSysExDataSize(), message.getRawDataSize());
     
-    return midi_studio;
-}
-
-int MidiStudio::addMidiInstrument(MidiInstrument* midi_instrument)
-{
-    int instrument_id = midi_instruments_.size();
+    int data_size = message.getSysExDataSize();
+    const uint8* sysex_data = message.getSysExData();
     
-    midi_instrument->set_instrument_id(instrument_id);
+    for (int i=0; i<data_size; i++)
+    {
+        printf("sysex_data[%d]: %02x\n", i, sysex_data[i]);
+    }
     
-    midi_instruments_.add(midi_instrument);
+    if (sysex_data[0] != sysex_manufacturer_id_ ||
+        sysex_data[1] != sysex_device_id_ ||
+        sysex_data[2] != sysex_group_number_high_ ||
+        sysex_data[3] != sysex_group_number_low_ ||
+        sysex_data[6] != sysex_model_id_[0])
+    {
+        return false;
+    }
     
-    return instrument_id;
+    uint8 byte_count_high = sysex_data[4];
+    uint8 byte_count_low = sysex_data[5];
     
+    uint16 byte_count = byte_count_high;
+    byte_count = (byte_count << 2) + byte_count_low;
+    
+    printf("handleMidiSysexEvent returning true with byte_count: %d\n", byte_count);
+    
+    uint8 address_high = sysex_data[7];
+    uint8 address_mid = sysex_data[8];
+    uint8 address_low = sysex_data[9];
+    
+    printf("evaluating sysex dump at address %02x : %02x : %02x\n", address_high, address_mid, address_low);
+    
+    if (address_high == 0x30 &&
+        address_mid == 0x00 &&
+        address_low == 0x00 &&
+        byte_count == 26)
+    {
+        printf("handle patch dump\n");
+        
+        int param_index = 0;
+        int param_byte = 10;
+        
+        for (int i=0; i<NUM_REFACE_CS_PARAMS; i++)
+        {
+            if (i == 1)
+            {
+                param_byte++;
+                continue;
+            }
+            
+            midi_controls_[param_index++]->set_value(sysex_data[param_byte++], true);
+        }
+    }
+    
+    return true;
 }

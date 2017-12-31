@@ -76,5 +76,22 @@ void MidiControl::sliderValueChanged (Slider *slider)
     {
         
     }
-        
 }
+
+void MidiControl::set_value(const int value, bool update_slider)
+{
+    printf("MidiControl::set_value(%d) for control %s\n", value, name_.toRawUTF8());
+    value_ = value;
+    
+    if (update_slider)
+    {
+        const MessageManagerLock mm_lock;
+        
+        if (midi_control_slider_)
+        {
+            midi_control_slider_->setValue(value_, dontSendNotification);
+            //        midi_control_slider_-
+        }
+    }
+}
+

@@ -13,32 +13,8 @@
 
 
 
-void MidiInstrumentBaseModel::handleMidiControlEvent(const MidiMessage& message)
-{
-    int controller_number = message.getControllerNumber();
 
-    midi_controls_[cc_redirect_table_[controller_number]]->handleMidiControlEvent(message);
-}
-
-void MidiInstrumentBaseModel::handleMidiSysexEvent(const MidiMessage& message)
-{
-    printf("MidiInstrumentBaseModel::handleMidiSysexEvent with sysex data size: %d and data size: %d\n", message.getSysExDataSize(), message.getRawDataSize());
-    
-    int data_size = message.getSysExDataSize();
-    const uint8* sysex_data = message.getSysExData();
-    
-    for (int i=0; i<data_size; i++)
-    {
-        printf("sysex_data[%d]: %02x\n", i, sysex_data[i]);
-    }
-    
-
-    
-    
-}
-
-
-MidiInstrument::MidiInstrument(MidiInstrumentBaseModel* inst_model,
+MidiInstrument::MidiInstrument(MidiInstrumentModel* inst_model,
                                MidiInstrumentControllerComponent* controller,
                                MidiInputPort* input_port,
                                MidiOutputPort* output_port)
@@ -174,18 +150,18 @@ void MidiInstrument::sendSysexPatchDumpMessage()
     const uint8 sysexDataDumpRequest[10] = { 0xF0, 0x43, 0x20, 0x7F, 0x1C, 0x03, 0x00, 0x00, 0x00, 0xF7 };
     MidiMessage dumpRequest(MidiMessage::createSysExMessage ((const void*)sysexDataDumpRequest, 10));
     printf("sending data dump request\n");
-    midi_output_port_->sendMessageNow(dumpRequest);
+    //midi_output_port_->sendMessageNow(dumpRequest);
 
     const uint8 sysexDataPatchDump[10] = { 0xF0, 0x43, 0x20, 0x7F, 0x1C, 0x03, 0x0E, 0x0F, 0x00, 0xF7 };
-    MidiMessage PatchDumpRequest (MidiMessage::createSysExMessage ((const void*)sysexDataPatchDump, 10));
+    MidiMessage patchDumpRequest (MidiMessage::createSysExMessage ((const void*)sysexDataPatchDump, 10));
     printf("sending patch dump request\n");
-    midi_output_port_->sendMessageNow(PatchDumpRequest);
+    midi_output_port_->sendMessageNow(patchDumpRequest);
 
     
     const uint8 sysexDataIdRequest[6] = { 0xF0, 0x7E, 0x00, 0x06, 0x01, 0xF7 };
     MidiMessage idRequest (MidiMessage::createSysExMessage ((const void*)sysexDataIdRequest, 6));
     printf("sending data ID request\n");
-    midi_output_port_->sendMessageNow(idRequest);
+    //midi_output_port_->sendMessageNow(idRequest);
     
     int midi_channel = 1;
     int midi_note_number = 60;
