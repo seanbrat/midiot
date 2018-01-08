@@ -14,6 +14,12 @@
 #include "MidiStudio.hpp"
 #include "MidiInstrument.hpp"
 
+
+void MidiControlTab::drawComponent (Graphics& g)
+{
+    //resized();
+}
+
 MidiControlSlider::MidiControlSlider()
 : Slider()
 {
@@ -29,10 +35,15 @@ void MidiControlSlider::setName(const String& newName)
 
 MidiInstrumentControllerComponent::MidiInstrumentControllerComponent ()
 : GraphicsComponentBase("MidiInstrumentControllerComponent"),
-keyboard_component_(keyboard_state_, MidiKeyboardComponent::horizontalKeyboard)
+keyboard_component_(keyboard_state_, MidiKeyboardComponent::horizontalKeyboard),
+control_slider_tabs_()
 {
     addAndMakeVisible(keyboard_component_);
     keyboard_state_.addListener(this);
+
+#if USE_MIDI_COMPONENT
+    addAndMakeVisible(control_slider_tabs_);
+#endif
     
     addAndMakeVisible(patch_request_button_);
     patch_request_button_.setButtonText("Patch Request");
@@ -58,13 +69,23 @@ void MidiInstrumentControllerComponent::resized()
 {
     keyboard_component_.setBounds(0, 0, 1000, 80);
     
+    int x_pos;
+    int y_pos;
+    
+#if USE_MIDI_COMPONENT
+    control_slider_tabs_.setBounds(0, 100, 1100, 500);
+    //midi_control_tab_.setBounds(0, 80, 1000, 140);
+    x_pos = 0;
+    y_pos = 600;
+    //control_slider_tabs_.resized();
+#else
     int slider_x = 0;
     int slider_y = 100;
     int slider_width = 100;
     int slider_height = 140;
     
-    int x_pos = slider_x;
-    int y_pos = slider_y;
+    x_pos = slider_x;
+    y_pos = slider_y;
     
     for (int i=0; i<control_sliders_.size(); i++)
     {
@@ -80,6 +101,7 @@ void MidiInstrumentControllerComponent::resized()
     
     x_pos = 0;
     y_pos += slider_height + 30;
+#endif
     
     patch_request_button_.setBounds(x_pos, y_pos, 100, 40);
 }
@@ -144,7 +166,12 @@ MidiControlSlider* MidiInstrumentControllerComponent::addMidiControlSlider(MidiC
                              1.0);
     control_slider->addListener(midi_control);
     control_sliders_.add(control_slider);
+#if USE_MIDI_COMPONENT
+    control_slider_tabs_.addAndMakeVisible(control_slider);
+//    midi_control_tab_.addMidiControlAndMakeVisible(control_slider);
+#else
     addAndMakeVisible(control_slider);
+#endif
     
     return control_slider;
 }

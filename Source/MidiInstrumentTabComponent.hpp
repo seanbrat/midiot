@@ -102,15 +102,6 @@ private:
     TextEditor midiMessagesBox;
     double startTime;
     
-    TextButton sysexDataDumpButton;
-    Label sysexDataDumpLabel;
-    
-    TextButton sysexDataIdButton;
-    Label sysexDataIdLabel;
-    
-    TextButton sysexDataPatchDumpButton;
-    Label sysexDataPatchDumpLabel;
-    
     TextButton readMidiFileButton;
     Label testLabel;
     
