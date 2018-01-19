@@ -13,6 +13,7 @@
 #include "NoteGridRulerComponent.hpp"
 #include "MidiStudio.hpp"
 #include "MidiInstrument.hpp"
+#include "MidiotFileUtils.hpp"
 
 
 void MidiControlTab::drawComponent (Graphics& g)
@@ -36,7 +37,9 @@ void MidiControlSlider::setName(const String& newName)
 MidiInstrumentControllerComponent::MidiInstrumentControllerComponent ()
 : GraphicsComponentBase("MidiInstrumentControllerComponent"),
 keyboard_component_(keyboard_state_, MidiKeyboardComponent::horizontalKeyboard),
-control_slider_tabs_()
+control_slider_tabs_(),
+patch_name_label_("Patch Name", "Patch Name"),
+midi_instrument_properties_()
 {
     addAndMakeVisible(keyboard_component_);
     keyboard_state_.addListener(this);
@@ -44,10 +47,17 @@ control_slider_tabs_()
 #if USE_MIDI_COMPONENT
     addAndMakeVisible(control_slider_tabs_);
 #endif
+    addAndMakeVisible(patch_name_label_);
+    patch_name_label_.setEditable(true);
+    patch_name_label_.addListener(this);
     
     addAndMakeVisible(patch_request_button_);
     patch_request_button_.setButtonText("Patch Request");
     patch_request_button_.addListener(this);
+    
+    addAndMakeVisible(patch_save_button_);
+    patch_save_button_.setButtonText("Save Patch");
+    patch_save_button_.addListener(this);
 }
 
 MidiInstrumentControllerComponent::~MidiInstrumentControllerComponent()
@@ -102,8 +112,11 @@ void MidiInstrumentControllerComponent::resized()
     x_pos = 0;
     y_pos += slider_height + 30;
 #endif
-    
+    patch_name_label_.setBounds(x_pos, y_pos, 200, 40);
+    y_pos += 40;
     patch_request_button_.setBounds(x_pos, y_pos, 100, 40);
+    x_pos += 110;
+    patch_save_button_.setBounds(x_pos, y_pos, 100, 40);
 }
 
 
@@ -139,6 +152,18 @@ void MidiInstrumentControllerComponent::buttonClicked (Button* button)
     {
         midi_instrument_->sendSysexPatchDumpMessage();
     }
+    else if (button == &patch_save_button_)
+    {
+        savePatch();
+    }
+}
+
+void MidiInstrumentControllerComponent::labelTextChanged (Label *labelThatHasChanged)
+{
+    if (labelThatHasChanged == &patch_name_label_)
+    {
+        midi_instrument_properties_.set_patch_name(patch_name_label_.getText());
+    }
 }
 
 void MidiInstrumentControllerComponent::handleNoteOn(
@@ -156,6 +181,32 @@ void MidiInstrumentControllerComponent::handleNoteOff(
                                             float velocity)
 {
 }
+
+void MidiInstrumentControllerComponent::savePatch()
+{
+    String manufacturer_name = midi_instrument_->getManufacturerName();
+    String model_name = midi_instrument_->getModelName();
+    
+    String patch_name = midi_instrument_properties_.patch_name();
+    
+    if (patch_name == "")
+    {
+        patch_name = MidiotFileUtils::generatePatchFileName(manufacturer_name, model_name);
+        midi_instrument_properties_.set_patch_name(patch_name);
+        patch_name_label_.setText(patch_name, NotificationType::dontSendNotification);
+    }
+    
+    var patch = midi_instrument_->getPatchVar(patch_name);
+    String patch_json = JSON::toString(patch);
+    printf("patch_json: %s\n", patch_json.toRawUTF8());
+    File inst_patch_folder = MidiotFileUtils::getInstrumentPatchFolder(manufacturer_name, model_name);
+    
+    String patch_file_path = inst_patch_folder.getFullPathName() + File::separatorString + patch_name + MidiotFileUtils::getPatchFileExtension();
+    
+    File patch_file(patch_file_path);
+    patch_file.replaceWithText(patch_json);
+}
+
 
 MidiControlSlider* MidiInstrumentControllerComponent::addMidiControlSlider(MidiControl* midi_control)
 {

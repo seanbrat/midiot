@@ -87,6 +87,12 @@ public:
 
     void sendSysexPatchDumpMessage();
     
+    var getInstrumentParametersVar();
+    var getPatchVar(String patch_name);
+    
+    String getManufacturerName();
+    String getModelName();
+    
 private:
     ScopedPointer<MidiInstrumentModel> inst_model_;
     int instrument_id_;

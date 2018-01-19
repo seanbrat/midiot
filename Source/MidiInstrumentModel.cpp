@@ -18,3 +18,13 @@ bool MidiInstrumentModel::handleMidiControlEvent(const MidiMessage& message)
     
     return true;
 }
+
+const String MidiInstrumentModel::manufacturer()
+{
+    return manufacturer_.toString();
+}
+
+const String MidiInstrumentModel::model_name()
+{
+    return model_name_.toString();
+}

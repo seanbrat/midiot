@@ -49,6 +49,49 @@ MidiInstrument::~MidiInstrument()
     }
 }
 
+var MidiInstrument::getInstrumentParametersVar()
+{
+    printf("MidiInstrument::getInstrumentParametersVar() called\n");
+    DynamicObject* params_obj = new DynamicObject();
+    
+    MidiControl** ctrl_iter = inst_model_->getMidiControlIterator();
+    
+    for (ctrl_iter;
+         ctrl_iter != inst_model_->getMidiControlIteratorEnd();
+         ctrl_iter++)
+    {
+        MidiControl* midi_control = *ctrl_iter;
+        params_obj->setProperty(midi_control->name(), midi_control->value());
+    }
+    
+    var json(params_obj);
+    return json;
+}
+
+var MidiInstrument::getPatchVar(String patch_name)
+{
+    DynamicObject* patch_obj = new DynamicObject();
+    patch_obj->setProperty("manufacturer", inst_model_->manufacturer());
+    patch_obj->setProperty("model_name", inst_model_->model_name());
+    patch_obj->setProperty("patch_name", patch_name);
+    
+    var params = getInstrumentParametersVar();
+    patch_obj->setProperty("params", params);
+    
+    var json(patch_obj);
+    return json;
+}
+
+String MidiInstrument::getManufacturerName()
+{
+    return inst_model_->manufacturer();
+}
+
+String MidiInstrument::getModelName()
+{
+    return inst_model_->model_name();
+}
+
 void MidiInstrument::setupMidiControlInterface(MidiControl* midi_control)
 {
     MidiControlSlider* control_slider = controller_component_->addMidiControlSlider(midi_control);

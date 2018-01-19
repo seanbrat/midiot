@@ -11,7 +11,7 @@
 const uint8 NUM_REFACE_CS_PARAMS = 18;
 
 YamahaRefaceCSModel::YamahaRefaceCSModel()
-: MidiInstrumentModel("Yamaha Reface CS")
+: MidiInstrumentModel("Yamaha", "Reface CS")
 {
     sysex_manufacturer_id_ = 0x43;
     sysex_device_id_ = 0x00;

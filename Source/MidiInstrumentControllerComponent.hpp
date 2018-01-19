@@ -18,6 +18,7 @@
 
 #include "NoteGridProperties.hpp"
 #include "MidiClockUtilities.hpp"
+#include "MidiInstrumentControllerProperties.hpp"
 
 #define MIDI_CONTROLS_PER_TAB       18
 
@@ -149,7 +150,8 @@ private:
 //==============================================================================
 class MidiInstrumentControllerComponent : public GraphicsComponentBase,
 private MidiKeyboardStateListener,
-private Button::Listener
+private Button::Listener,
+private Label::Listener
 {
 public:
     enum GridResolution {
@@ -186,7 +188,10 @@ public:
     void processNextKeyboardMidiEvent(const MidiMessage& message);
     
     void buttonClicked (Button* button) override;
+    void labelTextChanged (Label *labelThatHasChanged) override;
 
+    void savePatch();
+    
 private:
 
     MidiKeyboardState keyboard_state_;
@@ -196,10 +201,12 @@ private:
     
     OwnedArray<MidiControlSlider> control_sliders_;
 
+    Label patch_name_label_;
     TextButton patch_request_button_;
-    Label patch_request_label_;
+    TextButton patch_save_button_;
     
     MidiInstrument* midi_instrument_;
+    MidiInstrumentControllerProperties midi_instrument_properties_;
 };
 
 

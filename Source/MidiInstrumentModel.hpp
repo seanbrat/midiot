@@ -19,9 +19,10 @@ const int SYSEX_MODEL_ID_BYTES = 16;
 class MidiInstrumentModel
 {
 public:
-    MidiInstrumentModel(String name)
+    MidiInstrumentModel(String manufacturer, String model_name)
     :
-    name_(name),
+    manufacturer_(manufacturer),
+    model_name_(model_name),
     sysex_manufacturer_id_(0),
     sysex_device_id_(0),
     sysex_model_id_bytes_(0)
@@ -70,13 +71,15 @@ public:
     virtual bool handleSysexIdRequest(const MidiMessage& message) { return false; }
     virtual bool handleSysexPatchDumpRequest(const MidiMessage& message) { return false; }
     virtual bool handleSysexParameterRequest(const MidiMessage& message) { return false; }
-
-
+    
+    const String manufacturer();
+    const String model_name();
     
 protected:
     OwnedArray<MidiControl> midi_controls_;
     int cc_redirect_table_[NUM_MIDI_CC];
-    Identifier name_;
+    Identifier model_name_;
+    Identifier manufacturer_;
     
     uint8 sysex_manufacturer_id_;
     uint8 sysex_device_id_;

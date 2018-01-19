@@ -21,7 +21,7 @@ MidiStudio::~MidiStudio()
 
 MidiInstrumentModel* createYamahaRefaceCS()
 {
-    MidiInstrumentModel* yamaha_cs_inst = new MidiInstrumentModel(String("Yamaha Reface CS"));
+    MidiInstrumentModel* yamaha_cs_inst = new MidiInstrumentModel(String("Yamaha"), String("Reface CS"));
     
     yamaha_cs_inst->addMidiControl(String("LFO Assign"),        // name
                                    0,                               // initial value
