@@ -49,6 +49,20 @@ void MidiControl::handleMidiControlEvent(const MidiMessage& message)
     }
 }
 
+void MidiControl::send_value_to_midi()
+{
+    if (cc_control_)
+    {
+        midi_instrument_->sendControllerEvent(midi_instrument_->channel()+1,
+                                              cc_control_->number(),
+                                              value_);
+    }
+    else if (sysex_control_)
+    {
+        
+    }
+}
+
 void MidiControl::setMidiInstrument(MidiInstrument* midi_instrument)
 {
     midi_instrument_ = midi_instrument;

@@ -99,7 +99,7 @@ void MidiInstrument::setupMidiControlInterface(MidiControl* midi_control)
     midi_control->setMidiInstrument(this);
     midi_control->setMidiControlSlider(control_slider);
     midi_input_port_->addInstrumentToPort(this);
-    
+    controller_component_->updatePatchSelectorMenu();
 }
 
 void MidiInstrument::listenToControllerComponentKeyboard()
@@ -211,4 +211,18 @@ void MidiInstrument::sendSysexPatchDumpMessage()
     float velocity = 0.99;
     MidiMessage m(MidiMessage::noteOn(midi_channel, midi_note_number, velocity));
 //    midi_output_port_->sendMessageNow(m);
+}
+
+void MidiInstrument::sendMidiControlPatchData()
+{
+    inst_model_->sendMidiControlPatchData();
+}
+
+bool MidiInstrument::updateMidiControl(String control_name,
+                                       int control_value,
+                                       bool sendMidiOnUpdate)
+{
+    return inst_model_->updateMidiControl(control_name,
+                                          control_value,
+                                          sendMidiOnUpdate);
 }

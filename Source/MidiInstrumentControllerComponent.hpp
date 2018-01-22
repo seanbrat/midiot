@@ -151,7 +151,8 @@ private:
 class MidiInstrumentControllerComponent : public GraphicsComponentBase,
 private MidiKeyboardStateListener,
 private Button::Listener,
-private Label::Listener
+private Label::Listener,
+private ComboBox::Listener
 {
 public:
     enum GridResolution {
@@ -187,11 +188,17 @@ public:
 
     void processNextKeyboardMidiEvent(const MidiMessage& message);
     
+    void loadSelectedPatch(String selected_patch_name);
+    
     void buttonClicked (Button* button) override;
     void labelTextChanged (Label *labelThatHasChanged) override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
     void savePatch();
     
+    void updatePatchSelectorMenu(String selected_patch_name = "");
+    void setSelectedPatchByName(String patch_name, bool loadPatch = false);
+
 private:
 
     MidiKeyboardState keyboard_state_;
@@ -201,9 +208,12 @@ private:
     
     OwnedArray<MidiControlSlider> control_sliders_;
 
+    ComboBox patch_selector_menu_;
+    
     Label patch_name_label_;
     TextButton patch_request_button_;
     TextButton patch_save_button_;
+    
     
     MidiInstrument* midi_instrument_;
     MidiInstrumentControllerProperties midi_instrument_properties_;

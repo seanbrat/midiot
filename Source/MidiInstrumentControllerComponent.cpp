@@ -38,6 +38,7 @@ MidiInstrumentControllerComponent::MidiInstrumentControllerComponent ()
 : GraphicsComponentBase("MidiInstrumentControllerComponent"),
 keyboard_component_(keyboard_state_, MidiKeyboardComponent::horizontalKeyboard),
 control_slider_tabs_(),
+patch_selector_menu_("Patch Selector Combo"),
 patch_name_label_("Patch Name", "Patch Name"),
 midi_instrument_properties_()
 {
@@ -47,6 +48,10 @@ midi_instrument_properties_()
 #if USE_MIDI_COMPONENT
     addAndMakeVisible(control_slider_tabs_);
 #endif
+    addAndMakeVisible(patch_selector_menu_);
+    patch_selector_menu_.setJustificationType(Justification::topLeft);
+    patch_selector_menu_.addListener(this);
+    
     addAndMakeVisible(patch_name_label_);
     patch_name_label_.setEditable(true);
     patch_name_label_.addListener(this);
@@ -112,7 +117,10 @@ void MidiInstrumentControllerComponent::resized()
     x_pos = 0;
     y_pos += slider_height + 30;
 #endif
+    patch_selector_menu_.setBounds(x_pos, y_pos, 200, 40);
+    x_pos += 220;
     patch_name_label_.setBounds(x_pos, y_pos, 200, 40);
+    x_pos = 0;
     y_pos += 40;
     patch_request_button_.setBounds(x_pos, y_pos, 100, 40);
     x_pos += 110;
@@ -163,6 +171,86 @@ void MidiInstrumentControllerComponent::labelTextChanged (Label *labelThatHasCha
     if (labelThatHasChanged == &patch_name_label_)
     {
         midi_instrument_properties_.set_patch_name(patch_name_label_.getText());
+        patch_selector_menu_.removeListener(this);
+        patch_selector_menu_.setSelectedId(0);
+        patch_selector_menu_.addListener(this);
+    }
+}
+
+void MidiInstrumentControllerComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
+{
+    if (comboBoxThatHasChanged == &patch_selector_menu_)
+    {
+        String selected_patch_name(patch_selector_menu_.getText());
+        if (selected_patch_name.length())
+        {
+            loadSelectedPatch(selected_patch_name);
+        }
+    }
+}
+
+void MidiInstrumentControllerComponent::loadSelectedPatch(String selected_patch_name)
+{
+    midi_instrument_properties_.set_patch_name(selected_patch_name);
+    patch_name_label_.setText(selected_patch_name, NotificationType::dontSendNotification);
+    
+    String patch_file_name = selected_patch_name + String(".mdp");
+    printf("loading patch file: %s\n", patch_file_name.toRawUTF8());
+    String manufacturer_name(midi_instrument_->getManufacturerName());
+    String model_name(midi_instrument_->getModelName());
+    
+    String patch_file_path(MidiotFileUtils::getInstrumentPatchFolderPath(manufacturer_name, model_name));
+    patch_file_path += patch_file_name;
+    printf("--> at path: %s\n", patch_file_path.toRawUTF8());
+    
+    File patch_file(patch_file_path);
+    if (!patch_file.existsAsFile()) {
+        return;
+    }
+    
+    FileInputStream patch_file_stream(patch_file);
+    String patch_json_string(patch_file_stream.readEntireStreamAsString());
+    
+    printf("patch_json_string: %s\n", patch_json_string.toRawUTF8());
+    var patch_json(JSON::fromString(patch_json_string));
+    
+    if (auto* const patch_obj = patch_json.getDynamicObject())
+    {
+        if (patch_obj->hasProperty("manufacturer") &&
+            patch_obj->hasProperty("model_name") &&
+            patch_obj->hasProperty("patch_name") &&
+            patch_obj->hasProperty("params"))
+        {
+            printf("VALIDATED patch file\n");
+            
+            var manufacturer_json = patch_obj->getProperty("manufacturer");
+            
+            String patch_name = patch_json["patch_name"];
+            printf("patch_name: %s\n", patch_name.toRawUTF8());
+            
+            if (patch_json["manufacturer"] == manufacturer_name &&
+                patch_json["model_name"] == model_name)
+            {
+                printf("validated manufacturer/model\n");
+                
+                var param_json = patch_json["params"];
+                if (auto* const param_obj = param_json.getDynamicObject())
+                {
+                    for (auto prop : param_obj->getProperties())
+                    {
+                        String property_name = prop.name.toString();
+                        int property_value = param_json[property_name.toRawUTF8()];
+                        
+                        printf("name: %s\t\tvalue: %d\n", property_name.toRawUTF8(), property_value);
+                        
+                        midi_instrument_->updateMidiControl(property_name,
+                                                            property_value);
+                    }
+                    
+                    midi_instrument_->sendMidiControlPatchData();
+                }
+            }
+        }
     }
 }
 
@@ -186,7 +274,6 @@ void MidiInstrumentControllerComponent::savePatch()
 {
     String manufacturer_name = midi_instrument_->getManufacturerName();
     String model_name = midi_instrument_->getModelName();
-    
     String patch_name = midi_instrument_properties_.patch_name();
     
     if (patch_name == "")
@@ -205,6 +292,52 @@ void MidiInstrumentControllerComponent::savePatch()
     
     File patch_file(patch_file_path);
     patch_file.replaceWithText(patch_json);
+    
+    updatePatchSelectorMenu(patch_name);
+}
+
+void MidiInstrumentControllerComponent::setSelectedPatchByName(String patch_name, bool loadPatch)
+{
+    patch_selector_menu_.removeListener(this);
+
+    for (int i = 0; i < patch_selector_menu_.getNumItems(); i++)
+    {
+        String item_text = patch_selector_menu_.getItemText(i);
+        if (item_text == patch_name)
+        {
+            midi_instrument_properties_.set_patch_name(patch_name);
+            patch_selector_menu_.setSelectedId(i+1, NotificationType::dontSendNotification);
+            break;
+        }
+    }
+    
+    patch_selector_menu_.addListener(this);
+
+}
+
+void MidiInstrumentControllerComponent::updatePatchSelectorMenu(String selected_patch_name)
+{
+    String manufacturer_name = midi_instrument_->getManufacturerName();
+    String model_name = midi_instrument_->getModelName();
+    File patch_folder(MidiotFileUtils::getInstrumentPatchFolder(manufacturer_name, model_name));
+    
+    patch_selector_menu_.removeListener(this);
+    patch_selector_menu_.clear();
+    
+    Array<File> patch_files;
+    patch_folder.findChildFiles(patch_files, File::findFiles, true, "*.mdp");
+    for (int i=0; i<patch_files.size(); i++)
+    {
+        String patch_file_name(patch_files[i].getFileNameWithoutExtension());
+        patch_selector_menu_.addItem(patch_file_name, i+1);
+    }
+    
+    if (selected_patch_name.length())
+    {
+        setSelectedPatchByName(selected_patch_name);
+    }
+    
+    patch_selector_menu_.addListener(this);
 }
 
 

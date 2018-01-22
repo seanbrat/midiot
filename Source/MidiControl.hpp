@@ -153,6 +153,7 @@ public:
     
     void set_value(const int value, bool update_slider = false);
     const int value() { return value_; }
+    void send_value_to_midi();
     
     void sliderValueChanged (Slider *slider) override;
     void handleMidiControlEvent(const MidiMessage& message);

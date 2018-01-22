@@ -41,7 +41,6 @@ File MidiotFileUtils::getInstrumentPatchFolder(const String manufacturer,
 {
     String inst_patch_folder_path = getInstrumentPatchFolderPath(manufacturer,
                                                                  model_name);
-    printf("inst_patch_folder_path: %s\n", inst_patch_folder_path.toRawUTF8());
     File inst_patch_folder(inst_patch_folder_path);
 
     if (!inst_patch_folder.exists())

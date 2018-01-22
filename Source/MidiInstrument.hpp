@@ -77,6 +77,10 @@ public:
         return inst_model_->getMidiControlIterator();
     }
     
+    bool updateMidiControl(String control_name, int control_value, bool sendMidiOnUpdate = false);
+    
+    void sendMidiControlPatchData();
+    
     // 1. Adds UI slider for MidiControl to MidiInstrumentControllerComponent
     // 2. Adds MidiInstrument to MidiInstrumentControllerComponent
     // 3. Adds MidiInstrument pointer to MidiControl

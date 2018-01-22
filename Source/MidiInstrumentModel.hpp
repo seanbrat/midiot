@@ -65,12 +65,20 @@ public:
     MidiControl** getMidiControlIterator() { return midi_controls_.begin(); }
     MidiControl** getMidiControlIteratorEnd() { return midi_controls_.end(); }
     
+    bool updateMidiControl(String control_name,
+                           int control_value,
+                           bool sendMidiOnUpdate = false);
+    
+    MidiControl* getMidiControl(String control_name);
+    
     bool handleMidiControlEvent(const MidiMessage& message);
     virtual bool handleMidiSysexEvent(const MidiMessage& message) { return false; }
 
     virtual bool handleSysexIdRequest(const MidiMessage& message) { return false; }
     virtual bool handleSysexPatchDumpRequest(const MidiMessage& message) { return false; }
     virtual bool handleSysexParameterRequest(const MidiMessage& message) { return false; }
+    
+    void sendMidiControlPatchData();
     
     const String manufacturer();
     const String model_name();

@@ -10,6 +10,12 @@
 
 const uint8 NUM_REFACE_CS_PARAMS = 18;
 
+const uint8 REFACE_CS_LFO_ASSIGN = 2;
+const uint8 REFACE_CS_PORTAMENTO = 5;
+const uint8 REFACE_CS_OSC_TYPE = 6;
+const uint8 REFACE_CS_EFFECT_TYPE = 16;
+
+
 YamahaRefaceCSModel::YamahaRefaceCSModel()
 : MidiInstrumentModel("Yamaha", "Reface CS")
 {
@@ -341,7 +347,7 @@ bool YamahaRefaceCSModel::handleMidiSysexEvent(const MidiMessage& message)
         int param_index = 0;
         int param_byte = 10;
         
-        for (int i=0; i<NUM_REFACE_CS_PARAMS; i++)
+        for (int i=0; i<NUM_REFACE_CS_PARAMS+1; i++)
         {
             if (i == 1)
             {
@@ -349,7 +355,32 @@ bool YamahaRefaceCSModel::handleMidiSysexEvent(const MidiMessage& message)
                 continue;
             }
             
-            midi_controls_[param_index++]->set_value(sysex_data[param_byte++], true);
+            int value_to_set = sysex_data[param_byte++];
+            
+            if (i == REFACE_CS_LFO_ASSIGN ||
+                i == REFACE_CS_OSC_TYPE ||
+                i == REFACE_CS_EFFECT_TYPE)
+            {
+                switch (value_to_set)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        value_to_set = 32;
+                        break;
+                    case 2:
+                        value_to_set = 64;
+                        break;
+                    case 3:
+                        value_to_set = 95;
+                        break;
+                    case 4:
+                        value_to_set = 127;
+                        break;
+                };
+            }
+            
+            midi_controls_[param_index++]->set_value(value_to_set, true);
         }
     }
     
