@@ -29,6 +29,20 @@ private:
     
 };
 
+class YamahaRefaceDXModel : public MidiInstrumentModel
+{
+public:
+    YamahaRefaceDXModel();
+    ~YamahaRefaceDXModel() {};
+    
+    virtual bool handleMidiSysexEvent(const MidiMessage& message);
+    
+private:
+    uint8 sysex_group_number_high_;
+    uint8 sysex_group_number_low_;
+    
+};
+
 
 
 #endif /* MidiInstrumentModelImpl_hpp */

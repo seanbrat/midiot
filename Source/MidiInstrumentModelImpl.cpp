@@ -56,7 +56,7 @@ YamahaRefaceCSModel::YamahaRefaceCSModel()
                                                       0x02,         // address_low
                                                       1,            // size (bytes)
                                                       0x00,         // range_min
-                                                      0x127));       // range_max
+                                                      0x7F));       // range_max
     
     addMidiControl(String("LFO Depth"),        // name
                                    0,                               // initial value
@@ -386,3 +386,1512 @@ bool YamahaRefaceCSModel::handleMidiSysexEvent(const MidiMessage& message)
     
     return true;
 }
+
+
+
+YamahaRefaceDXModel::YamahaRefaceDXModel()
+: MidiInstrumentModel("Yamaha", "Reface DX")
+{
+    sysex_manufacturer_id_ = 0x43;
+    sysex_device_id_ = 0x00;
+    sysex_model_id_bytes_ = 1;
+    sysex_model_id_[0] = 0x05;
+    sysex_group_number_high_ = 0x7f;
+    sysex_group_number_low_ = 0x1c;
+    
+    addMidiControl(String("Transpose"),        // name
+                   25,                               // initial value
+                   NULL,                            // no cc control
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x0C,         // address_low
+                                      1,            // size (bytes)
+                                      0x28,         // range_min
+                                      0x58));       // range_max
+    
+    addMidiControl(String("Part Mode"),        // name
+                   0,                               // initial value
+                   NULL,                            // no cc control
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x0D,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x02));       // range_max
+    
+    addMidiControl(String("Portamento"),        // name
+                   0,                               // initial value
+                   NULL,                            // no cc control
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x0E,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Pitch Bend Range"),        // name
+                   12,                               // initial value
+                   NULL,                            // no cc control
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x0F,         // address_low
+                                      1,            // size (bytes)
+                                      0x28,         // range_min
+                                      0x58));       // range_max
+
+    addMidiControl(String("Algorithm"),        // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(80,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x10,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x0B));       // range_max
+    
+    addMidiControl(String("LFO Wave"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x11,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x06));       // range_max
+
+    addMidiControl(String("LFO Speed"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x12,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+
+    addMidiControl(String("LFO Delay"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x13,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+
+    addMidiControl(String("LFO Pitch Mod"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x14,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+
+    addMidiControl(String("Pitch EG Rate 1"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x15,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Pitch EG Rate 2"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x16,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Pitch EG Rate 3"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x17,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Pitch EG Rate 4"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x18,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Pitch EG Level 1"),        // name
+                   49,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x19,         // address_low
+                                      1,            // size (bytes)
+                                      0x10,         // range_min
+                                      0x70));       // range_max
+    
+    addMidiControl(String("Pitch EG Level 2"),        // name
+                   49,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x1A,         // address_low
+                                      1,            // size (bytes)
+                                      0x10,         // range_min
+                                      0x70));       // range_max
+    
+    addMidiControl(String("Pitch EG Level 3"),        // name
+                   49,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x1B,         // address_low
+                                      1,            // size (bytes)
+                                      0x10,         // range_min
+                                      0x70));       // range_max
+    
+    addMidiControl(String("Pitch EG Level 4"),        // name
+                   49,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x1C,         // address_low
+                                      1,            // size (bytes)
+                                      0x10,         // range_min
+                                      0x70));       // range_max
+
+    addMidiControl(String("Effect 1 Type"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x1D,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x07));       // range_max
+    
+    addMidiControl(String("Effect 1 Parameter 1"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x1E,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+
+    addMidiControl(String("Effect 1 Parameter 2"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x1F,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    
+    addMidiControl(String("Effect 2 Type"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x20,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x07));       // range_max
+    
+    addMidiControl(String("Effect 2 Parameter 1"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x21,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Effect 2 Parameter 2"),        // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x30,         // address_high
+                                      0x00,         // address_mid
+                                      0x22,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x00,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 1 EG Rate 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x01,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 EG Rate 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x02,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 EG Rate 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x03,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 EG Rate 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x04,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 EG Level 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x05,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 EG Level 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x06,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 EG Level 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x07,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 EG Level 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x08,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 KSC-R"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x09,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 KSC-Level Left Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x0A,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 KSC-Level Right Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x0B,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 KSC-Level Left Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x0C,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 1 KSC-Level Right Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x0D,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 1 LFO Amp Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x0E,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+
+    addMidiControl(String("Op 1 LFO Pitch Mod On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x0F,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 1 Pitch EG On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x10,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+
+    addMidiControl(String("Op 1 Level Velocity Sens"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x11,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 Output Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(85,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x12,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 Feedback Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(86,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x13,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 1 Feedback Type"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(87,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x14,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 1 Freq Mode"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(88,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x15,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+
+    addMidiControl(String("Op 1 Freq Coarse"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(89,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x16,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x1F));       // range_max
+    
+    addMidiControl(String("Op 1 Freq Fine"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(90,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x17,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x63));       // range_max
+    
+    addMidiControl(String("Op 1 Freq Detune"),     // name
+                   65,                              // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x00,         // address_mid
+                                      0x18,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+
+
+
+    
+    
+    
+    
+    
+    
+    addMidiControl(String("Op 2 On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x00,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 2 EG Rate 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x01,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 EG Rate 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x02,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 EG Rate 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x03,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 EG Rate 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x04,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 EG Level 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x05,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 EG Level 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x06,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 EG Level 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x07,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 EG Level 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x08,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 KSC-R"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x09,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 KSC-Level Left Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x0A,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 KSC-Level Right Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x0B,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 KSC-Level Left Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x0C,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 2 KSC-Level Right Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x0D,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 2 LFO Amp Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x0E,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 LFO Pitch Mod On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x0F,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 2 Pitch EG On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x10,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    
+    addMidiControl(String("Op 2 Level Velocity Sens"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x11,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 Output Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(102,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x12,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 Feedback Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(103,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x13,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 2 Feedback Type"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(104,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x14,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 2 Freq Mode"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(105,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x15,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 2 Freq Coarse"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(106,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x16,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x1F));       // range_max
+    
+    addMidiControl(String("Op 2 Freq Fine"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(107,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x17,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x63));       // range_max
+    
+    addMidiControl(String("Op 2 Freq Detune"),     // name
+                   65,                              // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x01,         // address_mid
+                                      0x18,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    addMidiControl(String("Op 3 On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x00,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 3 EG Rate 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x01,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 EG Rate 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x02,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 EG Rate 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x03,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 EG Rate 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x04,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 EG Level 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x05,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 EG Level 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x06,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 EG Level 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x07,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 EG Level 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x08,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 KSC-R"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x09,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 KSC-Level Left Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x0A,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 KSC-Level Right Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x0B,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 KSC-Level Left Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x0C,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 3 KSC-Level Right Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x0D,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 3 LFO Amp Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x0E,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 LFO Pitch Mod On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x0F,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 3 Pitch EG On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x10,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    
+    addMidiControl(String("Op 3 Level Velocity Sens"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x11,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 Output Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(108,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x12,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 Feedback Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(109,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x13,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 3 Feedback Type"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(110,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x14,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 3 Freq Mode"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(111,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x15,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 3 Freq Coarse"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(112,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x16,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x1F));       // range_max
+    
+    addMidiControl(String("Op 3 Freq Fine"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(113,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x17,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x63));       // range_max
+    
+    addMidiControl(String("Op 3 Freq Detune"),     // name
+                   65,                              // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x02,         // address_mid
+                                      0x18,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    
+    
+
+    
+    
+    
+    
+    
+    addMidiControl(String("Op 4 On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x00,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 4 EG Rate 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x01,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 EG Rate 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x02,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 EG Rate 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x03,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 EG Rate 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x04,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 EG Level 1"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x05,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 EG Level 2"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x06,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 EG Level 3"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x07,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 EG Level 4"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x08,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 KSC-R"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x09,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 KSC-Level Left Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x0A,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 KSC-Level Right Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x0B,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 KSC-Level Left Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x0C,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 4 KSC-Level Right Curve"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x0D,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x03));       // range_max
+    
+    addMidiControl(String("Op 4 LFO Amp Depth"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x0E,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 LFO Pitch Mod On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x0F,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 4 Pitch EG On/Off"),     // name
+                   1,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x10,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    
+    addMidiControl(String("Op 4 Level Velocity Sens"),     // name
+                   0,                               // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x11,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 Output Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(114,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x12,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 Feedback Level"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(115,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x13,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+    addMidiControl(String("Op 4 Feedback Type"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(116,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x14,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 4 Freq Mode"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(117,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x15,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x01));       // range_max
+    
+    addMidiControl(String("Op 4 Freq Coarse"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(118,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x16,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x1F));       // range_max
+    
+    addMidiControl(String("Op 4 Freq Fine"),     // name
+                   0,                               // initial value
+                   
+                   createContinuousControl(119,      // cc number
+                                           0,       // range_min
+                                           127),    // range_max
+                   
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x17,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x63));       // range_max
+    
+    addMidiControl(String("Op 4 Freq Detune"),     // name
+                   65,                              // initial value
+                   NULL,
+                   createSysexControl(0,            // param table
+                                      0x31,         // address_high
+                                      0x03,         // address_mid
+                                      0x18,         // address_low
+                                      1,            // size (bytes)
+                                      0x00,         // range_min
+                                      0x7F));       // range_max
+    
+}
+
+
+
+
+bool YamahaRefaceDXModel::handleMidiSysexEvent(const MidiMessage& message)
+{
+    return true;
+}
+
