@@ -199,6 +199,8 @@ public:
     void updatePatchSelectorMenu(String selected_patch_name = "");
     void setSelectedPatchByName(String patch_name, bool loadPatch = false);
 
+    void setKeyboardMidiOutputChannel(short output_channel);
+    
 private:
 
     MidiKeyboardState keyboard_state_;

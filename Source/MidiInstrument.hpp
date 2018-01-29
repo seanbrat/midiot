@@ -26,7 +26,9 @@ public:
     MidiInstrument(MidiInstrumentModel* inst_model,
                    MidiInstrumentControllerComponent* controller,
                    MidiInputPort* input_port,
-                   MidiOutputPort* output_port);
+                   MidiOutputPort* output_port,
+                   short input_channel = 0,
+                   short output_channel = 0);
     ~MidiInstrument();
     
     void handleNoteOn (MidiKeyboardState* keyboard_state,

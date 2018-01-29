@@ -17,9 +17,11 @@
 MidiInstrument::MidiInstrument(MidiInstrumentModel* inst_model,
                                MidiInstrumentControllerComponent* controller,
                                MidiInputPort* input_port,
-                               MidiOutputPort* output_port)
+                               MidiOutputPort* output_port,
+                               short input_channel,
+                               short output_channel)
 : inst_model_(inst_model),
-channel_(0),
+channel_(input_channel),
 midi_input_port_(input_port),
 midi_output_port_(output_port),
 controller_component_(controller)
@@ -39,6 +41,8 @@ controller_component_(controller)
     }
 
     midi_input_port_->addInstrumentToPort(this);
+    
+    controller_component_->setKeyboardMidiOutputChannel(output_channel+1);
 }
 
 MidiInstrument::~MidiInstrument()

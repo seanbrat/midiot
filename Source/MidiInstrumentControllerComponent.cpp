@@ -260,6 +260,7 @@ void MidiInstrumentControllerComponent::handleNoteOn(
                                             int midi_note_number,
                                             float velocity)
 {
+    printf("MidiInstrumentControllerComponent::handleNoteOn() with midi_channel: %d\n", midi_channel);
 }
 
 void MidiInstrumentControllerComponent::handleNoteOff(
@@ -365,3 +366,8 @@ void MidiInstrumentControllerComponent::processNextKeyboardMidiEvent(const MidiM
     keyboard_state_.processNextMidiEvent (message);
 }
 
+
+void MidiInstrumentControllerComponent::setKeyboardMidiOutputChannel(short output_channel)
+{
+    keyboard_component_.setMidiChannel(output_channel);
+}

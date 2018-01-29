@@ -23,7 +23,6 @@ public:
     
 private:
     String patch_name_;
-    
 };
 
 #endif /* MidiInstrumentControllerProperties_hpp */

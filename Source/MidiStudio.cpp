@@ -11,6 +11,8 @@
 #include "MidiInstrumentControllerComponent.hpp"
 #include "MidiInstrumentModelImpl.hpp"
 
+#define USE_REFACE_CS   0
+
 MidiStudio::MidiStudio()
 {
     midi_interface_ = new MidiInterface();
@@ -19,280 +21,28 @@ MidiStudio::MidiStudio()
 MidiStudio::~MidiStudio()
 {}
 
-MidiInstrumentModel* createYamahaRefaceCS()
-{
-    MidiInstrumentModel* yamaha_cs_inst = new MidiInstrumentModel(String("Yamaha"), String("Reface CS"));
-    
-    yamaha_cs_inst->addMidiControl(String("LFO Assign"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(78,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x02,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x04));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("LFO Depth"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(77,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x03,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("LFO Speed"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(76,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x04,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Portamento"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(20,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x05,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Osc Type"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(80,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x06,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x04));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Osc Texture"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(81,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x07,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Osc Mod"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(82,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x08,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Filter Cutoff"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(74,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x09,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Filter Resonance"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(71,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x0A,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("EG Balance"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(83,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x0B,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("EG Attack"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(73,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x0C,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("EG Decay"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(75,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x0D,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("EG Sustain"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(79,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x0E,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("EG Release"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(72,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x0F,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Effect Type"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(17,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x10,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x04));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Effect Depth"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(18,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x11,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    yamaha_cs_inst->addMidiControl(String("Effect Rate"),        // name
-                                   0,                               // initial value
-                                   
-                                   createContinuousControl(19,      // cc number
-                                                           0,       // range_min
-                                                           127),    // range_max
-                                   
-                                   createSysexControl(0,            // param table
-                                                      0x30,         // address_high
-                                                      0x00,         // address_mid
-                                                      0x12,         // address_low
-                                                      1,            // size (bytes)
-                                                      0x00,         // range_min
-                                                      0x7F));       // range_max
-    
-    
-    return yamaha_cs_inst;
-}
-
 MidiStudio* create_test_studio(MidiInstrumentControllerComponent* controller)
 {
     MidiStudio* midi_studio = new MidiStudio();
     MidiInterface* midi_interface = midi_studio->getMidiInterface();
+#if USE_REFACE_CS
     YamahaRefaceCSModel* yamaha_cs_model = new YamahaRefaceCSModel();
     MidiInstrument* yamaha_cs_inst = new MidiInstrument(
                                         yamaha_cs_model,
                                         controller,
                                         midi_interface->getMidiInputPort("reface CS"),
                                         midi_interface->getMidiOutputPort("reface CS"));
+#else
+    YamahaRefaceDXModel* yamaha_dx_model = new YamahaRefaceDXModel();
+    MidiInstrument* yamaha_dx_inst = new MidiInstrument(
+                                                        yamaha_dx_model,
+                                                        controller,
+                                                        midi_interface->getMidiInputPort("reface DX"),
+                                                        midi_interface->getMidiOutputPort("reface DX"),
+                                                        15,
+                                                        15);
 
+#endif
     //yamaha_cs_inst->sendSysexPatchDumpMessage();
     
     return midi_studio;
